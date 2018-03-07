@@ -10,7 +10,14 @@ namespace SecEsportes.Modelo.Eventos{
         public Atleta marcouGol { get; set; }
         public Atleta assistencia { get; set; }
 
-        public Evento_Gol(int id, string nome, decimal minutosJogados) : base(id, nome, minutosJogados){
+        public Evento_Gol(int id, string nome, decimal minutosJogados, Atleta marcouGol) : base(id, nome, minutosJogados){
+            this.marcouGol = marcouGol;
         }
+
+        public Evento_Gol(int id, string nome, decimal minutosJogados, Atleta marcouGol, Atleta assistencia) : base(id, nome, minutosJogados){
+            this.marcouGol = marcouGol;
+            this.assistencia = assistencia;
+        }
+
     }
 }

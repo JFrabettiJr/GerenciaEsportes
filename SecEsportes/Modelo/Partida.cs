@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SecEsportes.Modelo{
-    class Partida{
+    public class Partida{
         public int id { get; }
         public EquipeCompeticao equipeMandante { get; set; }
         public EquipeCompeticao equipeVisitante { get; set; }

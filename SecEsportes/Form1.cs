@@ -16,5 +16,10 @@ namespace SecEsportes
         {
             InitializeComponent();
         }
+
+        private void btnCadFuncoes_Click(object sender, EventArgs e)
+        {
+            new Views.CadFuncao().Show();
+        }
     }
 }

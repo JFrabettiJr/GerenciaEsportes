@@ -8,7 +8,7 @@ namespace SecEsportes.Modelo{
     /// <summary>
     /// Classe que representa uma equipe de qualquer modalidade
     /// </summary>
-    class Equipe{
+    public class Equipe{
         public int id { get;}
         public string nome { get; }
 

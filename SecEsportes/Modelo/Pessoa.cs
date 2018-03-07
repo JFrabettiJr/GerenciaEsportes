@@ -8,7 +8,7 @@ namespace SecEsportes.Modelo{
     /// <summary>
     /// Classe que representa uma pessoa, que pode ser um atleta, um árbito, um técnico, etc
     /// </summary>
-    class Pessoa{
+    public class Pessoa{
         public int id { get; }
         public string nome { get; set; }
         public DateTime dataNascimento { get; set; }

@@ -10,7 +10,9 @@ namespace SecEsportes.Modelo.Eventos{
         public Atleta entra { get; set; }
         public Atleta sai { get; set; }
 
-        public Evento_Substituicao(int id, string nome, decimal minutosJogados) : base(id, nome, minutosJogados){
+        public Evento_Substituicao(int id, string nome, decimal minutosJogados, Atleta entra, Atleta sai) : base(id, nome, minutosJogados){
+            this.entra = entra;
+            this.sai = sai;
         }
     }
 }

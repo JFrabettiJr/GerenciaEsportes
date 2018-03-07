@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SecEsportes.Modelo{
-    class Cargo{
+﻿namespace SecEsportes.Modelo{
+    public class Cargo{
         public int id { get; }
         public Funcao funcao { get; set; }
         public Pessoa pessoa { get; set; }

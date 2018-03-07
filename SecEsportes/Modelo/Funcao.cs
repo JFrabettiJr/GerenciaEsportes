@@ -8,8 +8,8 @@ namespace SecEsportes.Modelo{
     /// <summary>
     /// Classe que representa a função de uma pesosa (atleta, árbitro, técnico, mesário, etc)
     /// </summary>
-    class Funcao{
-        public int id { get; set; }
+    public class Funcao{
+        public int id { get; }
         public string descricao { get; set; }
     }
 }

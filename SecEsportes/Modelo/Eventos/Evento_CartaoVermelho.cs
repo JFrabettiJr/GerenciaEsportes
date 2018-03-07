@@ -9,7 +9,8 @@ namespace SecEsportes.Modelo.Eventos{
         public EquipeCompeticao equipe { get; set; }
         public Atleta atletaExpulso { get; set; }
 
-        public Evento_CartaoVermelho(int id, string nome, decimal minutosJogados) : base(id, nome, minutosJogados){
+        public Evento_CartaoVermelho(int id, string nome, decimal minutosJogados, Atleta atletaExpulso) : base(id, nome, minutosJogados){
+            this.atletaExpulso = atletaExpulso;
         }
     }
 }

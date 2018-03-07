@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SecEsportes.Modelo{
-    class InformacaoAdicional{
+    public class InformacaoAdicional{
         public int id { get; }
         public Funcao aplicavelAFuncao { get; set; }
         public string descricao { get; set; }

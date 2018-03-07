@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SecEsportes.Modelo{
-    class EquipeCompeticao: Equipe{
+    public class EquipeCompeticao : Equipe{
         public Cargo treinador { get; set; }
         public Cargo representante { get; set; }
         public List<Cargo> comissaotecnica { get; set; }

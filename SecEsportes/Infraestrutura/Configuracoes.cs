@@ -29,8 +29,11 @@ namespace SecEsportes.Infraestrutura
         #endregion
 
         private Configuracoes() {
-            folderConfig = "Configuracoes";
-            fileNameDB = "SecEsportesDatabase.db";
+            folderConfig = "Config";
+            if (!(System.IO.Directory.Exists(Environment.CurrentDirectory + "\\" + folderConfig)))
+                System.IO.Directory.CreateDirectory(Environment.CurrentDirectory + "\\" + folderConfig);
+            
+            fileNameDB = "SecEsportesDatabase.sqlite";
             fileNameConfig = "SecEsportesConfig.txt";
         }
     }
