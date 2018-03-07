@@ -29,15 +29,16 @@
         private void InitializeComponent()
         {
             this.tlpCadFuncao = new System.Windows.Forms.TableLayoutPanel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.lblDescricao = new System.Windows.Forms.Label();
-            this.txtCdFuncao = new System.Windows.Forms.TextBox();
             this.txtDescFuncao = new System.Windows.Forms.TextBox();
+            this.lblDescricao = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.txtCdFuncao = new System.Windows.Forms.TextBox();
             this.btnSalvar = new System.Windows.Forms.Button();
             this.btnAdicionar = new System.Windows.Forms.Button();
             this.btnCancelar = new System.Windows.Forms.Button();
             this.btnExcluir = new System.Windows.Forms.Button();
             this.dgvFuncoes = new System.Windows.Forms.DataGridView();
+            this.btnAtualizar = new System.Windows.Forms.Button();
             this.tlpCadFuncao.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvFuncoes)).BeginInit();
             this.SuspendLayout();
@@ -61,14 +62,14 @@
             this.tlpCadFuncao.Size = new System.Drawing.Size(560, 40);
             this.tlpCadFuncao.TabIndex = 0;
             // 
-            // label1
+            // txtDescFuncao
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(40, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Código";
+            this.txtDescFuncao.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtDescFuncao.Location = new System.Drawing.Point(115, 17);
+            this.txtDescFuncao.Name = "txtDescFuncao";
+            this.txtDescFuncao.Size = new System.Drawing.Size(442, 20);
+            this.txtDescFuncao.TabIndex = 3;
+            this.txtDescFuncao.KeyDown += new System.Windows.Forms.KeyEventHandler(this.fields_KeyDown);
             // 
             // lblDescricao
             // 
@@ -79,6 +80,15 @@
             this.lblDescricao.TabIndex = 1;
             this.lblDescricao.Text = "Descrição";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(40, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Código";
+            // 
             // txtCdFuncao
             // 
             this.txtCdFuncao.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -86,14 +96,7 @@
             this.txtCdFuncao.Name = "txtCdFuncao";
             this.txtCdFuncao.Size = new System.Drawing.Size(106, 20);
             this.txtCdFuncao.TabIndex = 2;
-            // 
-            // txtDescFuncao
-            // 
-            this.txtDescFuncao.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtDescFuncao.Location = new System.Drawing.Point(115, 17);
-            this.txtDescFuncao.Name = "txtDescFuncao";
-            this.txtDescFuncao.Size = new System.Drawing.Size(442, 20);
-            this.txtDescFuncao.TabIndex = 3;
+            this.txtCdFuncao.KeyDown += new System.Windows.Forms.KeyEventHandler(this.fields_KeyDown);
             // 
             // btnSalvar
             // 
@@ -103,6 +106,7 @@
             this.btnSalvar.TabIndex = 1;
             this.btnSalvar.Text = "Salvar";
             this.btnSalvar.UseVisualStyleBackColor = true;
+            this.btnSalvar.Click += new System.EventHandler(this.btnSalvar_Click);
             // 
             // btnAdicionar
             // 
@@ -112,6 +116,7 @@
             this.btnAdicionar.TabIndex = 2;
             this.btnAdicionar.Text = "Adicionar";
             this.btnAdicionar.UseVisualStyleBackColor = true;
+            this.btnAdicionar.Click += new System.EventHandler(this.btnAdicionar_Click);
             // 
             // btnCancelar
             // 
@@ -121,6 +126,7 @@
             this.btnCancelar.TabIndex = 3;
             this.btnCancelar.Text = "Cancelar";
             this.btnCancelar.UseVisualStyleBackColor = true;
+            this.btnCancelar.Click += new System.EventHandler(this.btnCancelar_Click);
             // 
             // btnExcluir
             // 
@@ -130,6 +136,7 @@
             this.btnExcluir.TabIndex = 4;
             this.btnExcluir.Text = "Excluir";
             this.btnExcluir.UseVisualStyleBackColor = true;
+            this.btnExcluir.Click += new System.EventHandler(this.btnExcluir_Click);
             // 
             // dgvFuncoes
             // 
@@ -142,12 +149,24 @@
             this.dgvFuncoes.ReadOnly = true;
             this.dgvFuncoes.Size = new System.Drawing.Size(560, 300);
             this.dgvFuncoes.TabIndex = 5;
+            this.dgvFuncoes.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvFuncoes_RowEnter);
+            // 
+            // btnAtualizar
+            // 
+            this.btnAtualizar.Location = new System.Drawing.Point(334, 10);
+            this.btnAtualizar.Name = "btnAtualizar";
+            this.btnAtualizar.Size = new System.Drawing.Size(75, 23);
+            this.btnAtualizar.TabIndex = 6;
+            this.btnAtualizar.Text = "Atualizar";
+            this.btnAtualizar.UseVisualStyleBackColor = true;
+            this.btnAtualizar.Click += new System.EventHandler(this.btnAtualizar_Click);
             // 
             // CadFuncao
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 421);
+            this.Controls.Add(this.btnAtualizar);
             this.Controls.Add(this.dgvFuncoes);
             this.Controls.Add(this.btnExcluir);
             this.Controls.Add(this.btnCancelar);
@@ -156,7 +175,7 @@
             this.Controls.Add(this.tlpCadFuncao);
             this.Name = "CadFuncao";
             this.Padding = new System.Windows.Forms.Padding(20);
-            this.Text = "CadFuncao";
+            this.Text = "Cadastro de funções";
             this.tlpCadFuncao.ResumeLayout(false);
             this.tlpCadFuncao.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvFuncoes)).EndInit();
@@ -176,5 +195,6 @@
         private System.Windows.Forms.Button btnCancelar;
         private System.Windows.Forms.Button btnExcluir;
         private System.Windows.Forms.DataGridView dgvFuncoes;
+        private System.Windows.Forms.Button btnAtualizar;
     }
 }

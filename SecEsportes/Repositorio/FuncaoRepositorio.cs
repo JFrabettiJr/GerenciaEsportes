@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SecEsportes.Modelo;
+using SecEsportes.Infraestrutura;
 
 namespace SecEsportes.Repositorio
 {
@@ -28,7 +29,7 @@ namespace SecEsportes.Repositorio
 
         }
 
-        public Funcao getFuncao(int id)
+        public Funcao get(int id)
         {
             using (var connection = Infraestrutura.SQLiteDatabase.Instance.SQLiteDatabaseConnection())
             {
@@ -41,10 +42,9 @@ namespace SecEsportes.Repositorio
                 return funcao;
             }
         }
-
-        public List<Funcao> getFuncoes()
+        public List<Funcao> get()
         {
-            using (var connection = Infraestrutura.SQLiteDatabase.Instance.SQLiteDatabaseConnection())
+            using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection())
             {
                 connection.Open();
 
@@ -53,6 +53,33 @@ namespace SecEsportes.Repositorio
                 return funcoes;
             }
         }
-
+        public bool insert(ref Funcao funcao){
+            try{
+                funcao.id = SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query<int>("" +
+                    "INSERT INTO Funcao (Codigo, Descricao) VALUES (@Codigo, @Descricao); select last_insert_rowid()",
+                    funcao).First();
+                return true;
+            }catch (Exception ex){
+                return false;
+            }
+        }
+        public bool update(Funcao funcao){
+            try{
+                SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(
+                    "UPDATE Funcao SET Codigo = @Codigo, Descricao = @Descricao WHERE id = @id", funcao);
+                return true;
+            }catch (Exception ex){
+                return false;
+            }
+        }
+        public bool delete(Funcao funcao){
+            try{
+                SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(
+                    "DELETE FROM Funcao WHERE id = @id", funcao);
+                return true;
+            }catch (Exception ex){
+                return false;
+            }
+        }
     }
 }

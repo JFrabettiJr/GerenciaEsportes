@@ -47,6 +47,10 @@ namespace SecEsportes.Infraestrutura
             }
         }
 
+        public void loadDatabase(){
+            createSQLiteDatabase();
+            createTables();
+        }
 
         public void createTables(){
             SQLiteConnection connection = SQLiteDatabaseConnection();
@@ -56,21 +60,11 @@ namespace SecEsportes.Infraestrutura
                 SQLiteCommand command = connection.CreateCommand();
 
                 //Criação da tabela função
-                command.CommandText = "CREATE Table Funcao (id INTEGER PRIMARY KEY AUTOINCREMENT, descricao NVARCHAR(100) NOT NULL) ";
+                command.CommandText = "CREATE Table Funcao (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "codigo NVARCHAR(10) NOT NULL UNIQUE, " +
+                    "descricao NVARCHAR(100) NOT NULL) ";
                 command.ExecuteNonQuery();
-
-                int id;
-                Modelo.Funcao funcao;
-                funcao = new Modelo.Funcao() { descricao = "Técnico" };
-                id = connection.Query<int>("INSERT INTO Funcao (Descricao) VALUES (@Descricao); select last_insert_rowid()", funcao).First();
-
-                funcao = new Modelo.Funcao() { descricao = "Representante" };
-                id = connection.Query<int>("INSERT INTO Funcao (Descricao) VALUES (@Descricao); select last_insert_rowid()", funcao).First();
-
-                funcao = new Modelo.Funcao() { descricao = "Mesário" };
-                id = connection.Query<int>("INSERT INTO Funcao (Descricao) VALUES (@Descricao); select last_insert_rowid()", funcao).First();
-                
-
             }
 
             connection.Close();

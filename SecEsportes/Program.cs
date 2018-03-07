@@ -14,6 +14,9 @@ namespace SecEsportes
         [STAThread]
         static void Main()
         {
+
+            Infraestrutura.SQLiteDatabase.Instance.loadDatabase();
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());

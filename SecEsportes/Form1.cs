@@ -15,11 +15,13 @@ namespace SecEsportes
         public Form1()
         {
             InitializeComponent();
+            CenterToScreen();
         }
 
         private void btnCadFuncoes_Click(object sender, EventArgs e)
         {
             new Views.CadFuncao().Show();
         }
+
     }
 }
