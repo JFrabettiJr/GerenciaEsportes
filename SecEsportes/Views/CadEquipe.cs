@@ -7,19 +7,19 @@ using SecEsportes.Repositorio;
 
 namespace SecEsportes.Views
 {
-    public partial class CadFuncao : Form
+    public partial class CadEquipe : Form
     {
         private Utilidades.WindowMode windowMode;
-        private List<Funcao> funcoes;
+        private List<Equipe> equipes;
         private string errorMessage;
 
         #region Inicialização da classe
-        public CadFuncao()
+        public CadEquipe()
         {
             InitializeComponent();
             CenterToScreen();
-            funcoes = FuncaoRepositorio.Instance.get(ref errorMessage);
-            if (funcoes is null) {
+            equipes = EquipeRepositorio.Instance.get(ref errorMessage);
+            if (equipes is null) {
                 MessageBox.Show("Houve um erro ao tentar listar os registros." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             refreshDataGridView();
@@ -30,67 +30,65 @@ namespace SecEsportes.Views
         #region Manipulação do grid
         private void refreshDataGridView()
         {
-            dgvFuncoes.DataSource = null;
-            dgvFuncoes.Refresh();
+            dgvEquipes.DataSource = null;
+            dgvEquipes.Refresh();
 
-            dgvFuncoes.DataSource = funcoes;
+            dgvEquipes.DataSource = equipes;
 
-            for (var iCount = 0; iCount < dgvFuncoes.Columns.Count; iCount++)
+            for (var iCount = 0; iCount < dgvEquipes.Columns.Count; iCount++)
             {
-                switch (dgvFuncoes.Columns[iCount].DataPropertyName)
+                switch (dgvEquipes.Columns[iCount].DataPropertyName)
                 {
-                    case nameof(Funcao.id):
-                        dgvFuncoes.Columns[iCount].Visible = false;
+                    case nameof(Equipe.id):
+                        dgvEquipes.Columns[iCount].Visible = false;
                         break;
-                    case nameof(Funcao.codigo):
-                        dgvFuncoes.Columns[iCount].HeaderText = "Código";
+                    case nameof(Equipe.codigo):
+                        dgvEquipes.Columns[iCount].HeaderText = "Código";
                         break;
-                    case nameof(Funcao.descricao):
-                        dgvFuncoes.Columns[iCount].HeaderText = "Descrição";
+                    case nameof(Equipe.nome):
+                        dgvEquipes.Columns[iCount].HeaderText = "Nome";
                         break;
                 }
             }
 
-            dgvFuncoes.Refresh();
+            dgvEquipes.Refresh();
         }
         #endregion
         #region CRUD
         private void btnAdicionar_Click(object sender, EventArgs e){
-            txtCdFuncao.Focus();
+            txtCodigo.Focus();
             windowMode = Utilidades.WindowMode.ModoDeInsercao;
             windowModeChanged();
         }
         private void btnCancelar_Click(object sender, EventArgs e){
-            txtCdFuncao.Text = "";
-            txtDescFuncao.Text = "";
+            txtCodigo.Text = "";
+            txtNome.Text = "";
             windowMode = Utilidades.WindowMode.ModoNormal;
             windowModeChanged();
         }
         private void btnSalvar_Click(object sender, EventArgs e)
         {
-            Funcao funcao;
+            Equipe equipe;
             if (windowMode == Utilidades.WindowMode.ModoDeInsercao){
-                funcao = new Funcao(txtCdFuncao.Text, txtDescFuncao.Text);
-                if (FuncaoRepositorio.Instance.insert(ref funcao, ref errorMessage)){
-                    funcoes.Add(funcao);
+                equipe = new Equipe(txtCodigo.Text, txtNome.Text);
+                if (EquipeRepositorio.Instance.insert(ref equipe, ref errorMessage)){
+                    equipes.Add(equipe);
                     refreshDataGridView();
-                    txtCdFuncao.Text = "";
-                    txtDescFuncao.Text = "";
+                    txtCodigo.Text = "";
+                    txtNome.Text = "";
                 }else {
                     MessageBox.Show("Houve um erro ao tentar inserir o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-            }
-            else {
-                funcao = funcoes[dgvFuncoes.SelectedCells[0].RowIndex];
-                funcao.codigo = txtCdFuncao.Text;
-                funcao.descricao = txtDescFuncao.Text;
-                if (FuncaoRepositorio.Instance.update(funcao, ref errorMessage)) {
-                    funcoes[dgvFuncoes.SelectedCells[0].RowIndex] = funcao;
+            }else {
+                equipe = equipes[dgvEquipes.SelectedCells[0].RowIndex];
+                equipe.codigo = txtCodigo.Text;
+                equipe.nome = txtNome.Text;
+                if (EquipeRepositorio.Instance.update(equipe, ref errorMessage)) {
+                    equipes[dgvEquipes.SelectedCells[0].RowIndex] = equipe;
                     refreshDataGridView();
-                }
-                else {
-                    txtCdFuncao.Text = funcoes[dgvFuncoes.SelectedCells[0].RowIndex].codigo;
-                    txtDescFuncao.Text = funcoes[dgvFuncoes.SelectedCells[0].RowIndex].descricao;
+                }else {
+                    txtCodigo.Text = equipes[dgvEquipes.SelectedCells[0].RowIndex].codigo;
+                    txtNome.Text = equipes[dgvEquipes.SelectedCells[0].RowIndex].nome;
                     MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -100,26 +98,26 @@ namespace SecEsportes.Views
         }
         private void btnExcluir_Click(object sender, EventArgs e)
         {
-            if (dgvFuncoes.SelectedCells.Count > 0) {
-                Funcao funcao;
-                funcao = funcoes[dgvFuncoes.SelectedCells[0].RowIndex];
+            if (dgvEquipes.SelectedCells.Count > 0) {
+                Equipe equipe;
+                equipe = equipes[dgvEquipes.SelectedCells[0].RowIndex];
                 if (MessageBox.Show("Confirma a deleção do registro ?" +
                     Environment.NewLine + Environment.NewLine +
-                    funcao.ToString(), "Confirmação", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
-                    if (FuncaoRepositorio.Instance.delete(funcao, ref errorMessage)) {
-                        funcoes.RemoveAt(dgvFuncoes.SelectedCells[0].RowIndex);
+                    equipe.ToString(), "Confirmação", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
+                    if (EquipeRepositorio.Instance.delete(equipe, ref errorMessage)) {
+                        equipes.RemoveAt(dgvEquipes.SelectedCells[0].RowIndex);
                         refreshDataGridView();
-                        txtCdFuncao.Text = "";
-                        txtDescFuncao.Text = "";
-                    }else {
-                        MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        txtCodigo.Text = "";
+                        txtNome.Text = "";
+                    }else{
+                        MessageBox.Show("Houve um erro ao tentar deletar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
         }
         private void btnAtualizar_Click(object sender, EventArgs e) {
-            funcoes = FuncaoRepositorio.Instance.get(ref errorMessage);
-            if (funcoes is null) {
+            equipes = EquipeRepositorio.Instance.get(ref errorMessage);
+            if (equipes is null) {
                 MessageBox.Show("Houve um erro ao tentar listar os registros." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             refreshDataGridView();
@@ -133,7 +131,7 @@ namespace SecEsportes.Views
                     btnSalvar.Enabled = false;
                     btnAdicionar.Enabled = true;
                     btnExcluir.Enabled = true;
-                    dgvFuncoes.Enabled = true;
+                    dgvEquipes.Enabled = true;
                     btnAtualizar.Enabled = true;
                     break;
                 case Utilidades.WindowMode.ModoDeEdicao:
@@ -141,7 +139,7 @@ namespace SecEsportes.Views
                     btnSalvar.Enabled = true;
                     btnAdicionar.Enabled = false;
                     btnExcluir.Enabled = false;
-                    dgvFuncoes.Enabled = false;
+                    dgvEquipes.Enabled = false;
                     btnAtualizar.Enabled = false;
                     break;
                 case Utilidades.WindowMode.ModoDeInsercao:
@@ -149,14 +147,14 @@ namespace SecEsportes.Views
                     btnSalvar.Enabled = true;
                     btnAdicionar.Enabled = false;
                     btnExcluir.Enabled = false;
-                    dgvFuncoes.Enabled = false;
+                    dgvEquipes.Enabled = false;
                     btnAtualizar.Enabled = false;
                     break;
             }
         }
-        private void dgvFuncoes_RowEnter(object sender, DataGridViewCellEventArgs e) {
-            txtCdFuncao.Text = funcoes[e.RowIndex].codigo;
-            txtDescFuncao.Text = funcoes[e.RowIndex].descricao;
+        private void dgvEquipes_RowEnter(object sender, DataGridViewCellEventArgs e) {
+            txtCodigo.Text = equipes[e.RowIndex].codigo;
+            txtNome.Text = equipes[e.RowIndex].nome;
         }
         private void fields_KeyDown(object sender, KeyEventArgs e) {
             if (windowMode != Utilidades.WindowMode.ModoDeInsercao) {

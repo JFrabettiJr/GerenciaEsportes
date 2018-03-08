@@ -2,59 +2,42 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SecEsportes.Modelo;
 using SecEsportes.Infraestrutura;
 
 namespace SecEsportes.Repositorio
 {
-    public class FuncaoRepositorio{
+    public class EquipeRepositorio {
         #region Implementação Singleton
-        private static FuncaoRepositorio instance = null;
-        public static FuncaoRepositorio Instance
+        private static EquipeRepositorio instance = null;
+        public static EquipeRepositorio Instance
         {
             get
             {
                 if (instance == null)
                 {
-                    instance = new FuncaoRepositorio();
+                    instance = new EquipeRepositorio();
                 }
                 return instance;
             }
         }
         #endregion
 
-        private FuncaoRepositorio(){
+        private EquipeRepositorio(){
 
         }
 
-        public Funcao get(int id, ref string messageError) {
-            try {
-                using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
-                    connection.Open();
-
-                    Funcao funcao = connection.Query<Funcao>(
-                        "SELECT * FROM Funcao WHERE id = @id", new { id })
-                        .FirstOrDefault();
-
-                    return funcao;
-                }
-            }
-            catch(Exception ex) {
-                messageError = ex.Message;
-                return null;
-            }
-        }
-        public List<Funcao> get(ref string messageError)
+        public Equipe get(int id, ref string messageError)
         {
             try {
                 using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
                     connection.Open();
 
-                    List<Funcao> funcoes = connection.Query<Funcao>("SELECT * FROM Funcao").ToList();
+                    Equipe equipe = connection.Query<Equipe>(
+                        "SELECT * FROM Equipe WHERE id = @id", new { id })
+                        .FirstOrDefault();
 
-                    return funcoes;
+                    return equipe;
                 }
             }
             catch(Exception ex) {
@@ -62,31 +45,46 @@ namespace SecEsportes.Repositorio
                 return null;
             }
         }
-        public bool insert(ref Funcao funcao, ref string messageError) {
+        public List<Equipe> get(ref string messageError)
+        {
+            try {
+                using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
+                    connection.Open();
+
+                    List<Equipe> equipes = connection.Query<Equipe>("SELECT * FROM Equipe").ToList();
+
+                    return equipes;
+                }
+            }catch (Exception ex) {
+                messageError = ex.Message;
+                return null;
+            }
+        }
+        public bool insert(ref Equipe equipe, ref string messageError) {
             try{
-                funcao.id = SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query<int>("" +
-                    "INSERT INTO Funcao (Codigo, Descricao) VALUES (@Codigo, @Descricao); select last_insert_rowid()",
-                    funcao).First();
+                equipe.id = SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query<int>("" +
+                    "INSERT INTO Equipe (Codigo, Nome) VALUES (@Codigo, @Nome); select last_insert_rowid()",
+                    equipe).First();
                 return true;
             }catch (Exception ex){
                 messageError = ex.Message;
                 return false;
             }
         }
-        public bool update(Funcao funcao, ref string messageError) {
+        public bool update(Equipe equipe, ref string messageError) {
             try{
                 SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(
-                    "UPDATE Funcao SET Codigo = @Codigo, Descricao = @Descricao WHERE id = @id", funcao);
+                    "UPDATE Equipe SET Codigo = @Codigo, Nome = @Nome WHERE id = @id", equipe);
                 return true;
             }catch (Exception ex){
                 messageError = ex.Message;
                 return false;
             }
         }
-        public bool delete(Funcao funcao, ref string messageError) {
+        public bool delete(Equipe equipe, ref string messageError) {
             try{
                 SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(
-                    "DELETE FROM Funcao WHERE id = @id", funcao);
+                    "DELETE FROM Equipe WHERE id = @id", equipe);
                 return true;
             }catch (Exception ex){
                 messageError = ex.Message;

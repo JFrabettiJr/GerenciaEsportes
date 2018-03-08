@@ -56,14 +56,25 @@ namespace SecEsportes.Infraestrutura
             SQLiteConnection connection = SQLiteDatabaseConnection();
             connection.OpenAndReturn();
 
+            //Criação da tabela função
             if (connection.GetSchema("Tables", new[] { null, null, "Funcao", null }).Rows.Count == 0){
                 SQLiteCommand command = connection.CreateCommand();
 
-                //Criação da tabela função
                 command.CommandText = "CREATE Table Funcao (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "codigo NVARCHAR(10) NOT NULL UNIQUE, " +
                     "descricao NVARCHAR(100) NOT NULL) ";
+                command.ExecuteNonQuery();
+            }
+
+            //Criação da tabela Equipe
+            if (connection.GetSchema("Tables", new[] { null, null, "Equipe", null }).Rows.Count == 0) {
+                SQLiteCommand command = connection.CreateCommand();
+
+                command.CommandText = "CREATE Table Equipe (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "codigo NVARCHAR(10) NOT NULL UNIQUE, " +
+                    "nome NVARCHAR(100) NOT NULL) ";
                 command.ExecuteNonQuery();
             }
 

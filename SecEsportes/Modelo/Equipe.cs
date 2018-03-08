@@ -1,20 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SecEsportes.Modelo{
     /// <summary>
     /// Classe que representa uma equipe de qualquer modalidade
     /// </summary>
     public class Equipe{
-        public int id { get;}
-        public string nome { get; }
+        public int id { get; set; }
 
-        public Equipe(int id, string nome){
-            this.id = id;
+        public string codigo { get; set; }
+        public string nome { get; set; }
+
+        public Equipe(string codigo, string nome){
+            this.codigo = codigo;
             this.nome = nome;
+        }
+
+        public Equipe() { }
+
+        public override string ToString() {
+            return "Código: " + codigo + Environment.NewLine +
+                    "Nome: " + nome;
         }
     }
 }

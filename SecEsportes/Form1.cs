@@ -20,7 +20,7 @@ namespace SecEsportes
 
         private void btnCadFuncoes_Click(object sender, EventArgs e)
         {
-            new Views.CadFuncao().Show();
+            new Views.CadEquipe().Show();
         }
 
     }

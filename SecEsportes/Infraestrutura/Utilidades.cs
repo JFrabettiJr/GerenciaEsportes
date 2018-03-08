@@ -9,12 +9,10 @@ using System.Windows.Forms;
 namespace SecEsportes.Infraestrutura
 {
     public static class Utilidades{
-
         public enum WindowMode{
             ModoDeEdicao,
             ModoDeInsercao,
             ModoNormal
         }
-
     }
 }
