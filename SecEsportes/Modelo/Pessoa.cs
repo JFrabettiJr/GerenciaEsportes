@@ -10,15 +10,22 @@ namespace SecEsportes.Modelo{
     /// </summary>
     public class Pessoa{
         public int id { get; set; }
-        public string codigo { get; set; }
+        public string cpf { get; set; }
         public string nome { get; set; }
         public DateTime dataNascimento { get; set; }
         public List<Funcao> funcoes { get; set; }
 
-        public Pessoa(string codigo, string nome, DateTime dataNascimento){
-            this.codigo = codigo;
+        public Pessoa() { }
+
+        public Pessoa(string cpf, string nome, DateTime dataNascimento){
+            this.cpf = cpf;
             this.nome = nome;
             this.dataNascimento = dataNascimento;
+        }
+
+        public override string ToString() {
+            return "CPF: " + cpf + Environment.NewLine +
+                    "Nome: " + nome + Environment.NewLine;
         }
     }
 }

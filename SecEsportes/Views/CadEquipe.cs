@@ -57,6 +57,8 @@ namespace SecEsportes.Views
         #region CRUD
         private void btnAdicionar_Click(object sender, EventArgs e){
             txtCodigo.Focus();
+            txtCodigo.Text = "";
+            txtNome.Text = "";
             windowMode = Utilidades.WindowMode.ModoDeInsercao;
             windowModeChanged();
         }
@@ -80,16 +82,18 @@ namespace SecEsportes.Views
                     MessageBox.Show("Houve um erro ao tentar inserir o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }else {
-                equipe = equipes[dgvEquipes.SelectedCells[0].RowIndex];
-                equipe.codigo = txtCodigo.Text;
-                equipe.nome = txtNome.Text;
-                if (EquipeRepositorio.Instance.update(equipe, ref errorMessage)) {
-                    equipes[dgvEquipes.SelectedCells[0].RowIndex] = equipe;
-                    refreshDataGridView();
-                }else {
-                    txtCodigo.Text = equipes[dgvEquipes.SelectedCells[0].RowIndex].codigo;
-                    txtNome.Text = equipes[dgvEquipes.SelectedCells[0].RowIndex].nome;
-                    MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (dgvEquipes.SelectedCells.Count > 0) {
+                    equipe = equipes[dgvEquipes.SelectedCells[0].RowIndex];
+                    equipe.codigo = txtCodigo.Text;
+                    equipe.nome = txtNome.Text;
+                    if (EquipeRepositorio.Instance.update(equipe, ref errorMessage)) {
+                        equipes[dgvEquipes.SelectedCells[0].RowIndex] = equipe;
+                        refreshDataGridView();
+                    }else {
+                        txtCodigo.Text = equipes[dgvEquipes.SelectedCells[0].RowIndex].codigo;
+                        txtNome.Text = equipes[dgvEquipes.SelectedCells[0].RowIndex].nome;
+                        MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
 

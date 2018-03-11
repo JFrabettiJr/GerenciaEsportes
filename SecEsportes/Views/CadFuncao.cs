@@ -57,6 +57,8 @@ namespace SecEsportes.Views
         #region CRUD
         private void btnAdicionar_Click(object sender, EventArgs e){
             txtCdFuncao.Focus();
+            txtCdFuncao.Text = "";
+            txtDescFuncao.Text = "";
             windowMode = Utilidades.WindowMode.ModoDeInsercao;
             windowModeChanged();
         }
@@ -81,17 +83,18 @@ namespace SecEsportes.Views
                 }
             }
             else {
-                funcao = funcoes[dgvFuncoes.SelectedCells[0].RowIndex];
-                funcao.codigo = txtCdFuncao.Text;
-                funcao.descricao = txtDescFuncao.Text;
-                if (FuncaoRepositorio.Instance.update(funcao, ref errorMessage)) {
-                    funcoes[dgvFuncoes.SelectedCells[0].RowIndex] = funcao;
-                    refreshDataGridView();
-                }
-                else {
-                    txtCdFuncao.Text = funcoes[dgvFuncoes.SelectedCells[0].RowIndex].codigo;
-                    txtDescFuncao.Text = funcoes[dgvFuncoes.SelectedCells[0].RowIndex].descricao;
-                    MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (dgvFuncoes.SelectedCells.Count > 0) {
+                    funcao = funcoes[dgvFuncoes.SelectedCells[0].RowIndex];
+                    funcao.codigo = txtCdFuncao.Text;
+                    funcao.descricao = txtDescFuncao.Text;
+                    if (FuncaoRepositorio.Instance.update(funcao, ref errorMessage)) {
+                        funcoes[dgvFuncoes.SelectedCells[0].RowIndex] = funcao;
+                        refreshDataGridView();
+                    }else {
+                        txtCdFuncao.Text = funcoes[dgvFuncoes.SelectedCells[0].RowIndex].codigo;
+                        txtDescFuncao.Text = funcoes[dgvFuncoes.SelectedCells[0].RowIndex].descricao;
+                        MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
 

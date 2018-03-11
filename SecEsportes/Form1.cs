@@ -10,18 +10,22 @@ using System.Windows.Forms;
 
 namespace SecEsportes
 {
-    public partial class Form1 : Form
-    {
-        public Form1()
-        {
+    public partial class Form1 : Form{
+        public Form1(){
             InitializeComponent();
             CenterToScreen();
         }
 
-        private void btnCadFuncoes_Click(object sender, EventArgs e)
-        {
+        private void btnCadEquipes_Click(object sender, EventArgs e){
             new Views.CadEquipe().Show();
         }
 
+        private void btnCadPessoa_Click(object sender, EventArgs e) {
+            new Views.CadPessoa().Show();
+        }
+
+        private void btnCadFuncao_Click(object sender, EventArgs e) {
+            new Views.CadFuncao().Show();
+        }
     }
 }

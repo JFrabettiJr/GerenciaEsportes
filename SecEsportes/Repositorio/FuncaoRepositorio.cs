@@ -62,6 +62,25 @@ namespace SecEsportes.Repositorio
                 return null;
             }
         }
+        public List<Funcao> getFuncaoByPessoa(int idPessoa) {
+            try {
+                using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
+                    connection.Open();
+
+                    List<Funcao> funcoes = connection.Query<Funcao>("" +
+                        "SELECT * " +
+                        "FROM Funcao " +
+                        "WHERE Funcao.ID IN (" +
+                        "   SELECT IDFuncao FROM PessoaFuncoes WHERE IDPessoa = " + idPessoa + " " +
+                        ") ").ToList();
+
+                    return funcoes;
+                }
+            }
+            catch (Exception ex) {
+                return null;
+            }
+        }
         public bool insert(ref Funcao funcao, ref string messageError) {
             try{
                 funcao.id = SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query<int>("" +
