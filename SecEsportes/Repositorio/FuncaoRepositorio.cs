@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SecEsportes.Modelo;
 using SecEsportes.Infraestrutura;
+using System.Data.SQLite;
 
 namespace SecEsportes.Repositorio
 {
@@ -25,7 +26,35 @@ namespace SecEsportes.Repositorio
         }
         #endregion
 
+        public string codigoAtleta {
+            get {
+                return "ATL";
+            }
+        }
+
         private FuncaoRepositorio(){
+
+        }
+
+        public void CreateTable(SQLiteConnection connection) {
+            //Criação da tabela função
+            if (connection.GetSchema("Tables", new[] { null, null, "Funcao", null }).Rows.Count == 0) {
+                SQLiteCommand command = connection.CreateCommand();
+
+                command.CommandText = "CREATE Table Funcao (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "codigo NVARCHAR(10) NOT NULL UNIQUE, " +
+                    "descricao NVARCHAR(100) NOT NULL) ";
+                command.ExecuteNonQuery();
+            }
+
+            //Inserção do registro de atleta
+            if (connection.Query("SELECT 1 FROM Funcao WHERE codigo = '" + codigoAtleta + "' LIMIT 1; ").Count() < 1){
+                SQLiteCommand command = connection.CreateCommand();
+
+                command.CommandText = "INSERT INTO Funcao (codigo, descricao) VALUES ('" + codigoAtleta + "', 'Atleta') ";
+                command.ExecuteNonQuery();
+            }
 
         }
 

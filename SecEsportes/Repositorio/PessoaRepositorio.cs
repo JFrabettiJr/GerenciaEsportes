@@ -30,6 +30,32 @@ namespace SecEsportes.Repositorio
 
         }
 
+        public void CreateTable(SQLiteConnection connection) {
+            //Criação da tabela PessoaFuncoes
+            if (connection.GetSchema("Tables", new[] { null, null, "Pessoa", null }).Rows.Count == 0) {
+                SQLiteCommand command = connection.CreateCommand();
+
+                command.CommandText = "CREATE Table Pessoa (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "cpf NVARCHAR(11) NOT NULL UNIQUE, " +
+                    "nome NVARCHAR(100) NOT NULL," +
+                    "dataNascimento DateTime) ";
+                command.ExecuteNonQuery();
+            }
+
+            //Criação da tabela PessoaFuncoes
+            if (connection.GetSchema("Tables", new[] { null, null, "PessoaFuncoes", null }).Rows.Count == 0) {
+                SQLiteCommand command = connection.CreateCommand();
+
+                command.CommandText = "CREATE Table PessoaFuncoes (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "idPessoa INTEGER NOT NULL, " +
+                    "idFuncao INTEGER NOT NULL )";
+                command.ExecuteNonQuery();
+            }
+
+        }
+
         public Pessoa get(int id, ref string messageError) {
             try {
                 using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {

@@ -12,7 +12,8 @@ namespace SecEsportes.Infraestrutura
         public enum WindowMode{
             ModoDeEdicao,
             ModoDeInsercao,
-            ModoNormal
+            ModoNormal,
+            ModoCriacaoForm
         }
     }
 }

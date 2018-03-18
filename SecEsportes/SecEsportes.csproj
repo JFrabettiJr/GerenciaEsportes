@@ -267,9 +267,10 @@
     <Compile Include="Modelo\Atleta.cs" />
     <Compile Include="Modelo\Cargo.cs" />
     <Compile Include="Modelo\Competicao.cs" />
+    <Compile Include="Modelo\CompeticaoGrupo.cs" />
     <Compile Include="Modelo\Equipe.cs" />
     <Compile Include="Modelo\EquipeCompeticao.cs" />
-    <Compile Include="Modelo\Esporte.cs" />
+    <Compile Include="Modelo\Modalidade.cs" />
     <Compile Include="Modelo\Eventos\Evento.cs" />
     <Compile Include="Modelo\Eventos\Evento_Substituicao.cs" />
     <Compile Include="Modelo\Eventos\Evento_CartaoVermelho.cs" />
@@ -282,14 +283,28 @@
     <Compile Include="Modelo\Pessoa.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositorio\ModalidadeRepositorio.cs" />
+    <Compile Include="Repositorio\CompeticaoRepositorio.cs" />
     <Compile Include="Repositorio\EquipeRepositorio.cs" />
     <Compile Include="Repositorio\PessoaRepositorio.cs" />
     <Compile Include="Repositorio\FuncaoRepositorio.cs" />
+    <Compile Include="Views\CadCompeticao.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\CadCompeticao.Designer.cs">
+      <DependentUpon>CadCompeticao.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\CadEquipe.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\CadEquipe.Designer.cs">
       <DependentUpon>CadEquipe.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditCompeticao.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\EditCompeticao.Designer.cs">
+      <DependentUpon>EditCompeticao.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\CadPessoa.cs">
       <SubType>Form</SubType>
@@ -315,8 +330,14 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Views\CadCompeticao.resx">
+      <DependentUpon>CadCompeticao.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\CadEquipe.resx">
       <DependentUpon>CadEquipe.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditCompeticao.resx">
+      <DependentUpon>EditCompeticao.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\CadPessoa.resx">
       <DependentUpon>CadPessoa.cs</DependentUpon>
@@ -346,7 +367,7 @@
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
       <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 and x64%29</ProductName>
+      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 e x64%29</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">

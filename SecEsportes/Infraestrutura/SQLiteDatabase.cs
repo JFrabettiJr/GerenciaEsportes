@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Data.SQLite;
 using System.Data;
 using Dapper;
+using SecEsportes.Repositorio;
 
 namespace SecEsportes.Infraestrutura
 {
@@ -56,66 +57,14 @@ namespace SecEsportes.Infraestrutura
             SQLiteConnection connection = SQLiteDatabaseConnection();
             connection.OpenAndReturn();
 
-            createFuncao(connection);
-            createEquipe(connection);
-            createPessoa(connection);
+            FuncaoRepositorio.Instance.CreateTable(connection);
+            EquipeRepositorio.Instance.CreateTable(connection);
+            PessoaRepositorio.Instance.CreateTable(connection);
+            CompeticaoRepositorio.Instance.CreateTable(connection);
+            ModalidadeRepositorio.Instance.CreateTable(connection);
 
             connection.Close();
 
         }
-
-        private void createFuncao(SQLiteConnection connection) {
-            //Criação da tabela função
-            if (connection.GetSchema("Tables", new[] { null, null, "Funcao", null }).Rows.Count == 0) {
-                SQLiteCommand command = connection.CreateCommand();
-
-                command.CommandText = "CREATE Table Funcao (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "codigo NVARCHAR(10) NOT NULL UNIQUE, " +
-                    "descricao NVARCHAR(100) NOT NULL) ";
-                command.ExecuteNonQuery();
-            }
-        }
-
-        private void createEquipe(SQLiteConnection connection) {
-            //Criação da tabela Equipe
-            if (connection.GetSchema("Tables", new[] { null, null, "Equipe", null }).Rows.Count == 0) {
-                SQLiteCommand command = connection.CreateCommand();
-
-                command.CommandText = "CREATE Table Equipe (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "codigo NVARCHAR(10) NOT NULL UNIQUE, " +
-                    "nome NVARCHAR(100) NOT NULL) ";
-                command.ExecuteNonQuery();
-            }
-        }
-
-        private void createPessoa(SQLiteConnection connection) {
-            //Criação da tabela PessoaFuncoes
-            if (connection.GetSchema("Tables", new[] { null, null, "Pessoa", null }).Rows.Count == 0) {
-                SQLiteCommand command = connection.CreateCommand();
-
-                command.CommandText = "CREATE Table Pessoa (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "cpf NVARCHAR(11) NOT NULL UNIQUE, " +
-                    "nome NVARCHAR(100) NOT NULL," +
-                    "dataNascimento DateTime) ";
-                command.ExecuteNonQuery();
-            }
-
-            //Criação da tabela PessoaFuncoes
-            if (connection.GetSchema("Tables", new[] { null, null, "PessoaFuncoes", null }).Rows.Count == 0) {
-                SQLiteCommand command = connection.CreateCommand();
-
-                command.CommandText = "CREATE Table PessoaFuncoes (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "idPessoa INTEGER NOT NULL, " +
-                    "idFuncao INTEGER NOT NULL )";
-                command.ExecuteNonQuery();
-            }
-
-        }
-
-
     }
 }

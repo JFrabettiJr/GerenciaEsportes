@@ -10,6 +10,14 @@ namespace SecEsportes.Modelo{
         public Cargo representante { get; set; }
         public List<Cargo> comissaotecnica { get; set; }
         public List<Atleta> atletas { get; set; }
+        public int jogos { get; set; }
+        public int golsPro { get; set; }
+        public int golsContra { get; set; }
+        public int vitorias { get; set; }
+        public int empates { get; set; }
+        public int derrotas { get; set; }
+
+        public EquipeCompeticao() { }
 
         public EquipeCompeticao(string codigo, string nome, Cargo treinador, Cargo representante) : base(codigo, nome){
             this.treinador = treinador;
