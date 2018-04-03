@@ -18,7 +18,11 @@ namespace SecEsportes.Views
         public CadCompeticao()
         {
             InitializeComponent();
+
+            // Centraliza o form na tela
             CenterToScreen();
+
+            // Carrega as competições
             competicoes = CompeticaoRepositorio.Instance.get(ref errorMessage);
             if (competicoes is null) {
                 MessageBox.Show("Houve um erro ao tentar listar os registros." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -31,6 +35,7 @@ namespace SecEsportes.Views
                 cboModalidades.Items.Add(modalidades[iCount].id + " - " + modalidades[iCount].descricao);
             }
 
+            // Recarrega o DataGridView com as competições cadastradas
             refreshDataGridView();
             windowMode = Utilidades.WindowMode.ModoNormal;
             windowModeChanged();
@@ -85,11 +90,20 @@ namespace SecEsportes.Views
         }
         private void btnSalvar_Click(object sender, EventArgs e){
             Competicao competicao;
+
+            // Cria a variável para converter a Data
             DateTime dataInicio = new DateTime();
             DateTime.TryParseExact(txtDtInicio.Text, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dataInicio);
+
+            // Recupera a modalidade selecionada
             Modalidade modalidade = ModalidadeRepositorio.Instance.get(Convert.ToInt32(cboModalidades.SelectedItem.ToString().Substring(0, cboModalidades.SelectedItem.ToString().IndexOf(" - "))));
+
+            // Verifica se vai inserir um novo registro ou então salvá-lo
             if (windowMode == Utilidades.WindowMode.ModoDeInsercao){
                 competicao = new Competicao(txtNome.Text, dataInicio, modalidade);
+                competicao.status = StatusEnum._1_Aberta;
+
+                // Tenta inserir a competição
                 if (CompeticaoRepositorio.Instance.insert(ref competicao, ref errorMessage)){
                     competicoes.Add(competicao);
                     refreshDataGridView();
@@ -105,6 +119,9 @@ namespace SecEsportes.Views
                     competicao.nome = txtNome.Text;
                     competicao.dataInicial = dataInicio;
                     competicao.modalidade = modalidade;
+                    competicao.status = StatusEnum._1_Aberta;
+
+                    // Salva as alterações da competição
                     if (CompeticaoRepositorio.Instance.update(competicao, ref errorMessage)) {
                         competicoes[dgvCompeticoes.SelectedCells[0].RowIndex] = competicao;
                         refreshDataGridView();

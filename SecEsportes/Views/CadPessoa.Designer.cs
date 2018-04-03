@@ -218,6 +218,7 @@
             this.dgvPessoas.BackgroundColor = System.Drawing.Color.Gainsboro;
             this.dgvPessoas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvPessoas.Location = new System.Drawing.Point(10, 167);
+            this.dgvPessoas.MultiSelect = false;
             this.dgvPessoas.Name = "dgvPessoas";
             this.dgvPessoas.ReadOnly = true;
             this.dgvPessoas.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.True;

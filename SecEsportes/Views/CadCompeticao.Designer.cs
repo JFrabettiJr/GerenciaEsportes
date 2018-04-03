@@ -170,6 +170,7 @@
             this.dgvCompeticoes.AllowUserToOrderColumns = true;
             this.dgvCompeticoes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvCompeticoes.Location = new System.Drawing.Point(10, 102);
+            this.dgvCompeticoes.MultiSelect = false;
             this.dgvCompeticoes.Name = "dgvCompeticoes";
             this.dgvCompeticoes.ReadOnly = true;
             this.dgvCompeticoes.Size = new System.Drawing.Size(560, 300);
@@ -201,7 +202,7 @@
             this.Controls.Add(this.tlpCadFuncao);
             this.Name = "CadCompeticao";
             this.Padding = new System.Windows.Forms.Padding(20);
-            this.Text = "Cadastro de equipes";
+            this.Text = "Cadastro de competições";
             this.tlpCadFuncao.ResumeLayout(false);
             this.tlpCadFuncao.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCompeticoes)).EndInit();

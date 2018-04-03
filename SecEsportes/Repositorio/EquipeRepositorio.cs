@@ -56,7 +56,7 @@ namespace SecEsportes.Repositorio
                     "vitorias INTEGER, " +
                     "empates INTEGER, " +
                     "derrotas INTEGER, " +
-                    "nome NVARCHAR(100) NOT NULL" +
+                    "nome NVARCHAR(100) NOT NULL " +
                     ") ";
                 command.ExecuteNonQuery();
             }
@@ -152,6 +152,20 @@ namespace SecEsportes.Repositorio
                 return false;
             }
         }
+        public bool deleteEquipeDaCompeticao(EquipeCompeticao equipe, int idCompeticao, ref string messageError) {
+            try {
+                SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(
+                    "DELETE FROM Equipe_Competicao WHERE idEquipe = @idEquipe AND idCompeticao = @idCompeticao",
+                    new {   idEquipe = equipe.id,
+                            idCompeticao
+                    });
+                return true;
+            }
+            catch (Exception ex) {
+                messageError = ex.Message;
+                return false;
+            }
+        }
         public List<EquipeCompeticao> getEquipesByCompeticao(int idCompeticao) {
             string myString = String.Empty;
             return getEquipesByCompeticao(idCompeticao, ref myString);
@@ -164,10 +178,9 @@ namespace SecEsportes.Repositorio
 
                     List<EquipeCompeticao> equipes = connection.Query<EquipeCompeticao>("" +
                         "SELECT * " +
-                        "FROM Equipe_Competicao " +
-                        "WHERE Equipe_Competicao.ID IN (" +
-                        "   SELECT IDFuncao FROM PessoaFuncoes WHERE IDPessoa = " + idCompeticao + " " +
-                        ") ").ToList();
+                        "FROM   Equipe_Competicao " +
+                        "       INNER JOIN Equipe ON Equipe_Competicao.idEquipe = Equipe.id " +
+                        "WHERE Equipe_Competicao.idCompeticao = @idCompeticao ", new { idCompeticao }).ToList();
 
                     for (int iCount = 0; iCount < equipes.Count; iCount++) {
                         equipes[iCount].comissaotecnica = getFuncoesByEquipeCompeticao(idCompeticao, equipes[iCount].id);
@@ -227,5 +240,22 @@ namespace SecEsportes.Repositorio
                 return null;
             }
         }
+
+        public List<Equipe_Insert> getEquipesForaCompeticao(ref string errorMessage, int idCompeticao) {
+            try {
+                using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
+                    connection.Open();
+
+                    List<Equipe_Insert> equipes = connection.Query<Equipe_Insert>("SELECT 0 As selected, * FROM Equipe WHERE id NOT IN (SELECT Equipe_Competicao.idEquipe FROM Equipe_Competicao WHERE idCompeticao = " + idCompeticao + ")").ToList();
+
+                    return equipes;
+                }
+            }
+            catch (Exception ex) {
+                errorMessage = ex.Message;
+                return null;
+            }
+        }
+
     }
 }

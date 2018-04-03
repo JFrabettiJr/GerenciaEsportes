@@ -16,6 +16,7 @@ namespace SecEsportes.Modelo{
         public int numTimes { get; set; }
         public int numGrupos { get; set; }
         public MataMataEnum mataMata { get; set; }
+        public StatusEnum status { get; set; }
         public bool jogosIdaEVolta { get; set; }
         public bool jogosIdaEVolta_MataMata { get; set; }
         public List<CompeticaoGrupo> grupos { get; set; }
@@ -27,6 +28,12 @@ namespace SecEsportes.Modelo{
             this.dataInicial = dataInicial;
             this.modalidade = modalidade;
         }
+    }
+
+    public enum StatusEnum {
+        _0_Encerrada,
+        _1_Aberta,
+        _2_Iniciada
     }
 
     public enum MataMataEnum{

@@ -145,6 +145,7 @@
             this.dgvFuncoes.AllowUserToOrderColumns = true;
             this.dgvFuncoes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvFuncoes.Location = new System.Drawing.Point(10, 102);
+            this.dgvFuncoes.MultiSelect = false;
             this.dgvFuncoes.Name = "dgvFuncoes";
             this.dgvFuncoes.ReadOnly = true;
             this.dgvFuncoes.Size = new System.Drawing.Size(560, 300);

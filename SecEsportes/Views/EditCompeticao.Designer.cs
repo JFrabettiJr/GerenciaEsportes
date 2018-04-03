@@ -53,6 +53,11 @@
             this.chkIdaEVoltaMataMata = new System.Windows.Forms.CheckBox();
             this.tabGrupo1 = new System.Windows.Forms.TabPage();
             this.tabs = new System.Windows.Forms.TabControl();
+            this.btnIniciarCompeticao = new System.Windows.Forms.Button();
+            this.lblStatus = new System.Windows.Forms.Label();
+            this.txtStatus = new System.Windows.Forms.Label();
+            this.btnIncluirEquipes = new System.Windows.Forms.Button();
+            this.btnExcluirEquipe = new System.Windows.Forms.Button();
             this.tlp1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvEquipes)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
@@ -208,13 +213,13 @@
             this.dgvEquipes.AllowUserToOrderColumns = true;
             this.dgvEquipes.BackgroundColor = System.Drawing.Color.Gainsboro;
             this.dgvEquipes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvEquipes.Location = new System.Drawing.Point(10, 149);
+            this.dgvEquipes.Location = new System.Drawing.Point(10, 169);
             this.dgvEquipes.Name = "dgvEquipes";
             this.dgvEquipes.ReadOnly = true;
             this.dgvEquipes.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvEquipes.Size = new System.Drawing.Size(710, 228);
+            this.dgvEquipes.Size = new System.Drawing.Size(710, 208);
             this.dgvEquipes.TabIndex = 5;
-            this.dgvEquipes.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvPessoas_RowEnter);
+            this.dgvEquipes.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvEquipes_RowEnter);
             // 
             // btnAtualizar
             // 
@@ -393,11 +398,65 @@
             this.tabs.Size = new System.Drawing.Size(710, 143);
             this.tabs.TabIndex = 8;
             // 
+            // btnIniciarCompeticao
+            // 
+            this.btnIniciarCompeticao.Location = new System.Drawing.Point(609, 10);
+            this.btnIniciarCompeticao.Name = "btnIniciarCompeticao";
+            this.btnIniciarCompeticao.Size = new System.Drawing.Size(111, 23);
+            this.btnIniciarCompeticao.TabIndex = 9;
+            this.btnIniciarCompeticao.Text = "Iniciar competição";
+            this.btnIniciarCompeticao.UseVisualStyleBackColor = true;
+            this.btnIniciarCompeticao.Click += new System.EventHandler(this.btnIniciarCompeticao_Click);
+            // 
+            // lblStatus
+            // 
+            this.lblStatus.AutoSize = true;
+            this.lblStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblStatus.Location = new System.Drawing.Point(254, 13);
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(59, 17);
+            this.lblStatus.TabIndex = 10;
+            this.lblStatus.Text = "Status:";
+            // 
+            // txtStatus
+            // 
+            this.txtStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtStatus.Location = new System.Drawing.Point(310, 13);
+            this.txtStatus.Name = "txtStatus";
+            this.txtStatus.Size = new System.Drawing.Size(166, 17);
+            this.txtStatus.TabIndex = 11;
+            this.txtStatus.Text = "Status:";
+            // 
+            // btnIncluirEquipes
+            // 
+            this.btnIncluirEquipes.Location = new System.Drawing.Point(10, 141);
+            this.btnIncluirEquipes.Name = "btnIncluirEquipes";
+            this.btnIncluirEquipes.Size = new System.Drawing.Size(122, 23);
+            this.btnIncluirEquipes.TabIndex = 12;
+            this.btnIncluirEquipes.Text = "Incluir equipes";
+            this.btnIncluirEquipes.UseVisualStyleBackColor = true;
+            this.btnIncluirEquipes.Click += new System.EventHandler(this.btnIncluirEquipes_Click);
+            // 
+            // btnExcluirEquipe
+            // 
+            this.btnExcluirEquipe.Location = new System.Drawing.Point(138, 141);
+            this.btnExcluirEquipe.Name = "btnExcluirEquipe";
+            this.btnExcluirEquipe.Size = new System.Drawing.Size(122, 23);
+            this.btnExcluirEquipe.TabIndex = 13;
+            this.btnExcluirEquipe.Text = "Excluir equipe";
+            this.btnExcluirEquipe.UseVisualStyleBackColor = true;
+            this.btnExcluirEquipe.Click += new System.EventHandler(this.btnExcluirEquipe_Click);
+            // 
             // EditCompeticao
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(734, 536);
+            this.Controls.Add(this.btnExcluirEquipe);
+            this.Controls.Add(this.btnIncluirEquipes);
+            this.Controls.Add(this.txtStatus);
+            this.Controls.Add(this.lblStatus);
+            this.Controls.Add(this.btnIniciarCompeticao);
             this.Controls.Add(this.dgvEquipes);
             this.Controls.Add(this.tabs);
             this.Controls.Add(this.tableLayoutPanel1);
@@ -415,6 +474,7 @@
             this.tableLayoutPanel1.PerformLayout();
             this.tabs.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -446,5 +506,10 @@
         private System.Windows.Forms.Label lblGruposNomeados;
         private System.Windows.Forms.MaskedTextBox txtNumTimes;
         private System.Windows.Forms.MaskedTextBox txtNumGrupos;
+        private System.Windows.Forms.Button btnIniciarCompeticao;
+        private System.Windows.Forms.Label lblStatus;
+        private System.Windows.Forms.Label txtStatus;
+        private System.Windows.Forms.Button btnIncluirEquipes;
+        private System.Windows.Forms.Button btnExcluirEquipe;
     }
 }

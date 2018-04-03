@@ -14,6 +14,7 @@ namespace SecEsportes.Views
         private List<Modalidade> modalidades;
         private Competicao competicao;
         private string errorMessage;
+        private InsertEquipe insertEquipeForm;
 
         #region Inicialização da classe
         public EditCompeticao(Competicao competicao)
@@ -25,7 +26,7 @@ namespace SecEsportes.Views
             CenterToScreen();
 
             this.competicao = competicao;
-
+            
             clearFields();
             fillFields();
         }
@@ -157,6 +158,44 @@ namespace SecEsportes.Views
             }
             refreshDataGridView();
         }
+        private void btnIniciarCompeticao_Click(object sender, EventArgs e) {
+            /*  Requisitos para poder iniciar o campeonato
+             *      - Ter o numero de times conforme definido na competição
+             *      - Ter o número de jogadores mínimos em cada equipe
+             *      - O número de grupos deve ser maior que 0
+             */
+        }
+        private void btnIncluirEquipes_Click(object sender, EventArgs e) {
+            insertEquipeForm = new InsertEquipe(competicao.id);
+            insertEquipeForm.FormClosing += insertEquipeForm_FormClosing;
+            insertEquipeForm.Show();
+        }
+
+        private void insertEquipeForm_FormClosing(object sender, FormClosingEventArgs e) {
+            for (int iCount = 0; iCount < insertEquipeForm.equipesAInserir.Count; iCount++) {
+                equipes.Add(new EquipeCompeticao(insertEquipeForm.equipesAInserir[iCount].codigo, insertEquipeForm.equipesAInserir[iCount].nome, null, null));
+                CompeticaoRepositorio.Instance.insertEquipeEmCompeticao(competicao.id, insertEquipeForm.equipesAInserir[iCount]);
+            }
+            refreshDataGridView();
+        }
+        private void btnExcluirEquipe_Click(object sender, EventArgs e) {
+            if (dgvEquipes.SelectedCells.Count > 0) {
+                EquipeCompeticao equipe;
+                equipe = equipes[dgvEquipes.SelectedCells[0].RowIndex];
+                if (MessageBox.Show("Confirma a deleção do registro ?" +
+                    Environment.NewLine + Environment.NewLine +
+                    equipe.ToString(), "Confirmação", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
+                    if (EquipeRepositorio.Instance.deleteEquipeDaCompeticao(equipe, competicao.id, ref errorMessage)) {
+                        equipes.RemoveAt(dgvEquipes.SelectedCells[0].RowIndex);
+                        refreshDataGridView();
+                    }
+                    else {
+                        MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
         #endregion
         #region Comportamentos do form
         private void clearFields(){
@@ -170,6 +209,7 @@ namespace SecEsportes.Views
             chkIdaEVolta.Checked = false;
             chkIdaEVoltaMataMata.Checked = false;
             cboNomeacaoGrupos.SelectedIndex = -1;
+            txtStatus.Text = "";
         }
         private void fillFields() {
             // Carrega as equipes
@@ -232,6 +272,20 @@ namespace SecEsportes.Views
                     cboMataMata.SelectedIndex = 6;
                     break;
             }
+            switch (competicao.status) {
+                case StatusEnum._0_Encerrada:
+                    txtStatus.Text = "Competição encerrada";
+                    break;
+                case StatusEnum._1_Aberta:
+                    txtStatus.Text = "Competição aberta";
+                    break;
+                case StatusEnum._2_Iniciada:
+                    txtStatus.Text = "Competição iniciada";
+                    break;
+                default:
+                    txtStatus.Text = "";
+                    break;
+            }
             chkIdaEVolta.Checked = competicao.jogosIdaEVolta;
             chkIdaEVoltaMataMata.Checked = competicao.jogosIdaEVolta_MataMata;
 
@@ -262,8 +316,8 @@ namespace SecEsportes.Views
                     break;
             }
         }
-        private void dgvPessoas_RowEnter(object sender, DataGridViewCellEventArgs e) {
-            
+        private void dgvEquipes_RowEnter(object sender, DataGridViewCellEventArgs e) {
+
         }
         private void fields_KeyDown(object sender, KeyEventArgs e) {
             if (windowMode != Utilidades.WindowMode.ModoDeInsercao && windowMode != Utilidades.WindowMode.ModoCriacaoForm) {

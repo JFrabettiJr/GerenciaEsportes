@@ -144,6 +144,7 @@
             this.dgvEquipes.AllowUserToOrderColumns = true;
             this.dgvEquipes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvEquipes.Location = new System.Drawing.Point(10, 102);
+            this.dgvEquipes.MultiSelect = false;
             this.dgvEquipes.Name = "dgvEquipes";
             this.dgvEquipes.ReadOnly = true;
             this.dgvEquipes.Size = new System.Drawing.Size(560, 300);

@@ -43,7 +43,8 @@ namespace SecEsportes.Repositorio
                     "numGrupos INTEGER, " +
                     "mataMata INTEGER, " +
                     "jogosIdaEVolta INTEGER, " +
-                    "jogosIdaEVolta_MataMata INTEGER " +
+                    "jogosIdaEVolta_MataMata INTEGER, " +
+                    "status INTEGER " +
                     ") ";
                 command.ExecuteNonQuery();
             }
@@ -99,9 +100,9 @@ namespace SecEsportes.Repositorio
             try{
                 competicao.id = SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query<int>("" +
                     "INSERT INTO Competicoes " +
-                    "(Nome, dataInicial, dataFinal, idModalidade, numTimes, numGrupos, mataMata, jogosIdaEVolta, jogosIdaEvolta_MataMata) " +
+                    "(Nome, dataInicial, dataFinal, idModalidade, numTimes, numGrupos, mataMata, jogosIdaEVolta, jogosIdaEvolta_MataMata, status) " +
                     "VALUES " +
-                    "(@Nome, @dataInicial, @dataFinal, @idModalidade, @numTimes, @numGrupos, @mataMata, @jogosIdaEVolta, @jogosIdaEVolta_MataMata); " +
+                    "(@Nome, @dataInicial, @dataFinal, @idModalidade, @numTimes, @numGrupos, @mataMata, @jogosIdaEVolta, @jogosIdaEVolta_MataMata, @status); " +
                     "select last_insert_rowid()",
                     new {   competicao.nome,
                             competicao.dataInicial,
@@ -111,10 +112,36 @@ namespace SecEsportes.Repositorio
                             competicao.numGrupos,
                             competicao.mataMata,
                             jogosIdaEVolta = (competicao.jogosIdaEVolta == true ? 1 : 0),
-                            jogosIdaEVolta_MataMata = (competicao.jogosIdaEVolta_MataMata == true ? 1 : 0)}).First();
+                            jogosIdaEVolta_MataMata = (competicao.jogosIdaEVolta_MataMata == true ? 1 : 0),
+                            competicao.status
+                        }).First();
                 return true;
             }catch (Exception ex){
                 messageError = ex.Message;
+                return false;
+            }
+        }
+        public bool insertEquipeEmCompeticao(int idCompeticao, Equipe_Insert equipe) {
+            try {
+                SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query("" +
+                    "INSERT INTO Equipe_Competicao " +
+                    "(idEquipe, idCompeticao, idTreinador, idRepresentante, jogos, golsPro, golsContra, vitorias, empates, derrotas, nome) " +
+                    "VALUES " +
+                    "(@idEquipe, @idCompeticao, @idTreinador, @idRepresentante, @jogos, @golsPro, @golsContra, @vitorias, @empates, @derrotas, @nome); ",
+                    new {   idEquipe = equipe.id,
+                            idCompeticao,
+                            idTreinador = -1,
+                            idRepresentante = -1,
+                            jogos = 0,
+                            golsPro = 0,
+                            golsContra = 0,
+                            vitorias = 0,
+                            empates = 0,
+                            derrotas = 0,
+                            nome = ""
+                        });
+                return true;
+            }catch (Exception ex) {
                 return false;
             }
         }
@@ -130,7 +157,8 @@ namespace SecEsportes.Repositorio
                     "       numGrupos = @numGrupos, " +
                     "       mataMata = @mataMata, " +
                     "       jogosIdaEVolta = @jogosIdaEVolta, " +
-                    "       jogosIdaEVolta_MataMata = @jogosIdaEVolta_MataMata " +
+                    "       jogosIdaEVolta_MataMata = @jogosIdaEVolta_MataMata, " +
+                    "       status = @status " +
                     "WHERE id = @id",
                     new {   competicao.nome,
                             competicao.dataInicial,
@@ -141,7 +169,9 @@ namespace SecEsportes.Repositorio
                             competicao.mataMata,
                             jogosIdaEVolta = (competicao.jogosIdaEVolta == true ? 1 : 0),
                             jogosIdaEVolta_MataMata = (competicao.jogosIdaEVolta_MataMata == true ? 1 : 0),
-                            competicao.id});
+                            competicao.status,
+                            competicao.id
+                        });
                 return true;
             }catch (Exception ex){
                 messageError = ex.Message;
