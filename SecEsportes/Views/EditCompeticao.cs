@@ -376,8 +376,10 @@ namespace SecEsportes.Views {
         #endregion
 
         private void dgvEquipes_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e) {
-            EquipeCompeticao equipe = equipes[e.RowIndex];
-            new EditEquipe(equipe, competicao).ShowDialog();
+            if (e.RowIndex > -1) {
+                EquipeCompeticao equipe = equipes[e.RowIndex];
+                new EditEquipe(equipe, competicao).ShowDialog();
+            }
         }
     }
 }

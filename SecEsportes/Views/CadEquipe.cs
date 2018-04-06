@@ -157,8 +157,10 @@ namespace SecEsportes.Views
             }
         }
         private void dgvEquipes_RowEnter(object sender, DataGridViewCellEventArgs e) {
-            txtCodigo.Text = equipes[e.RowIndex].codigo;
-            txtNome.Text = equipes[e.RowIndex].nome;
+            if (e.RowIndex > -1) {
+                txtCodigo.Text = equipes[e.RowIndex].codigo;
+                txtNome.Text = equipes[e.RowIndex].nome;
+            }
         }
         private void fields_KeyDown(object sender, KeyEventArgs e) {
             if (windowMode != Utilidades.WindowMode.ModoDeInsercao) {

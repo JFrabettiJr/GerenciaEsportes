@@ -158,8 +158,10 @@ namespace SecEsportes.Views
             }
         }
         private void dgvFuncoes_RowEnter(object sender, DataGridViewCellEventArgs e) {
-            txtCdFuncao.Text = funcoes[e.RowIndex].codigo;
-            txtDescFuncao.Text = funcoes[e.RowIndex].descricao;
+            if (e.RowIndex > -1) {
+                txtCdFuncao.Text = funcoes[e.RowIndex].codigo;
+                txtDescFuncao.Text = funcoes[e.RowIndex].descricao;
+            }
         }
         private void fields_KeyDown(object sender, KeyEventArgs e) {
             if (windowMode != Utilidades.WindowMode.ModoDeInsercao) {
