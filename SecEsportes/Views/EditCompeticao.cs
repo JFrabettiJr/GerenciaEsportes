@@ -5,10 +5,8 @@ using SecEsportes.Infraestrutura;
 using SecEsportes.Modelo;
 using SecEsportes.Repositorio;
 
-namespace SecEsportes.Views
-{
-    public partial class EditCompeticao : Form
-    {
+namespace SecEsportes.Views {
+    public partial class EditCompeticao : Form {
         private Utilidades.WindowMode windowMode;
         private List<EquipeCompeticao> equipes;
         private List<Modalidade> modalidades;
@@ -17,46 +15,57 @@ namespace SecEsportes.Views
         private InsertEquipe insertEquipeForm;
 
         #region Inicialização da classe
-        public EditCompeticao(Competicao competicao)
-        {
+        public EditCompeticao(Competicao competicao) {
             windowMode = Utilidades.WindowMode.ModoCriacaoForm;
             InitializeComponent();
 
             // Centraliza a tela
             CenterToScreen();
 
+            this.Text += " - " + competicao.nome;
+
             this.competicao = competicao;
-            
+
             clearFields();
             fillFields();
         }
         #endregion
         #region Manipulação do grid
-        private void refreshDataGridView()
-        {
+        private void refreshDataGridView() {
             dgvEquipes.DataSource = null;
             dgvEquipes.Refresh();
 
+            dgvEquipes.Columns.Clear();
+
             dgvEquipes.DataSource = equipes;
 
-            for (var iCount = 0; iCount < dgvEquipes.Columns.Count; iCount++)
-            {
-                switch (dgvEquipes.Columns[iCount].DataPropertyName)
-                {
+            dgvEquipes.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "QtdAtletas" });
+
+            for (var iCount = 0; iCount < dgvEquipes.Columns.Count; iCount++) {
+                switch (dgvEquipes.Columns[iCount].DataPropertyName) {
                     case nameof(EquipeCompeticao.nome):
                         dgvEquipes.Columns[iCount].HeaderText = "Nome da equipe";
+                        dgvEquipes.Columns[iCount].Name = dgvEquipes.Columns[iCount].DataPropertyName;
                         break;
                     case nameof(EquipeCompeticao.codigo):
                         dgvEquipes.Columns[iCount].HeaderText = "Código";
+                        dgvEquipes.Columns[iCount].Name = dgvEquipes.Columns[iCount].DataPropertyName;
                         break;
                     case nameof(EquipeCompeticao.representante):
                         dgvEquipes.Columns[iCount].HeaderText = "Representante";
+                        dgvEquipes.Columns[iCount].Name = dgvEquipes.Columns[iCount].DataPropertyName;
                         break;
                     case nameof(EquipeCompeticao.treinador):
                         dgvEquipes.Columns[iCount].HeaderText = "Treinador";
+                        dgvEquipes.Columns[iCount].Name = dgvEquipes.Columns[iCount].DataPropertyName;
+                        break;
+                    case "QtdAtletas":
+                        dgvEquipes.Columns[iCount].HeaderText = "Atletas";
+                        dgvEquipes.Columns[iCount].Name = dgvEquipes.Columns[iCount].DataPropertyName;
                         break;
                     default:
                         dgvEquipes.Columns[iCount].Visible = false;
+                        dgvEquipes.Columns[iCount].DisplayIndex = 5;
                         break;
                 }
             }
@@ -65,19 +74,19 @@ namespace SecEsportes.Views
         }
         #endregion
         #region CRUD
-        private void btnAdicionar_Click(object sender, EventArgs e){
+        private void btnAdicionar_Click(object sender, EventArgs e) {
             clearFields();
             txtNome.Focus();
             windowMode = Utilidades.WindowMode.ModoDeInsercao;
             windowModeChanged();
         }
-        private void btnCancelar_Click(object sender, EventArgs e){
+        private void btnCancelar_Click(object sender, EventArgs e) {
             clearFields();
             fillFields();
             windowMode = Utilidades.WindowMode.ModoNormal;
             windowModeChanged();
         }
-        private void btnSalvar_Click(object sender, EventArgs e){
+        private void btnSalvar_Click(object sender, EventArgs e) {
             Modalidade modalidade = ModalidadeRepositorio.Instance.get(Convert.ToInt32(cboModalidades.SelectedItem.ToString().Substring(0, cboModalidades.SelectedItem.ToString().IndexOf(" - "))));
 
             DateTime dataInicio = new DateTime(), dataFim_aux = new DateTime();
@@ -91,12 +100,15 @@ namespace SecEsportes.Views
             Competicao newCompeticao = new Competicao(txtNome.Text, dataInicio, modalidade);
             newCompeticao.id = competicao.id;
             newCompeticao.dataInicial = dataInicio;
+
             if (!(dataFim is null)) {
                 newCompeticao.dataFinal = dataFim;
             }
+
             newCompeticao.modalidade = modalidade;
             newCompeticao.numTimes = Convert.ToInt32(txtNumTimes.Text);
             newCompeticao.numGrupos = Convert.ToInt32(txtNumGrupos.Text);
+
             switch (cboMataMata.SelectedIndex) {
                 case 0:
                     newCompeticao.mataMata = MataMataEnum._1_Nao;
@@ -120,12 +132,23 @@ namespace SecEsportes.Views
                     newCompeticao.mataMata = MataMataEnum._7_32AvosFinal;
                     break;
             }
+
+            switch (cboNomeacaoGrupos.SelectedIndex) {
+                case 0:
+                    newCompeticao.nomesGrupos = NomesGruposEnum._0_PorNumeracao;
+                    break;
+                case 1:
+                    newCompeticao.nomesGrupos = NomesGruposEnum._1_PorLetras;
+                    break;
+            }
+
             newCompeticao.jogosIdaEVolta = chkIdaEVolta.Checked;
             newCompeticao.jogosIdaEVolta_MataMata = chkIdaEVoltaMataMata.Checked;
 
             if (CompeticaoRepositorio.Instance.update(newCompeticao, ref errorMessage)) {
                 competicao = newCompeticao;
-            }else {
+            }
+            else {
                 fillFields();
                 MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -134,7 +157,7 @@ namespace SecEsportes.Views
             windowModeChanged();
         }
 
-        private void btnExcluir_Click(object sender, EventArgs e){
+        private void btnExcluir_Click(object sender, EventArgs e) {
             if (dgvEquipes.SelectedCells.Count > 0) {
                 EquipeCompeticao equipe;
                 equipe = equipes[dgvEquipes.SelectedCells[0].RowIndex];
@@ -145,7 +168,8 @@ namespace SecEsportes.Views
                         equipes.RemoveAt(dgvEquipes.SelectedCells[0].RowIndex);
                         refreshDataGridView();
                         clearFields();
-                    }else {
+                    }
+                    else {
                         MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
@@ -168,7 +192,7 @@ namespace SecEsportes.Views
         private void btnIncluirEquipes_Click(object sender, EventArgs e) {
             insertEquipeForm = new InsertEquipe(competicao.id);
             insertEquipeForm.FormClosing += insertEquipeForm_FormClosing;
-            insertEquipeForm.Show();
+            insertEquipeForm.ShowDialog();
         }
 
         private void insertEquipeForm_FormClosing(object sender, FormClosingEventArgs e) {
@@ -198,7 +222,7 @@ namespace SecEsportes.Views
 
         #endregion
         #region Comportamentos do form
-        private void clearFields(){
+        private void clearFields() {
             txtNome.Text = "";
             txtDtInicio.Text = "";
             txtDtFim.Text = "";
@@ -243,12 +267,15 @@ namespace SecEsportes.Views
             // Preenche os campos
             txtNome.Text = competicao.nome;
             txtDtInicio.Text = competicao.dataInicial.ToString("dd/MM/yyyy");
+
             if (!(competicao.dataFinal is null)) {
                 txtDtFim.Text = ((DateTime)competicao.dataFinal).ToString("dd/MM/yyyy");
             }
+
             cboModalidades.SelectedIndex = modalidades.FindIndex(modalidade => modalidade.id == competicao.modalidade.id);
             txtNumTimes.Text = competicao.numTimes.ToString();
             txtNumGrupos.Text = competicao.numGrupos.ToString();
+
             switch (competicao.mataMata) {
                 case MataMataEnum._1_Nao:
                     cboMataMata.SelectedIndex = 0;
@@ -272,6 +299,7 @@ namespace SecEsportes.Views
                     cboMataMata.SelectedIndex = 6;
                     break;
             }
+
             switch (competicao.status) {
                 case StatusEnum._0_Encerrada:
                     txtStatus.Text = "Competição encerrada";
@@ -286,6 +314,16 @@ namespace SecEsportes.Views
                     txtStatus.Text = "";
                     break;
             }
+
+            switch (competicao.nomesGrupos) {
+                case NomesGruposEnum._0_PorNumeracao:
+                    cboNomeacaoGrupos.SelectedIndex = 0;
+                    break;
+                case NomesGruposEnum._1_PorLetras:
+                    cboNomeacaoGrupos.SelectedIndex = 1;
+                    break;
+            }
+
             chkIdaEVolta.Checked = competicao.jogosIdaEVolta;
             chkIdaEVoltaMataMata.Checked = competicao.jogosIdaEVolta_MataMata;
 
@@ -296,23 +334,27 @@ namespace SecEsportes.Views
         }
         private void windowModeChanged() {
             switch (windowMode) {
-                case Utilidades.WindowMode.ModoNormal: case Utilidades.WindowMode.ModoCriacaoForm:
+                case Utilidades.WindowMode.ModoNormal:
+                case Utilidades.WindowMode.ModoCriacaoForm:
                     btnCancelar.Enabled = false;
                     btnSalvar.Enabled = false;
                     dgvEquipes.Enabled = true;
                     btnAtualizar.Enabled = true;
+                    btnIniciarCompeticao.Enabled = true;
                     break;
                 case Utilidades.WindowMode.ModoDeEdicao:
                     btnCancelar.Enabled = true;
                     btnSalvar.Enabled = true;
                     dgvEquipes.Enabled = false;
                     btnAtualizar.Enabled = false;
+                    btnIniciarCompeticao.Enabled = false;
                     break;
                 case Utilidades.WindowMode.ModoDeInsercao:
                     btnCancelar.Enabled = true;
                     btnSalvar.Enabled = true;
                     dgvEquipes.Enabled = false;
                     btnAtualizar.Enabled = false;
+                    btnIniciarCompeticao.Enabled = false;
                     break;
             }
         }
@@ -332,5 +374,10 @@ namespace SecEsportes.Views
             fields_KeyDown(sender, null);
         }
         #endregion
+
+        private void dgvEquipes_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e) {
+            EquipeCompeticao equipe = equipes[e.RowIndex];
+            new EditEquipe(equipe, competicao).ShowDialog();
+        }
     }
 }

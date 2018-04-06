@@ -46,17 +46,21 @@ namespace SecEsportes.Repositorio
 
                 command.CommandText = "CREATE Table Equipe_Competicao (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "idEquipe INTEGER, " +
-                    "idCompeticao INTEGER, " +
-                    "idTreinador INTEGER, " +
-                    "idRepresentante INTEGER, " +
+                    "id_Equipe INTEGER, " +
+                    "id_Competicao INTEGER, " +
+                    "id_Treinador INTEGER, " +
+                    "id_Representante INTEGER, " +
                     "jogos INTEGER, " +
                     "golsPro INTEGER, " +
                     "golsContra INTEGER, " +
                     "vitorias INTEGER, " +
                     "empates INTEGER, " +
                     "derrotas INTEGER, " +
-                    "nome NVARCHAR(100) NOT NULL " +
+                    "nome NVARCHAR(100) NOT NULL, " +
+                    "FOREIGN KEY(id_Equipe) REFERENCES Equipe(id), " +
+                    "FOREIGN KEY(id_Competicao) REFERENCES Competicao(id), " +
+                    "FOREIGN KEY(id_Treinador) REFERENCES Pessoa(id), " +
+                    "FOREIGN KEY(id_Representante) REFERENCES Pessoa(id) " +
                     ") ";
                 command.ExecuteNonQuery();
             }
@@ -67,10 +71,15 @@ namespace SecEsportes.Repositorio
 
                 command.CommandText = "CREATE Table Equipe_ComissaoTecnica (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "idEquipe INTEGER, " +
-                    "idCompeticao INTEGER, " +
-                    "idFuncao INTEGER, " +
-                    "idPessoa INTEGER) ";
+                    "id_Equipe INTEGER, " +
+                    "id_Competicao INTEGER, " +
+                    "id_Funcao INTEGER, " +
+                    "id_Pessoa INTEGER, " +
+                    "FOREIGN KEY(id_Equipe) REFERENCES Equipe(id), " +
+                    "FOREIGN KEY(id_Competicao) REFERENCES Competicao(id), " +
+                    "FOREIGN KEY(id_Funcao) REFERENCES Funcao(id), " +
+                    "FOREIGN KEY(id_Pessoa) REFERENCES Pessoa(id) " +
+                    ") ";
                 command.ExecuteNonQuery();
             }
 
@@ -80,10 +89,16 @@ namespace SecEsportes.Repositorio
 
                 command.CommandText = "CREATE Table Equipe_Atletas (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "idEquipe INTEGER, " +
-                    "idCompeticao INTEGER, " +
-                    "idFuncao INTEGER, " +
-                    "idAtleta INTEGER) ";
+                    "id_Equipe INTEGER, " +
+                    "id_Competicao INTEGER, " +
+                    "id_Funcao INTEGER, " +
+                    "id_Atleta INTEGER, " +
+                    "numero INTEGER, " +
+                    "FOREIGN KEY(id_Equipe) REFERENCES Equipe(id), " +
+                    "FOREIGN KEY(id_Competicao) REFERENCES Competicao(id), " +
+                    "FOREIGN KEY(id_Funcao) REFERENCES Funcao(id), " +
+                    "FOREIGN KEY(id_Atleta) REFERENCES Pessoa(id) " +
+                    ") ";
                 command.ExecuteNonQuery();
             }
         }
@@ -132,6 +147,27 @@ namespace SecEsportes.Repositorio
                 return false;
             }
         }
+        public bool insertAtletaEmEquipe(int idCompeticao, int idEquipe, Atleta_Insert atleta) {
+            try {
+
+                string strSQL;
+                strSQL = "INSERT INTO Equipe_Atletas (id_Equipe, id_Competicao, id_Funcao, id_Atleta, numero) " +
+                            "VALUES " +
+                            "(@id_Equipe, @id_Competicao, @id_Funcao, @id_Atleta, @numero) ";
+
+                SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(strSQL,
+                    new {   id_Equipe = idEquipe,
+                            id_Competicao = idCompeticao,
+                            id_Funcao = atleta.id_funcao,
+                            id_Atleta = atleta.id_pessoa,
+                            numero = 0
+                    });
+                return true;
+            }
+            catch (Exception ex) {
+                return false;
+            }
+        }
         public bool update(Equipe equipe, ref string messageError) {
             try{
                 SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(
@@ -155,7 +191,7 @@ namespace SecEsportes.Repositorio
         public bool deleteEquipeDaCompeticao(EquipeCompeticao equipe, int idCompeticao, ref string messageError) {
             try {
                 SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(
-                    "DELETE FROM Equipe_Competicao WHERE idEquipe = @idEquipe AND idCompeticao = @idCompeticao",
+                    "DELETE FROM Equipe_Competicao WHERE id_Equipe = @idEquipe AND id_Competicao = @idCompeticao",
                     new {   idEquipe = equipe.id,
                             idCompeticao
                     });
@@ -179,8 +215,10 @@ namespace SecEsportes.Repositorio
                     List<EquipeCompeticao> equipes = connection.Query<EquipeCompeticao>("" +
                         "SELECT * " +
                         "FROM   Equipe_Competicao " +
-                        "       INNER JOIN Equipe ON Equipe_Competicao.idEquipe = Equipe.id " +
-                        "WHERE Equipe_Competicao.idCompeticao = @idCompeticao ", new { idCompeticao }).ToList();
+                        "       INNER JOIN Equipe ON Equipe_Competicao.id_Equipe = Equipe.id " +
+                        "WHERE  Equipe_Competicao.id_Competicao = @idCompeticao ", 
+                        new { idCompeticao
+                    }).ToList();
 
                     for (int iCount = 0; iCount < equipes.Count; iCount++) {
                         equipes[iCount].comissaotecnica = getFuncoesByEquipeCompeticao(idCompeticao, equipes[iCount].id);
@@ -203,12 +241,13 @@ namespace SecEsportes.Repositorio
 
                     List<Atleta> atletas = connection.Query<Atleta>("" +
                         "SELECT Equipe_Atletas.id, " +
-                        "       Funcao.*, Pessoa.* " +
+                        "       Funcao.*, " +
+                        "       Pessoa.* " +
                         "FROM   Equipe_Atletas " +
-                        "       INNER JOIN Funcao ON Equipe_Atletas.idFuncao = Funcao.id " +
-                        "       INNER JOIN Pessoa ON Equipe_Atletas.idPessoa = Pessoa.id " +
-                        "WHERE  Equipe_Atletas.idEquipe = " + idEquipe + " " +
-                        "       AND Equipe_Atletas.idCompeticao = " + idCompeticao +
+                        "       INNER JOIN Funcao ON Equipe_Atletas.id_Funcao = Funcao.id " +
+                        "       INNER JOIN Pessoa ON Equipe_Atletas.id_Pessoa = Pessoa.id " +
+                        "WHERE  Equipe_Atletas.id_Equipe = " + idEquipe + " " +
+                        "       AND Equipe_Atletas.id_Competicao = " + idCompeticao +
                         "       AND Equipe_Atletas.Codigo = '" + FuncaoRepositorio.Instance.codigoAtleta + "'").ToList();
 
                     return atletas;
@@ -226,12 +265,13 @@ namespace SecEsportes.Repositorio
 
                     List<Cargo> cargos = connection.Query<Cargo>("" +
                         "SELECT Equipe_ComissaoTecnica.id, " +
-                        "       Funcao.*, Pessoa.* " +
+                        "       Funcao.*, " +
+                        "       Pessoa.* " +
                         "FROM   Equipe_ComissaoTecnica " +
-                        "       INNER JOIN Funcao ON Equipe_ComissaoTecnica.idFuncao = Funcao.id " +
-                        "       INNER JOIN Pessoa ON Equipe_ComissaoTecnica.idPessoa = Pessoa.id " +
-                        "WHERE  Equipe_ComissaoTecnica.idEquipe = " + idEquipe + " " +
-                        "       AND Equipe_ComissaoTecnica.idCompeticao = " + idCompeticao).ToList();
+                        "       INNER JOIN Funcao ON Equipe_ComissaoTecnica.id_Funcao = Funcao.id " +
+                        "       INNER JOIN Pessoa ON Equipe_ComissaoTecnica.id_Pessoa = Pessoa.id " +
+                        "WHERE  Equipe_ComissaoTecnica.id_Equipe = " + idEquipe + " " +
+                        "       AND Equipe_ComissaoTecnica.id_Competicao = " + idCompeticao).ToList();
 
                     return cargos;
                 }
@@ -241,12 +281,21 @@ namespace SecEsportes.Repositorio
             }
         }
 
-        public List<Equipe_Insert> getEquipesForaCompeticao(ref string errorMessage, int idCompeticao) {
+        public List<Equipe_Insert> getEquipesForaCompeticao(ref string errorMessage, int id_Competicao) {
             try {
                 using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
                     connection.Open();
 
-                    List<Equipe_Insert> equipes = connection.Query<Equipe_Insert>("SELECT 0 As selected, * FROM Equipe WHERE id NOT IN (SELECT Equipe_Competicao.idEquipe FROM Equipe_Competicao WHERE idCompeticao = " + idCompeticao + ")").ToList();
+                    string strSQL;
+                    strSQL =    "SELECT 0 As selected, " +
+                                "       * " +
+                                "FROM   Equipe " +
+                                "WHERE  id NOT IN ( SELECT  Equipe_Competicao.id_Equipe " +
+                                "                   FROM    Equipe_Competicao " +
+                                "                   WHERE   id_Competicao = @id_Competicao) " +
+                                "ORDER BY Equipe.Nome ";
+
+                    List<Equipe_Insert> equipes = connection.Query<Equipe_Insert>(strSQL, new { id_Competicao }).ToList();
 
                     return equipes;
                 }

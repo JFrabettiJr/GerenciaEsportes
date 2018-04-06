@@ -7,11 +7,11 @@ namespace SecEsportes.Modelo{
     public class Equipe_Insert : Equipe{
         public bool selected { get; set; }
 
+        public Equipe_Insert() { }
+
         public Equipe_Insert(string codigo, string nome){
             this.codigo = codigo;
             this.nome = nome;
         }
-
-        public Equipe_Insert() { }
     }
 }

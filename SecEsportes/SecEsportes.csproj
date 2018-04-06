@@ -264,6 +264,7 @@
     <Compile Include="Infraestrutura\FileManagement.cs" />
     <Compile Include="Infraestrutura\SQLiteDatabase.cs" />
     <Compile Include="Infraestrutura\Utilidades.cs" />
+    <Compile Include="Modelo\Atleta_Insert.cs" />
     <Compile Include="Modelo\Atleta.cs" />
     <Compile Include="Modelo\Cargo.cs" />
     <Compile Include="Modelo\Competicao.cs" />
@@ -295,11 +296,23 @@
     <Compile Include="Views\CadCompeticao.Designer.cs">
       <DependentUpon>CadCompeticao.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\EditEquipe.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\EditEquipe.Designer.cs">
+      <DependentUpon>EditEquipe.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\CadEquipe.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\CadEquipe.Designer.cs">
       <DependentUpon>CadEquipe.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\InsertAtleta.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\InsertAtleta.Designer.cs">
+      <DependentUpon>InsertAtleta.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\InsertEquipe.cs">
       <SubType>Form</SubType>
@@ -340,8 +353,14 @@
     <EmbeddedResource Include="Views\CadCompeticao.resx">
       <DependentUpon>CadCompeticao.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditEquipe.resx">
+      <DependentUpon>EditEquipe.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\CadEquipe.resx">
       <DependentUpon>CadEquipe.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\InsertAtleta.resx">
+      <DependentUpon>InsertAtleta.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\InsertEquipe.resx">
       <DependentUpon>InsertEquipe.cs</DependentUpon>

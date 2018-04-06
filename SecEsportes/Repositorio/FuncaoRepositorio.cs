@@ -57,7 +57,10 @@ namespace SecEsportes.Repositorio
             }
 
         }
-
+        public Funcao get(int id) {
+            string auxString = "";
+            return get(id, ref auxString);
+        }
         public Funcao get(int id, ref string messageError) {
             try {
                 using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
@@ -100,13 +103,48 @@ namespace SecEsportes.Repositorio
                         "SELECT * " +
                         "FROM Funcao " +
                         "WHERE Funcao.ID IN (" +
-                        "   SELECT IDFuncao FROM PessoaFuncoes WHERE IDPessoa = " + idPessoa + " " +
+                        "   SELECT ID_Funcao FROM Pessoa_Funcoes WHERE ID_Pessoa = " + idPessoa + " " +
                         ") ").ToList();
 
                     return funcoes;
                 }
             }
             catch (Exception ex) {
+                return null;
+            }
+        }
+        public List<Atleta_Insert> getAtletasForaCompeticao(ref string errorMessage, int idCompeticao) {
+            try {
+                using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
+                    connection.Open();
+
+                    string strSQL;
+                    strSQL = "SELECT 0 As Selected, pessoa.id as id_pessoa, Pessoa_Funcoes.id_funcao " +
+                                "FROM   Pessoa " +
+                                "       INNER JOIN Pessoa_Funcoes ON Pessoa.id = Pessoa_Funcoes.id_Pessoa " +
+                                "WHERE   1 = 1 " +
+                                "        AND Pessoa_Funcoes.id_Funcao IN(SELECT  id " +
+                                "                                        FROM    Funcao WHERE codigo = @codigoAtleta) " +
+                                "        AND Pessoa.id NOT IN(  SELECT  id_Atleta " +
+                                "                               FROM    Equipe_Atletas " +
+                                "                               WHERE   Equipe_Atletas.id_Competicao = @idCompeticao) " +
+                                "ORDER BY  Pessoa.Nome";
+
+                    List<Atleta_Insert> atletas = connection.Query<Atleta_Insert>(strSQL,
+                        new {   codigoAtleta,
+                                idCompeticao
+                    }).ToList();
+
+                    foreach (Atleta atleta in atletas) {
+                        atleta.funcao = FuncaoRepositorio.Instance.get(atleta.id_funcao);
+                        atleta.pessoa = PessoaRepositorio.Instance.get(atleta.id_pessoa);
+                    }
+
+                    return atletas;
+                }
+            }
+            catch (Exception ex) {
+                errorMessage = ex.Message;
                 return null;
             }
         }
@@ -124,7 +162,12 @@ namespace SecEsportes.Repositorio
         public bool update(Funcao funcao, ref string messageError) {
             try{
                 SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(
-                    "UPDATE Funcao SET Codigo = @Codigo, Descricao = @Descricao WHERE id = @id", funcao);
+                    "UPDATE Funcao SET Codigo = @Codigo, Descricao = @Descricao WHERE id = @id WHERE Codigo <> @codigoAtleta", 
+                        new {   funcao.codigo,
+                                funcao.descricao,
+                                funcao.id,
+                                codigoAtleta
+                        });
                 return true;
             }catch (Exception ex){
                 messageError = ex.Message;
@@ -134,7 +177,10 @@ namespace SecEsportes.Repositorio
         public bool delete(Funcao funcao, ref string messageError) {
             try{
                 SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(
-                    "DELETE FROM Funcao WHERE id = @id", funcao);
+                    "DELETE FROM Funcao WHERE id = @id AND Codigo <> @codigoAtleta", 
+                    new {   funcao.id,
+                            codigoAtleta
+                    });
                 return true;
             }catch (Exception ex){
                 messageError = ex.Message;

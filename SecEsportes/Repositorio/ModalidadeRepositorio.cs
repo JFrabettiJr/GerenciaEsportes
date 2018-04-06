@@ -30,28 +30,28 @@ namespace SecEsportes.Repositorio
 
         public void CreateTable(SQLiteConnection connection) {
             //Criação da tabela Modalidades
-            if (connection.GetSchema("Tables", new[] { null, null, "Modalidades", null }).Rows.Count == 0) {
+            if (connection.GetSchema("Tables", new[] { null, null, "Modalidade", null }).Rows.Count == 0) {
                 SQLiteCommand command = connection.CreateCommand();
 
-                command.CommandText = "CREATE Table Modalidades (" +
+                command.CommandText = "CREATE Table Modalidade (" +
                     "id INTEGER PRIMARY KEY, " +
                     "descricao NVARCHAR(50) NOT NULL) ";
                 command.ExecuteNonQuery();
 
                 command = connection.CreateCommand();
-                command.CommandText = "INSERT INTO Modalidades (id, descricao) VALUES (1, 'Futebol Suíço') ";
+                command.CommandText = "INSERT INTO Modalidade (id, descricao) VALUES (1, 'Futebol Suíço') ";
                 command.ExecuteNonQuery();
 
                 command = connection.CreateCommand();
-                command.CommandText = "INSERT INTO Modalidades (id, descricao) VALUES (2, 'Futebol de Campo') ";
+                command.CommandText = "INSERT INTO Modalidade (id, descricao) VALUES (2, 'Futebol de Campo') ";
                 command.ExecuteNonQuery();
 
                 command = connection.CreateCommand();
-                command.CommandText = "INSERT INTO Modalidades (id, descricao) VALUES (3, 'Futsal') ";
+                command.CommandText = "INSERT INTO Modalidade (id, descricao) VALUES (3, 'Futsal') ";
                 command.ExecuteNonQuery();
 
                 command = connection.CreateCommand();
-                command.CommandText = "INSERT INTO Modalidades (id, descricao) VALUES (4, 'Futebol de areia') ";
+                command.CommandText = "INSERT INTO Modalidade (id, descricao) VALUES (4, 'Futebol de areia') ";
                 command.ExecuteNonQuery();
             }
         }
@@ -63,7 +63,7 @@ namespace SecEsportes.Repositorio
                     connection.Open();
 
                     Modalidade esporte = connection.Query<Modalidade>(
-                        "SELECT * FROM Modalidades WHERE id = @id", new { id })
+                        "SELECT * FROM Modalidade WHERE id = @id", new { id })
                         .FirstOrDefault();
 
                     return esporte;
@@ -83,7 +83,7 @@ namespace SecEsportes.Repositorio
                 using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
                     connection.Open();
 
-                    List<Modalidade> esportes = connection.Query<Modalidade>("SELECT * FROM Modalidades").ToList();
+                    List<Modalidade> esportes = connection.Query<Modalidade>("SELECT * FROM Modalidade").ToList();
                     return esportes;
                 }
             }

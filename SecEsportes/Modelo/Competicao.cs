@@ -12,13 +12,14 @@ namespace SecEsportes.Modelo{
         public DateTime? dataFinal { get; set; }
         public List<EquipeCompeticao> equipes { get; set; }
         public Modalidade modalidade { get; set; }
-        public int idModalidade { get; set;  }
+        public int id_Modalidade { get; set;  }
         public int numTimes { get; set; }
         public int numGrupos { get; set; }
         public MataMataEnum mataMata { get; set; }
         public StatusEnum status { get; set; }
         public bool jogosIdaEVolta { get; set; }
         public bool jogosIdaEVolta_MataMata { get; set; }
+        public NomesGruposEnum nomesGrupos { get; set; }
         public List<CompeticaoGrupo> grupos { get; set; }
 
         public Competicao() { }
@@ -34,6 +35,11 @@ namespace SecEsportes.Modelo{
         _0_Encerrada,
         _1_Aberta,
         _2_Iniciada
+    }
+
+    public enum NomesGruposEnum {
+        _0_PorNumeracao,
+        _1_PorLetras
     }
 
     public enum MataMataEnum{

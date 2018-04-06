@@ -30,21 +30,23 @@ namespace SecEsportes.Repositorio
 
         public void CreateTable(SQLiteConnection connection) {
             //Criação da tabela Competicoes
-            if (connection.GetSchema("Tables", new[] { null, null, "Competicoes", null }).Rows.Count == 0) {
+            if (connection.GetSchema("Tables", new[] { null, null, "Competicao", null }).Rows.Count == 0) {
                 SQLiteCommand command = connection.CreateCommand();
 
-                command.CommandText = "CREATE Table Competicoes (" +
+                command.CommandText = "CREATE Table Competicao (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "nome NVARCHAR(100) NOT NULL, " +
                     "dataInicial DATETIME NOT NULL, " +
                     "dataFinal DATETIME NULL, " +
-                    "idModalidade INTEGER, " +
+                    "id_Modalidade INTEGER, " +
                     "numTimes INTEGER, " +
                     "numGrupos INTEGER, " +
                     "mataMata INTEGER, " +
                     "jogosIdaEVolta INTEGER, " +
                     "jogosIdaEVolta_MataMata INTEGER, " +
-                    "status INTEGER " +
+                    "status INTEGER, " +
+                    "nomesGrupos INTEGER, " +
+                    "FOREIGN KEY(id_Modalidade) REFERENCES modalidade(id) " +
                     ") ";
                 command.ExecuteNonQuery();
             }
@@ -60,7 +62,7 @@ namespace SecEsportes.Repositorio
                     connection.Open();
 
                     Competicao competicao = connection.Query<Competicao>(
-                        "SELECT * FROM Competicoes WHERE id = @id", new { id })
+                        "SELECT * FROM Competicao WHERE id = @id", new { id })
                         .FirstOrDefault();
 
                     competicao.equipes = EquipeRepositorio.Instance.getEquipesByCompeticao(competicao.id);
@@ -83,10 +85,10 @@ namespace SecEsportes.Repositorio
                 using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
                     connection.Open();
                     
-                    List<Competicao> competicoes = connection.Query<Competicao>("SELECT * FROM Competicoes").ToList();
+                    List<Competicao> competicoes = connection.Query<Competicao>("SELECT * FROM Competicao").ToList();
                     for(int iCount = 0; iCount < competicoes.Count; iCount++) {
                         competicoes[iCount].equipes = EquipeRepositorio.Instance.getEquipesByCompeticao(competicoes[iCount].id);
-                        competicoes[iCount].modalidade = ModalidadeRepositorio.Instance.get(competicoes[iCount].idModalidade);
+                        competicoes[iCount].modalidade = ModalidadeRepositorio.Instance.get(competicoes[iCount].id_Modalidade);
                     }
 
                     return competicoes;
@@ -99,22 +101,23 @@ namespace SecEsportes.Repositorio
         public bool insert(ref Competicao competicao, ref string messageError) {
             try{
                 competicao.id = SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query<int>("" +
-                    "INSERT INTO Competicoes " +
-                    "(Nome, dataInicial, dataFinal, idModalidade, numTimes, numGrupos, mataMata, jogosIdaEVolta, jogosIdaEvolta_MataMata, status) " +
+                    "INSERT INTO Competicao " +
+                    "(Nome, dataInicial, dataFinal, id_Modalidade, numTimes, numGrupos, mataMata, jogosIdaEVolta, jogosIdaEvolta_MataMata, status, nomesGrupos) " +
                     "VALUES " +
-                    "(@Nome, @dataInicial, @dataFinal, @idModalidade, @numTimes, @numGrupos, @mataMata, @jogosIdaEVolta, @jogosIdaEVolta_MataMata, @status); " +
+                    "(@Nome, @dataInicial, @dataFinal, @id_Modalidade, @numTimes, @numGrupos, @mataMata, @jogosIdaEVolta, @jogosIdaEVolta_MataMata, @status, @nomesGrupos); " +
                     "select last_insert_rowid()",
                     new {   competicao.nome,
                             competicao.dataInicial,
                             competicao.dataFinal,
-                            idModalidade = competicao.modalidade.id,
+                            id_Modalidade = competicao.modalidade.id,
                             competicao.numTimes,
                             competicao.numGrupos,
                             competicao.mataMata,
                             jogosIdaEVolta = (competicao.jogosIdaEVolta == true ? 1 : 0),
                             jogosIdaEVolta_MataMata = (competicao.jogosIdaEVolta_MataMata == true ? 1 : 0),
-                            competicao.status
-                        }).First();
+                            competicao.status,
+                            competicao.nomesGrupos
+                    }).First();
                 return true;
             }catch (Exception ex){
                 messageError = ex.Message;
@@ -125,7 +128,7 @@ namespace SecEsportes.Repositorio
             try {
                 SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query("" +
                     "INSERT INTO Equipe_Competicao " +
-                    "(idEquipe, idCompeticao, idTreinador, idRepresentante, jogos, golsPro, golsContra, vitorias, empates, derrotas, nome) " +
+                    "(id_Equipe, id_Competicao, id_Treinador, id_Representante, jogos, golsPro, golsContra, vitorias, empates, derrotas, nome) " +
                     "VALUES " +
                     "(@idEquipe, @idCompeticao, @idTreinador, @idRepresentante, @jogos, @golsPro, @golsContra, @vitorias, @empates, @derrotas, @nome); ",
                     new {   idEquipe = equipe.id,
@@ -148,30 +151,32 @@ namespace SecEsportes.Repositorio
         public bool update(Competicao competicao, ref string messageError) {
             try{
                 SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(
-                    "UPDATE Competicoes " +
+                    "UPDATE Competicao " +
                     "SET    Nome = @Nome, " +
                     "       dataInicial = @dataInicial, " +
                     "       dataFinal = @dataFinal, " +
-                    "       idModalidade = @idModalidade, " +
+                    "       id_Modalidade = @id_Modalidade, " +
                     "       numTimes = @numTimes," +
                     "       numGrupos = @numGrupos, " +
                     "       mataMata = @mataMata, " +
                     "       jogosIdaEVolta = @jogosIdaEVolta, " +
                     "       jogosIdaEVolta_MataMata = @jogosIdaEVolta_MataMata, " +
-                    "       status = @status " +
+                    "       status = @status, " +
+                    "       nomesGrupos = @nomesGrupos " +
                     "WHERE id = @id",
                     new {   competicao.nome,
                             competicao.dataInicial,
                             competicao.dataFinal,
-                            idModalidade = competicao.modalidade.id,
+                            id_Modalidade = competicao.modalidade.id,
                             competicao.numTimes,
                             competicao.numGrupos,
                             competicao.mataMata,
                             jogosIdaEVolta = (competicao.jogosIdaEVolta == true ? 1 : 0),
                             jogosIdaEVolta_MataMata = (competicao.jogosIdaEVolta_MataMata == true ? 1 : 0),
                             competicao.status,
-                            competicao.id
-                        });
+                            competicao.id,
+                            competicao.nomesGrupos
+                    });
                 return true;
             }catch (Exception ex){
                 messageError = ex.Message;
@@ -181,7 +186,7 @@ namespace SecEsportes.Repositorio
         public bool delete(Competicao competicao, ref string messageError) {
             try{
                 SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(
-                    "DELETE FROM Competicoes WHERE id = @id", competicao);
+                    "DELETE FROM Competicao WHERE id = @id", competicao);
                 return true;
             }catch (Exception ex){
                 messageError = ex.Message;

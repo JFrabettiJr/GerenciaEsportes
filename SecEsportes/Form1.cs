@@ -17,19 +17,19 @@ namespace SecEsportes
         }
 
         private void btnCadEquipes_Click(object sender, EventArgs e){
-            new Views.CadEquipe().Show();
+            new Views.CadEquipe().ShowDialog();
         }
 
         private void btnCadPessoa_Click(object sender, EventArgs e) {
-            new Views.CadPessoa().Show();
+            new Views.CadPessoa().ShowDialog();
         }
 
         private void btnCadFuncao_Click(object sender, EventArgs e) {
-            new Views.CadFuncao().Show();
+            new Views.CadFuncao().ShowDialog();
         }
 
         private void button1_Click(object sender, EventArgs e) {
-            new Views.CadCompeticao().Show();
+            new Views.CadCompeticao().ShowDialog();
         }
     }
 }

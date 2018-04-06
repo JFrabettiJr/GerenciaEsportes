@@ -219,6 +219,7 @@
             this.dgvEquipes.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.dgvEquipes.Size = new System.Drawing.Size(710, 208);
             this.dgvEquipes.TabIndex = 5;
+            this.dgvEquipes.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvEquipes_CellMouseDoubleClick);
             this.dgvEquipes.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvEquipes_RowEnter);
             // 
             // btnAtualizar

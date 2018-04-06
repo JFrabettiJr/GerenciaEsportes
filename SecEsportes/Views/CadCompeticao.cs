@@ -197,7 +197,7 @@ namespace SecEsportes.Views
                 windowMode = Utilidades.WindowMode.ModoCriacaoForm;
             txtNome.Text = competicoes[e.RowIndex].nome;
             txtDtInicio.Text = competicoes[e.RowIndex].dataInicial.ToString("dd/MM/yyyy");
-            cboModalidades.SelectedIndex = modalidades.FindIndex(modalidade => modalidade.id == competicoes[e.RowIndex].modalidade.id);
+            //cboModalidades.SelectedIndex = modalidades.FindIndex(modalidade => modalidade.id == competicoes[e.RowIndex].modalidade.id);
             windowMode = Utilidades.WindowMode.ModoNormal;
         }
         private void fields_KeyDown(object sender, KeyEventArgs e) {
@@ -211,7 +211,7 @@ namespace SecEsportes.Views
         }
         private void dgvCompeticoes_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e) {
             Competicao competicao = competicoes[e.RowIndex];
-            new EditCompeticao(competicao).Show();
+            new EditCompeticao(competicao).ShowDialog();
         }
         #endregion
     }
