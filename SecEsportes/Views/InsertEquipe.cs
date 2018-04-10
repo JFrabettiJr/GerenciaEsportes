@@ -5,38 +5,35 @@ using SecEsportes.Infraestrutura;
 using SecEsportes.Modelo;
 using SecEsportes.Repositorio;
 
-namespace SecEsportes.Views
-{
-    public partial class InsertEquipe : Form{
+namespace SecEsportes.Views {
+    public partial class InsertEquipe : Form {
         private List<Equipe_Insert> equipes;
         public List<Equipe_Insert> equipesAInserir;
         private string errorMessage;
 
         #region Inicialização da classe
-        public InsertEquipe(int idCompeticao)
-        {
+        public InsertEquipe(int idCompeticao) {
             InitializeComponent();
             CenterToScreen();
+
             equipes = EquipeRepositorio.Instance.getEquipesForaCompeticao(ref errorMessage, idCompeticao);
             if (equipes is null) {
                 MessageBox.Show("Houve um erro ao tentar listar os registros." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+
             refreshDataGridView();
             equipesAInserir = new List<Equipe_Insert>();
         }
         #endregion
         #region Manipulação do grid
-        private void refreshDataGridView()
-        {
+        private void refreshDataGridView() {
             dgvEquipes.DataSource = null;
             dgvEquipes.Refresh();
 
             dgvEquipes.DataSource = equipes;
 
-            for (var iCount = 0; iCount < dgvEquipes.Columns.Count; iCount++)
-            {
-                switch (dgvEquipes.Columns[iCount].DataPropertyName)
-                {
+            for (var iCount = 0; iCount < dgvEquipes.Columns.Count; iCount++) {
+                switch (dgvEquipes.Columns[iCount].DataPropertyName) {
                     case nameof(Equipe.id):
                         dgvEquipes.Columns[iCount].Visible = false;
                         break;

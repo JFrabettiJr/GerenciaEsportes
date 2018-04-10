@@ -100,6 +100,7 @@
             // 
             // btnSalvar
             // 
+            this.btnSalvar.Enabled = false;
             this.btnSalvar.Location = new System.Drawing.Point(91, 10);
             this.btnSalvar.Name = "btnSalvar";
             this.btnSalvar.Size = new System.Drawing.Size(75, 23);
@@ -110,6 +111,7 @@
             // 
             // btnAdicionar
             // 
+            this.btnAdicionar.Enabled = false;
             this.btnAdicionar.Location = new System.Drawing.Point(10, 10);
             this.btnAdicionar.Name = "btnAdicionar";
             this.btnAdicionar.Size = new System.Drawing.Size(75, 23);
@@ -120,6 +122,7 @@
             // 
             // btnCancelar
             // 
+            this.btnCancelar.Enabled = false;
             this.btnCancelar.Location = new System.Drawing.Point(172, 10);
             this.btnCancelar.Name = "btnCancelar";
             this.btnCancelar.Size = new System.Drawing.Size(75, 23);
@@ -130,6 +133,7 @@
             // 
             // btnExcluir
             // 
+            this.btnExcluir.Enabled = false;
             this.btnExcluir.Location = new System.Drawing.Point(253, 10);
             this.btnExcluir.Name = "btnExcluir";
             this.btnExcluir.Size = new System.Drawing.Size(75, 23);
@@ -154,6 +158,7 @@
             // 
             // btnAtualizar
             // 
+            this.btnAtualizar.Enabled = false;
             this.btnAtualizar.Location = new System.Drawing.Point(334, 10);
             this.btnAtualizar.Name = "btnAtualizar";
             this.btnAtualizar.Size = new System.Drawing.Size(75, 23);

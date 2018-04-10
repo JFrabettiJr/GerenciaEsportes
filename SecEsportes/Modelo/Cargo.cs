@@ -14,5 +14,9 @@
             this.funcao = funcao;
             this.pessoa = pessoa;
         }
+
+        public override string ToString() {
+            return pessoa.nome;
+        }
     }
 }

@@ -9,35 +9,60 @@ namespace SecEsportes.Views {
     public partial class EditEquipe : Form {
         private Utilidades.WindowMode windowMode;
         private List<Atleta> atletas;
-        private Equipe equipe;
+        private EquipeCompeticao equipe;
         private string errorMessage;
         private InsertAtleta insertAtletaForm;
         private Competicao competicao;
+        private List<Cargo> representantes;
+        private List<Cargo> treinadores;
 
         #region Inicialização da classe
-        public EditEquipe(Equipe equipe, Competicao competicao) {
+        public EditEquipe(EquipeCompeticao equipe, Competicao competicao) {
             InitializeComponent();
 
             CenterToScreen();
-
-            Text += " - " + equipe.codigo + " - " + equipe.nome;
+            
             this.equipe = equipe;
             this.competicao = competicao;
+
+            Text += " - " + equipe.codigo + " - " + equipe.nome;
+
+            windowMode = Utilidades.WindowMode.ModoNormal;
+            windowModeChanged();
+        }
+
+        private void fillFields() {
             txtCodigo.Text = equipe.codigo;
             txtNome.Text = equipe.nome;
+
+            cboTreinador.SelectedIndex = (equipe.treinador is null ? -1 : treinadores.FindIndex(treinador => treinador.id_pessoa == equipe.treinador.id_pessoa));
+            cboRepresentante.SelectedIndex = (equipe.representante is null ? -1 : representantes.FindIndex(representante => representante.id_pessoa == equipe.representante.id_pessoa));
 
             atletas = PessoaRepositorio.Instance.getAtletasPorEquipeCompeticao(competicao.id, equipe.id, ref errorMessage);
             if (atletas is null) {
                 MessageBox.Show("Houve um erro ao tentar listar os registros." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            windowMode = Utilidades.WindowMode.ModoNormal;
-            windowModeChanged();
-
+            refreshDataGridView();
 
         }
+
         private void EditEquipe_Load(object sender, EventArgs e) {
-            refreshDataGridView();
+            // Carrega os representantes
+            representantes = PessoaRepositorio.Instance.getRepresentantesForaCompeticao(competicao.id, equipe.id);
+            cboRepresentante.Items.Clear();
+            for (int iCount = 0; iCount < representantes.Count; iCount++) {
+                cboRepresentante.Items.Add(representantes[iCount].pessoa.nome);
+            }
+
+            // Carrega os técnicos
+            treinadores = PessoaRepositorio.Instance.getTreinadores(competicao.id, equipe.id);
+            cboTreinador.Items.Clear();
+            for (int iCount = 0; iCount < treinadores.Count; iCount++) {
+                cboTreinador.Items.Add(treinadores[iCount].pessoa.nome);
+            }
+
+            fillFields();
         }
         #endregion
         #region Manipulação do grid
@@ -71,6 +96,7 @@ namespace SecEsportes.Views {
                         dgvAtletas.Columns[iCount].Name = dgvAtletas.Columns[iCount].DataPropertyName;
                         dgvAtletas.Columns[iCount].HeaderText = "Númeração";
                         dgvAtletas.Columns[iCount].Width = 75;
+                        dgvAtletas.Columns[iCount].ValueType = typeof(Int32);
                         break;
                     default:
                         dgvAtletas.Columns[iCount].Visible = false;
@@ -101,44 +127,98 @@ namespace SecEsportes.Views {
             }
             refreshDataGridView();
         }
+        private void btnExcluirAtleta_Click(object sender, EventArgs e) {
+            if (dgvAtletas.SelectedCells.Count > 0) {
+                Atleta atleta;
+                atleta = atletas[dgvAtletas.SelectedCells[0].RowIndex];
+                if (MessageBox.Show("Confirma a deleção do registro ?" +
+                    Environment.NewLine + Environment.NewLine +
+                    atleta.ToString(), "Confirmação", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
+                    if (EquipeRepositorio.Instance.deletaAtletaDaEquipe(competicao.id, equipe.id, atleta, ref errorMessage)) {
+                        atletas.RemoveAt(dgvAtletas.SelectedCells[0].RowIndex);
+                        refreshDataGridView();
+                    }else {
+                        MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+        private void btnSalvar_Click(object sender, EventArgs e) {
+            // Salva as alterações da competição
+            Cargo treinador, representante;
+            treinador = treinadores[cboTreinador.SelectedIndex];
+            representante = representantes[cboRepresentante.SelectedIndex];
+
+            EquipeCompeticao newEquipe = new EquipeCompeticao(equipe.codigo, equipe.nome, treinador, representante);
+            newEquipe.id = equipe.id;
+            
+            if (EquipeRepositorio.Instance.update(newEquipe, competicao)) {
+                //competicoes[dgvCompeticoes.SelectedCells[0].RowIndex] = competicao;
+                equipe = newEquipe;
+            } else {
+                MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            fillFields();
+
+            // Um monte de coisa
+            windowMode = Utilidades.WindowMode.ModoNormal;
+            windowModeChanged();
+        }
+
+        private void btnCancelar_Click(object sender, EventArgs e) {
+            fillFields();
+            windowMode = Utilidades.WindowMode.ModoNormal;
+            windowModeChanged();
+        }
+
+        private void btnAtualizar_Click(object sender, EventArgs e) {
+            fillFields();
+        }
         #endregion
         #region Comportamentos do form
         private void windowModeChanged() {
             switch (windowMode) {
                 case Utilidades.WindowMode.ModoNormal:
-                    //btnCancelar.Enabled = false;
-                    //btnSalvar.Enabled = false;
-                    //btnAdicionar.Enabled = true;
-                    //btnExcluir.Enabled = true;
+                case Utilidades.WindowMode.ModoCriacaoForm:
+                    btnCancelar.Enabled = false;
+                    btnSalvar.Enabled = false;
                     dgvAtletas.Enabled = true;
-                    //btnAtualizar.Enabled = true;
+                    btnAtualizar.Enabled = true;
                     break;
                 case Utilidades.WindowMode.ModoDeEdicao:
-                    //btnCancelar.Enabled = true;
-                    //Salvar.Enabled = true;
-                    //Adicionar.Enabled = false;
-                    //Excluir.Enabled = false;
+                    btnCancelar.Enabled = true;
+                    btnSalvar.Enabled = true;
                     dgvAtletas.Enabled = false;
-                    //btnAtualizar.Enabled = false;
+                    btnAtualizar.Enabled = false;
                     break;
                 case Utilidades.WindowMode.ModoDeInsercao:
-                    //btnCancelar.Enabled = true;
-                    //tnSalvar.Enabled = true;
-                    //tnAdicionar.Enabled = false;
-                    //tnExcluir.Enabled = false;
+                    btnCancelar.Enabled = true;
+                    btnSalvar.Enabled = true;
                     dgvAtletas.Enabled = false;
-                    //btnAtualizar.Enabled = false;
+                    btnAtualizar.Enabled = false;
                     break;
             }
         }
         private void dgvEquipes_RowEnter(object sender, DataGridViewCellEventArgs e) {
-
+            if (e.RowIndex > -1) {
+                if (windowMode == Utilidades.WindowMode.ModoNormal)
+                    windowMode = Utilidades.WindowMode.ModoCriacaoForm;
+                windowMode = Utilidades.WindowMode.ModoNormal;
+            }
         }
-        private void fields_KeyDown(object sender, KeyEventArgs e) {
-            if (windowMode != Utilidades.WindowMode.ModoDeInsercao) {
+        private void keyDown(object sender, KeyEventArgs e) {
+            if (windowMode != Utilidades.WindowMode.ModoDeInsercao && windowMode != Utilidades.WindowMode.ModoCriacaoForm) {
                 windowMode = Utilidades.WindowMode.ModoDeEdicao;
                 windowModeChanged();
             }
+        }
+        private void selectedIndexChanged(object sender, EventArgs e) {
+            keyDown(null, null);
+        }
+
+        private void dgvAtletas_CellEndEdit(object sender, DataGridViewCellEventArgs e) {
+            keyDown(null, null);
         }
         #endregion
     }

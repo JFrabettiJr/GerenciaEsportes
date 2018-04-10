@@ -268,7 +268,6 @@
     <Compile Include="Modelo\Atleta.cs" />
     <Compile Include="Modelo\Cargo.cs" />
     <Compile Include="Modelo\Competicao.cs" />
-    <Compile Include="Modelo\CompeticaoGrupo.cs" />
     <Compile Include="Modelo\Equipe_Insert.cs" />
     <Compile Include="Modelo\Equipe.cs" />
     <Compile Include="Modelo\EquipeCompeticao.cs" />

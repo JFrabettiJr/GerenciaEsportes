@@ -51,17 +51,16 @@
             this.lblNumTimes = new System.Windows.Forms.Label();
             this.chkIdaEVolta = new System.Windows.Forms.CheckBox();
             this.chkIdaEVoltaMataMata = new System.Windows.Forms.CheckBox();
-            this.tabGrupo1 = new System.Windows.Forms.TabPage();
             this.tabs = new System.Windows.Forms.TabControl();
-            this.btnIniciarCompeticao = new System.Windows.Forms.Button();
+            this.btnAcaoCompeticao = new System.Windows.Forms.Button();
             this.lblStatus = new System.Windows.Forms.Label();
             this.txtStatus = new System.Windows.Forms.Label();
             this.btnIncluirEquipes = new System.Windows.Forms.Button();
             this.btnExcluirEquipe = new System.Windows.Forms.Button();
+            this.btnGerarGrupos = new System.Windows.Forms.Button();
             this.tlp1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvEquipes)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
-            this.tabs.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlp1
@@ -217,7 +216,7 @@
             this.dgvEquipes.Name = "dgvEquipes";
             this.dgvEquipes.ReadOnly = true;
             this.dgvEquipes.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvEquipes.Size = new System.Drawing.Size(710, 208);
+            this.dgvEquipes.Size = new System.Drawing.Size(710, 170);
             this.dgvEquipes.TabIndex = 5;
             this.dgvEquipes.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvEquipes_CellMouseDoubleClick);
             this.dgvEquipes.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvEquipes_RowEnter);
@@ -380,34 +379,23 @@
             this.chkIdaEVoltaMataMata.UseVisualStyleBackColor = true;
             this.chkIdaEVoltaMataMata.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChange);
             // 
-            // tabGrupo1
-            // 
-            this.tabGrupo1.Location = new System.Drawing.Point(4, 22);
-            this.tabGrupo1.Name = "tabGrupo1";
-            this.tabGrupo1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabGrupo1.Size = new System.Drawing.Size(702, 117);
-            this.tabGrupo1.TabIndex = 0;
-            this.tabGrupo1.Text = "Grupo 1";
-            this.tabGrupo1.UseVisualStyleBackColor = true;
-            // 
             // tabs
             // 
-            this.tabs.Controls.Add(this.tabGrupo1);
-            this.tabs.Location = new System.Drawing.Point(10, 387);
+            this.tabs.Location = new System.Drawing.Point(10, 354);
             this.tabs.Name = "tabs";
             this.tabs.SelectedIndex = 0;
-            this.tabs.Size = new System.Drawing.Size(710, 143);
+            this.tabs.Size = new System.Drawing.Size(710, 170);
             this.tabs.TabIndex = 8;
             // 
-            // btnIniciarCompeticao
+            // btnAcaoCompeticao
             // 
-            this.btnIniciarCompeticao.Location = new System.Drawing.Point(609, 10);
-            this.btnIniciarCompeticao.Name = "btnIniciarCompeticao";
-            this.btnIniciarCompeticao.Size = new System.Drawing.Size(111, 23);
-            this.btnIniciarCompeticao.TabIndex = 9;
-            this.btnIniciarCompeticao.Text = "Iniciar competição";
-            this.btnIniciarCompeticao.UseVisualStyleBackColor = true;
-            this.btnIniciarCompeticao.Click += new System.EventHandler(this.btnIniciarCompeticao_Click);
+            this.btnAcaoCompeticao.Location = new System.Drawing.Point(553, 10);
+            this.btnAcaoCompeticao.Name = "btnAcaoCompeticao";
+            this.btnAcaoCompeticao.Size = new System.Drawing.Size(167, 23);
+            this.btnAcaoCompeticao.TabIndex = 9;
+            this.btnAcaoCompeticao.Text = "Iniciar competição";
+            this.btnAcaoCompeticao.UseVisualStyleBackColor = true;
+            this.btnAcaoCompeticao.Click += new System.EventHandler(this.btnIniciarCompeticao_Click);
             // 
             // lblStatus
             // 
@@ -424,7 +412,7 @@
             this.txtStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtStatus.Location = new System.Drawing.Point(310, 13);
             this.txtStatus.Name = "txtStatus";
-            this.txtStatus.Size = new System.Drawing.Size(166, 17);
+            this.txtStatus.Size = new System.Drawing.Size(231, 17);
             this.txtStatus.TabIndex = 11;
             this.txtStatus.Text = "Status:";
             // 
@@ -448,16 +436,27 @@
             this.btnExcluirEquipe.UseVisualStyleBackColor = true;
             this.btnExcluirEquipe.Click += new System.EventHandler(this.btnExcluirEquipe_Click);
             // 
+            // btnGerarGrupos
+            // 
+            this.btnGerarGrupos.Location = new System.Drawing.Point(598, 141);
+            this.btnGerarGrupos.Name = "btnGerarGrupos";
+            this.btnGerarGrupos.Size = new System.Drawing.Size(122, 23);
+            this.btnGerarGrupos.TabIndex = 14;
+            this.btnGerarGrupos.Text = "Gerar grupos";
+            this.btnGerarGrupos.UseVisualStyleBackColor = true;
+            this.btnGerarGrupos.Click += new System.EventHandler(this.btnGerarGrupos_Click);
+            // 
             // EditCompeticao
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(734, 536);
+            this.Controls.Add(this.btnGerarGrupos);
             this.Controls.Add(this.btnExcluirEquipe);
             this.Controls.Add(this.btnIncluirEquipes);
             this.Controls.Add(this.txtStatus);
             this.Controls.Add(this.lblStatus);
-            this.Controls.Add(this.btnIniciarCompeticao);
+            this.Controls.Add(this.btnAcaoCompeticao);
             this.Controls.Add(this.dgvEquipes);
             this.Controls.Add(this.tabs);
             this.Controls.Add(this.tableLayoutPanel1);
@@ -468,12 +467,12 @@
             this.Name = "EditCompeticao";
             this.Padding = new System.Windows.Forms.Padding(20);
             this.Text = "Cadastro de competição";
+            this.Load += new System.EventHandler(this.load);
             this.tlp1.ResumeLayout(false);
             this.tlp1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvEquipes)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
-            this.tabs.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -501,16 +500,16 @@
         private System.Windows.Forms.Label lblMataMata;
         private System.Windows.Forms.CheckBox chkIdaEVolta;
         private System.Windows.Forms.CheckBox chkIdaEVoltaMataMata;
-        private System.Windows.Forms.TabPage tabGrupo1;
         private System.Windows.Forms.TabControl tabs;
         private System.Windows.Forms.ComboBox cboNomeacaoGrupos;
         private System.Windows.Forms.Label lblGruposNomeados;
         private System.Windows.Forms.MaskedTextBox txtNumTimes;
         private System.Windows.Forms.MaskedTextBox txtNumGrupos;
-        private System.Windows.Forms.Button btnIniciarCompeticao;
+        private System.Windows.Forms.Button btnAcaoCompeticao;
         private System.Windows.Forms.Label lblStatus;
         private System.Windows.Forms.Label txtStatus;
         private System.Windows.Forms.Button btnIncluirEquipes;
         private System.Windows.Forms.Button btnExcluirEquipe;
+        private System.Windows.Forms.Button btnGerarGrupos;
     }
 }

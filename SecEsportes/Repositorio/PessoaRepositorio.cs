@@ -131,7 +131,99 @@ namespace SecEsportes.Repositorio
                 return null;
             }
         }
+        public Cargo getCargo(int id_Pessoa) {
+            try {
+                using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
+                    connection.Open();
 
+                    string strSQL;
+                    strSQL = "SELECT pessoa.id AS id_pessoa, Pessoa_Funcoes.id_Funcao " +
+                                "FROM   pessoa " +
+                                "       INNER JOIN Pessoa_Funcoes ON Pessoa.id = Pessoa_Funcoes.id_Pessoa " +
+                                "WHERE  Pessoa.id = @id_Pessoa ";
+
+                    Cargo cargo = connection.Query<Cargo>(strSQL,
+                        new {   id_Pessoa
+                        }).First();
+
+                    cargo.funcao = FuncaoRepositorio.Instance.get(cargo.id_funcao);
+                    cargo.pessoa = PessoaRepositorio.Instance.get(cargo.id_pessoa);
+
+                    return cargo;
+                }
+            } catch (Exception ex) {
+                return null;
+            }
+        }
+        public List<Cargo> getRepresentantesForaCompeticao(int id_Competicao, int id_Equipe) {
+            try {
+                using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
+                    connection.Open();
+
+                    string strSQL;
+                    strSQL =    "SELECT pessoa.id AS id_pessoa, Pessoa_Funcoes.id_Funcao " +
+                                "FROM   pessoa " +
+                                "       INNER JOIN Pessoa_Funcoes ON Pessoa.id = Pessoa_Funcoes.id_Pessoa " +
+                                "WHERE  Pessoa_Funcoes.id_Funcao IN (   SELECT  id " +
+                                "                                       FROM    Funcao " +
+                                "                                       WHERE   codigo = @codigoRepresentante) " +
+                                "       AND Pessoa_Funcoes.id_Pessoa NOT IN (   SELECT  id_Representante " +
+                                "                                               FROM    Equipe_Competicao " +
+                                "                                               WHERE   id_Competicao = @id_Competicao " +
+                                "                                                       AND id_Equipe <> @id_Equipe) ";
+
+                    List<Cargo> representantes = connection.Query<Cargo>(strSQL,
+                        new {   FuncaoRepositorio.Instance.codigoRepresentante,
+                                id_Competicao,
+                                id_Equipe
+                        }).ToList();
+
+                    foreach (Cargo representante in representantes) {
+                        representante.funcao = FuncaoRepositorio.Instance.get(representante.id_funcao);
+                        representante.pessoa = PessoaRepositorio.Instance.get(representante.id_pessoa);
+                    }
+
+                    return representantes;
+                }
+            } catch (Exception ex) {
+                return null;
+            }
+        }
+        public List<Cargo> getTreinadores(int id_Competicao, int id_Equipe) {
+            try {
+                using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
+                    connection.Open();
+
+                    string strSQL;
+                    strSQL = "SELECT pessoa.id AS id_pessoa, Pessoa_Funcoes.id_Funcao " +
+                                "FROM   pessoa " +
+                                "       INNER JOIN Pessoa_Funcoes ON Pessoa.id = Pessoa_Funcoes.id_Pessoa " +
+                                "WHERE  Pessoa_Funcoes.id_Funcao IN (   SELECT  id " +
+                                "                                       FROM    Funcao " +
+                                "                                       WHERE   codigo = @codigoTreinador) " +
+                                "       AND Pessoa_Funcoes.id_Pessoa NOT IN (   SELECT  id_Treinador " +
+                                "                                               FROM    Equipe_Competicao " +
+                                "                                               WHERE   id_Competicao = @id_Competicao " +
+                                "                                                       AND id_Equipe <> @id_Equipe) ";
+
+                    List<Cargo> treinadores = connection.Query<Cargo>(strSQL,
+                        new {
+                            FuncaoRepositorio.Instance.codigoTreinador,
+                            id_Competicao,
+                            id_Equipe
+                        }).ToList();
+
+                    foreach (Cargo representante in treinadores) {
+                        representante.funcao = FuncaoRepositorio.Instance.get(representante.id_funcao);
+                        representante.pessoa = PessoaRepositorio.Instance.get(representante.id_pessoa);
+                    }
+
+                    return treinadores;
+                }
+            } catch (Exception ex) {
+                return null;
+            }
+        }
         public bool insert(ref Pessoa pessoa, ref string messageError) {
             try{
                 SQLiteConnection connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection();

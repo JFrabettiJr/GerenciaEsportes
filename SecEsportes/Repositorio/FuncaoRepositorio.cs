@@ -26,11 +26,10 @@ namespace SecEsportes.Repositorio
         }
         #endregion
 
-        public string codigoAtleta {
-            get {
-                return "ATL";
-            }
-        }
+        public string codigoAtleta {get {   return "ATL";   }}
+        public string codigoRepresentante { get { return "REP"; } }
+        public string codigoTreinador { get { return "TEC"; } }
+        public string codigoArbitro { get { return "ARB"; } }
 
         private FuncaoRepositorio(){
 
@@ -53,6 +52,30 @@ namespace SecEsportes.Repositorio
                 SQLiteCommand command = connection.CreateCommand();
 
                 command.CommandText = "INSERT INTO Funcao (codigo, descricao) VALUES ('" + codigoAtleta + "', 'Atleta') ";
+                command.ExecuteNonQuery();
+            }
+
+            //Inserção do registro de representante
+            if (connection.Query("SELECT 1 FROM Funcao WHERE codigo = '" + codigoRepresentante + "' LIMIT 1; ").Count() < 1) {
+                SQLiteCommand command = connection.CreateCommand();
+
+                command.CommandText = "INSERT INTO Funcao (codigo, descricao) VALUES ('" + codigoRepresentante + "', 'Representante') ";
+                command.ExecuteNonQuery();
+            }
+
+            //Inserção do registro de técnico
+            if (connection.Query("SELECT 1 FROM Funcao WHERE codigo = '" + codigoTreinador + "' LIMIT 1; ").Count() < 1) {
+                SQLiteCommand command = connection.CreateCommand();
+
+                command.CommandText = "INSERT INTO Funcao (codigo, descricao) VALUES ('" + codigoTreinador + "', 'Técnico') ";
+                command.ExecuteNonQuery();
+            }
+
+            //Inserção do registro de árbitro
+            if (connection.Query("SELECT 1 FROM Funcao WHERE codigo = '" + codigoArbitro + "' LIMIT 1; ").Count() < 1) {
+                SQLiteCommand command = connection.CreateCommand();
+
+                command.CommandText = "INSERT INTO Funcao (codigo, descricao) VALUES ('" + codigoArbitro + "', 'Árbitro') ";
                 command.ExecuteNonQuery();
             }
 

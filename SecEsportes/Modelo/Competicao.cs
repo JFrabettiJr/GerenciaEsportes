@@ -20,7 +20,7 @@ namespace SecEsportes.Modelo{
         public bool jogosIdaEVolta { get; set; }
         public bool jogosIdaEVolta_MataMata { get; set; }
         public NomesGruposEnum nomesGrupos { get; set; }
-        public List<CompeticaoGrupo> grupos { get; set; }
+        public List<List<EquipeCompeticao>> grupos { get; set; }
 
         public Competicao() { }
 
@@ -34,7 +34,8 @@ namespace SecEsportes.Modelo{
     public enum StatusEnum {
         _0_Encerrada,
         _1_Aberta,
-        _2_Iniciada
+        _2_Iniciada,
+        _3_EmPreparacao
     }
 
     public enum NomesGruposEnum {

@@ -22,12 +22,9 @@ namespace SecEsportes.Views {
             // Centraliza a tela
             CenterToScreen();
 
-            this.Text += " - " + competicao.nome;
+            Text += " - " + competicao.nome;
 
             this.competicao = competicao;
-
-            clearFields();
-            fillFields();
         }
         #endregion
         #region Manipulação do grid
@@ -68,6 +65,11 @@ namespace SecEsportes.Views {
                         dgvEquipes.Columns[iCount].DisplayIndex = 5;
                         break;
                 }
+            }
+
+            //Preenche os campos que vieram sem preenchimento do data set
+            for (var iCount = 0; iCount < dgvEquipes.Rows.Count; iCount++) {
+                dgvEquipes.Rows[iCount].Cells["QtdAtletas"].Value = EquipeRepositorio.Instance.getNumAtletasPorCompeticao(competicao.id, equipes[iCount].id);
             }
 
             dgvEquipes.Refresh();
@@ -145,10 +147,11 @@ namespace SecEsportes.Views {
             newCompeticao.jogosIdaEVolta = chkIdaEVolta.Checked;
             newCompeticao.jogosIdaEVolta_MataMata = chkIdaEVoltaMataMata.Checked;
 
+            newCompeticao.status = competicao.status;
+
             if (CompeticaoRepositorio.Instance.update(newCompeticao, ref errorMessage)) {
                 competicao = newCompeticao;
-            }
-            else {
+            } else {
                 fillFields();
                 MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -157,45 +160,224 @@ namespace SecEsportes.Views {
             windowModeChanged();
         }
 
-        private void btnExcluir_Click(object sender, EventArgs e) {
-            if (dgvEquipes.SelectedCells.Count > 0) {
-                EquipeCompeticao equipe;
-                equipe = equipes[dgvEquipes.SelectedCells[0].RowIndex];
-                if (MessageBox.Show("Confirma a deleção do registro ?" +
-                    Environment.NewLine + Environment.NewLine +
-                    equipe.ToString(), "Confirmação", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
-                    if (CompeticaoRepositorio.Instance.deleteEquipe(equipe, ref errorMessage)) {
-                        equipes.RemoveAt(dgvEquipes.SelectedCells[0].RowIndex);
-                        refreshDataGridView();
-                        clearFields();
+        private void btnAtualizar_Click(object sender, EventArgs e) {
+            clearFields();
+            fillFields();
+
+            // Verifica qual o modo que a competição está para avaliar qual será a visualizaçao
+            int posicaoInicial, tamanhoTotal;
+            posicaoInicial = dgvEquipes.Location.Y;
+            tamanhoTotal = dgvEquipes.Size.Height + tabs.Size.Height;
+
+            if (competicao.status == StatusEnum._1_Aberta) {
+                // Reajusta o DataGridView com as equipes
+                dgvEquipes.Location = new System.Drawing.Point(dgvEquipes.Location.X, posicaoInicial);
+                dgvEquipes.Size = new System.Drawing.Size(dgvEquipes.Size.Width, tamanhoTotal);
+
+                // Deixa visível os botões/informações
+                dgvEquipes.Visible = true;
+                btnIncluirEquipes.Visible = true;
+                btnExcluirEquipe.Visible = true;
+
+                // Deixa invisível os botões/informações
+                tabs.Visible = false;
+                btnGerarGrupos.Visible = false;
+            } else {
+                // Deixa visível os botões/informações
+                tabs.Visible = true;
+
+                // Deixa invisível os botões/informações
+                btnIncluirEquipes.Visible = false;
+                btnExcluirEquipe.Visible = false;
+
+                // Cria a abas e os grupos
+                tabs.Controls.Clear();
+                for (int numGrupo = 0; numGrupo < competicao.numGrupos; numGrupo++) {
+                    DataGridView dataGridView = criaAbaDeGrupo(getNomeGrupo(numGrupo + 1), numGrupo);
+                    dataGridView.DataSource = null;
+                    dataGridView.Refresh();
+                    dataGridView.DataSource = competicao.grupos[numGrupo];
+                    dataGridView.Refresh();
+                }
+
+                if (competicao.status == StatusEnum._3_EmPreparacao) {
+                    // Deixa visível os botões/informações
+                    dgvEquipes.Visible = true;
+                    btnGerarGrupos.Visible = true;
+
+                    // Reajusta a lista de equipes
+                    dgvEquipes.Location = new System.Drawing.Point(dgvEquipes.Location.X, posicaoInicial);
+                    dgvEquipes.Size = new System.Drawing.Size(dgvEquipes.Size.Width, tamanhoTotal / 2);
+
+                    // Reajusta as abas com os grupos
+                    tabs.Location = new System.Drawing.Point(tabs.Location.X, posicaoInicial + dgvEquipes.Size.Height + 5);
+                    tabs.Size = new System.Drawing.Size(tabs.Size.Width, tamanhoTotal / 2);
+
+                    dgvEquipes.CellMouseClick -= dgvEquipes_CellMouseClick;
+                    dgvEquipes.CellMouseClick += dgvEquipes_CellMouseClick;
+
+                } else {
+                    // Reajusta as abas com os grupos
+                    tabs.Location = new System.Drawing.Point(tabs.Location.X, posicaoInicial);
+                    tabs.Size = new System.Drawing.Size(tabs.Size.Width, tamanhoTotal);
+
+                    // Deixa invisível os botões/informações
+                    dgvEquipes.Visible = false;
+                }
+
+            }
+        }
+
+        private void dgvEquipes_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
+            if (e.RowIndex > -1 && e.ColumnIndex > -1) {
+                if (e.Button == MouseButtons.Right) {
+
+                    // Cria o menu de contexto e suas respectivas configurações
+                    ContextMenu contextMenu = new ContextMenu();
+                    for (var iCount = 0; iCount < tabs.Controls.Count; iCount++) {
+                        MenuItem menuItem = new MenuItem("Enviar " + equipes[e.RowIndex].codigo + " para o " + tabs.Controls[iCount].Text);
+                        menuItem.Click += menuAdicionarGrupo_click;
+                        menuItem.Tag = equipes[e.RowIndex].id.ToString() + "|-|" + iCount.ToString();
+                        contextMenu.MenuItems.Add(menuItem);
                     }
-                    else {
-                        MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    
+                    // Define onde será aberto o menu de contexto
+                    int x, y;
+                    x = dgvEquipes.RowHeadersWidth;
+                    y = (dgvEquipes[e.ColumnIndex, e.RowIndex].Size.Height * e.RowIndex) + dgvEquipes.ColumnHeadersHeight;
+                    contextMenu.Show(dgvEquipes, new System.Drawing.Point(x, y));
+
                 }
             }
         }
-        private void btnAtualizar_Click(object sender, EventArgs e) {
-            equipes = EquipeRepositorio.Instance.getEquipesByCompeticao(competicao.id);
-            if (equipes is null) {
-                MessageBox.Show("Houve um erro ao tentar listar os registros." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+        private void menuAdicionarGrupo_click(object sender, EventArgs e) {
+            string tagMenuItem = ((MenuItem)sender).Tag.ToString();
+            int idEquipe = Convert.ToInt32(tagMenuItem.Substring(0, tagMenuItem.IndexOf("|-|")));
+            int idGrupo = Convert.ToInt32(tagMenuItem.Substring(idEquipe.ToString().Length + 3));
+            int? idGrupoInserido = null;
+
+            bool insereEmGrupo = true;
+
+            int numTimesPorGrupo = competicao.numTimes / competicao.numGrupos;
+            int numTimesRestantes = competicao.numTimes % competicao.numGrupos;
+
+            // Verifica se o grupo já tem o número suficiente de times
+            if ( (numTimesRestantes == 0 && competicao.grupos[idGrupo].Count >= numTimesPorGrupo) || 
+                (competicao.grupos[idGrupo].Count >= (numTimesRestantes / competicao.numGrupos) + numTimesPorGrupo) ) {
+                insereEmGrupo = false;
             }
-            refreshDataGridView();
+
+            if (insereEmGrupo) {
+                // Verifica se o clube já está em algum grupo
+                for (int numGrupo = 0; numGrupo < tabs.Controls.Count; numGrupo++) {
+                    if (!(competicao.grupos[numGrupo].Find(equipeAEncontrar => equipeAEncontrar.id == idEquipe) is null)) {
+                        insereEmGrupo = false;
+                        idGrupoInserido = numGrupo;
+                    }
+                }
+            }
+
+            if (insereEmGrupo) {
+                // Identifica a equipe e a adiciona ao grupo
+                EquipeCompeticao equipe = equipes.Find(equipeAEncontrar => equipeAEncontrar.id == idEquipe);
+                enviarParaGrupo(idGrupo, equipe);
+            }
+
+            tabs.SelectedIndex = (idGrupoInserido == null ? idGrupo : idGrupoInserido.Value);
+
+        }
+
+        private void enviarParaGrupo(int idGrupo, EquipeCompeticao equipe) {
+            competicao.grupos[idGrupo].Add(equipe);
+
+            // Atualiza o DataSource dos grupos
+            DataGridView dgvGrupo = (DataGridView)tabs.Controls[idGrupo].Controls[0];
+            dgvGrupo.DataSource = null;
+            dgvGrupo.Refresh();
+            dgvGrupo.DataSource = competicao.grupos[idGrupo];
+            dgvGrupo.Refresh();
+
+            CompeticaoRepositorio.Instance.updateGrupos(competicao.id, idGrupo, equipe.id);
+        }
+
+        private string getNomeGrupo(int numeroGrupo) {
+            string nomeGrupo = "Grupo ";
+
+            if (competicao.nomesGrupos == NomesGruposEnum._0_PorNumeracao) {
+                nomeGrupo += numeroGrupo.ToString();
+            } else {
+                switch (numeroGrupo) {
+                    case 1: nomeGrupo += "A"; break;
+                    case 2: nomeGrupo += "B"; break;
+                    case 3: nomeGrupo += "C"; break;
+                    case 4: nomeGrupo += "D"; break;
+                    case 5: nomeGrupo += "E"; break;
+                    case 6: nomeGrupo += "F"; break;
+                    case 7: nomeGrupo += "G"; break;
+                    case 8: nomeGrupo += "H"; break;
+                    case 9: nomeGrupo += "I"; break;
+                    case 10: nomeGrupo += "J"; break;
+                    case 11: nomeGrupo += "K"; break;
+                    case 12: nomeGrupo += "L"; break;
+                    case 13: nomeGrupo += "M"; break;
+                    case 14: nomeGrupo += "N"; break;
+                    case 15: nomeGrupo += "O"; break;
+                    case 16: nomeGrupo += "P"; break;
+                }
+            }
+
+            return nomeGrupo;
+
         }
         private void btnIniciarCompeticao_Click(object sender, EventArgs e) {
             /*  Requisitos para poder iniciar o campeonato
              *      - Ter o numero de times conforme definido na competição
              *      - Ter o número de jogadores mínimos em cada equipe
              *      - O número de grupos deve ser maior que 0
+             *      - É necessário ter representante
+             *      - É necessário ter treinador
              */
+
+            switch (competicao.status) {
+                case StatusEnum._0_Encerrada:
+                    break;
+                case StatusEnum._1_Aberta:
+                    Competicao newCompeticao = competicao;
+                    newCompeticao.status = StatusEnum._3_EmPreparacao;
+
+                    for (int iCount = 0; iCount < newCompeticao.grupos.Count; iCount++) {
+                        newCompeticao.grupos.Add(new List<EquipeCompeticao>());
+                    }
+
+                    if (CompeticaoRepositorio.Instance.update(newCompeticao, ref errorMessage)) {
+                        competicao = newCompeticao;
+                    } else {
+                        MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+
+                    fillFields();
+
+                    break;
+                case StatusEnum._2_Iniciada:
+                    break;
+                case StatusEnum._3_EmPreparacao:
+                    competicao.status = StatusEnum._2_Iniciada;
+                    break;
+            }
+
         }
         private void btnIncluirEquipes_Click(object sender, EventArgs e) {
+            // Função responsável por chamar o form responsável por selecionar as equipes que serão selecionadas
+
             insertEquipeForm = new InsertEquipe(competicao.id);
             insertEquipeForm.FormClosing += insertEquipeForm_FormClosing;
             insertEquipeForm.ShowDialog();
         }
 
         private void insertEquipeForm_FormClosing(object sender, FormClosingEventArgs e) {
+            // Função responsável por incluir as equipes que foram selecionadas na tela de inclusão de equipes na competição
+
             for (int iCount = 0; iCount < insertEquipeForm.equipesAInserir.Count; iCount++) {
                 equipes.Add(new EquipeCompeticao(insertEquipeForm.equipesAInserir[iCount].codigo, insertEquipeForm.equipesAInserir[iCount].nome, null, null));
                 CompeticaoRepositorio.Instance.insertEquipeEmCompeticao(competicao.id, insertEquipeForm.equipesAInserir[iCount]);
@@ -203,17 +385,18 @@ namespace SecEsportes.Views {
             refreshDataGridView();
         }
         private void btnExcluirEquipe_Click(object sender, EventArgs e) {
+            // Função responsável por excluir uma equipe da competição
+
             if (dgvEquipes.SelectedCells.Count > 0) {
                 EquipeCompeticao equipe;
                 equipe = equipes[dgvEquipes.SelectedCells[0].RowIndex];
                 if (MessageBox.Show("Confirma a deleção do registro ?" +
                     Environment.NewLine + Environment.NewLine +
                     equipe.ToString(), "Confirmação", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
-                    if (EquipeRepositorio.Instance.deleteEquipeDaCompeticao(equipe, competicao.id, ref errorMessage)) {
+                    if (CompeticaoRepositorio.Instance.deleteEquipeDaCompeticao(equipe, competicao.id, ref errorMessage)) {
                         equipes.RemoveAt(dgvEquipes.SelectedCells[0].RowIndex);
                         refreshDataGridView();
-                    }
-                    else {
+                    } else {
                         MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
@@ -303,15 +486,23 @@ namespace SecEsportes.Views {
             switch (competicao.status) {
                 case StatusEnum._0_Encerrada:
                     txtStatus.Text = "Competição encerrada";
+                    btnAcaoCompeticao.Text = "Reabrir competição";
                     break;
                 case StatusEnum._1_Aberta:
                     txtStatus.Text = "Competição aberta";
+                    btnAcaoCompeticao.Text = "Preparar competição";
                     break;
                 case StatusEnum._2_Iniciada:
                     txtStatus.Text = "Competição iniciada";
+                    btnAcaoCompeticao.Text = "Encerrar competição";
+                    break;
+                case StatusEnum._3_EmPreparacao:
+                    txtStatus.Text = "Competição em preparação";
+                    btnAcaoCompeticao.Text = "Iniciar competição";
                     break;
                 default:
                     txtStatus.Text = "";
+                    btnAcaoCompeticao.Text = "";
                     break;
             }
 
@@ -340,21 +531,21 @@ namespace SecEsportes.Views {
                     btnSalvar.Enabled = false;
                     dgvEquipes.Enabled = true;
                     btnAtualizar.Enabled = true;
-                    btnIniciarCompeticao.Enabled = true;
+                    btnAcaoCompeticao.Enabled = true;
                     break;
                 case Utilidades.WindowMode.ModoDeEdicao:
                     btnCancelar.Enabled = true;
                     btnSalvar.Enabled = true;
                     dgvEquipes.Enabled = false;
                     btnAtualizar.Enabled = false;
-                    btnIniciarCompeticao.Enabled = false;
+                    btnAcaoCompeticao.Enabled = false;
                     break;
                 case Utilidades.WindowMode.ModoDeInsercao:
                     btnCancelar.Enabled = true;
                     btnSalvar.Enabled = true;
                     dgvEquipes.Enabled = false;
                     btnAtualizar.Enabled = false;
-                    btnIniciarCompeticao.Enabled = false;
+                    btnAcaoCompeticao.Enabled = false;
                     break;
             }
         }
@@ -378,8 +569,129 @@ namespace SecEsportes.Views {
         private void dgvEquipes_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e) {
             if (e.RowIndex > -1) {
                 EquipeCompeticao equipe = equipes[e.RowIndex];
-                new EditEquipe(equipe, competicao).ShowDialog();
+                EditEquipe formEditEquipe = new EditEquipe(equipe, competicao);
+                formEditEquipe.FormClosing += formEditEquipe_FormClosing;
+                formEditEquipe.ShowDialog();
             }
+        }
+
+        private void formEditEquipe_FormClosing(object sender, FormClosingEventArgs e) {
+            btnAtualizar_Click(null, null);
+        }
+
+        private void load(object sender, EventArgs e) {
+            btnAtualizar_Click(null, null);
+        }
+
+        private void btnGerarGrupos_Click(object sender, EventArgs e) {
+            // O número de grupos precisa ser maior que 0
+            // O número de times definidos precisa ser maior que 0
+            // O número de times inseridos precisa ser igual o número de times definidos
+
+            if (competicao.numGrupos > 0 && competicao.numTimes > 0 && competicao.numTimes == equipes.Count) {
+
+                competicao.grupos = new List<List<EquipeCompeticao>>();
+                CompeticaoRepositorio.Instance.deleteGrupos(competicao.id);
+
+                List<EquipeCompeticao> equipes_Sorteio = new List<EquipeCompeticao>(equipes);
+                int numTimesPorGrupo = competicao.numTimes / competicao.numGrupos;
+                int numTimesRestantes = competicao.numTimes % competicao.numGrupos;
+
+                tabs.Controls.Clear();
+
+                for (var numGrupo = 0; numGrupo < competicao.numGrupos; numGrupo++) {
+                    DataGridView dataGridView = criaAbaDeGrupo(getNomeGrupo(numGrupo + 1), numGrupo);
+
+                    competicao.grupos.Add(new List<EquipeCompeticao>());
+
+                    // Faz o sorteio das equipes
+                    for (int jCount = 0; jCount < numTimesPorGrupo; jCount++) {
+                        int numSorteado = new Random().Next(equipes_Sorteio.Count - 1);
+                        enviarParaGrupo(numGrupo, equipes_Sorteio[numSorteado]);
+                        equipes_Sorteio.RemoveAt(numSorteado);
+                    }
+
+                    //Atualiza o DataGridView com as equipes daquele grupo
+                    dataGridView.DataSource = null;
+                    dataGridView.Refresh();
+                    dataGridView.DataSource = competicao.grupos[numGrupo];
+                    dataGridView.Refresh();
+                }
+            }
+        }
+
+        private DataGridView criaAbaDeGrupo(string nomeGrupo, int indiceGrupo) {
+            // Cria o TabPage
+            TabPage tabPage = new TabPage(nomeGrupo);
+            tabPage.UseVisualStyleBackColor = true;
+            tabPage.Padding = new Padding(3);
+
+            // Cria o DataGridView
+            DataGridView dataGridView = new DataGridView();
+            dataGridView.AllowUserToAddRows = false;
+            dataGridView.AllowUserToDeleteRows = false;
+            dataGridView.AllowUserToOrderColumns = true;
+            dataGridView.BackgroundColor = System.Drawing.Color.Gainsboro;
+            dataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView.Dock = DockStyle.Fill;
+            dataGridView.ReadOnly = true;
+            dataGridView.RowTemplate.Resizable = DataGridViewTriState.True;
+            dataGridView.Tag = indiceGrupo;
+
+            dataGridView.CellMouseClick -= dgvGrupoEquipes_CellMouseClick;
+            dataGridView.CellMouseClick += dgvGrupoEquipes_CellMouseClick;
+
+            //Adiciona o DataGridView ao TabPage
+            tabPage.Controls.Add(dataGridView);
+
+            //Adiciona o TabPage às abas
+            tabs.Controls.Add(tabPage);
+
+            return dataGridView;
+        }
+
+        private void dgvGrupoEquipes_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
+            if (e.RowIndex > -1 && e.ColumnIndex > -1) {
+                if (e.Button == MouseButtons.Right) {
+
+                    DataGridView dataGridView = (DataGridView)sender;
+                    int indiceGrupo = Convert.ToInt32(dataGridView.Tag);
+
+                    // Cria o menu de contexto e suas respectivas configurações para cada equipe do grupo
+                    ContextMenu contextMenu = new ContextMenu();
+                    MenuItem menuItem = new MenuItem("Excluir " + competicao.grupos[indiceGrupo][e.RowIndex].codigo + " do " + tabs.Controls[indiceGrupo].Text);
+                    menuItem.Click += excluirDoGrupo;
+                    menuItem.Tag = competicao.grupos[indiceGrupo][e.RowIndex].id.ToString() + "|-|" + indiceGrupo.ToString();
+                    contextMenu.MenuItems.Add(menuItem);
+
+                    // Define onde será aberto o menu de contexto
+                    int x, y;
+                    x = dataGridView.RowHeadersWidth;
+                    y = (dataGridView[e.ColumnIndex, e.RowIndex].Size.Height * e.RowIndex) + dataGridView.ColumnHeadersHeight;
+                    contextMenu.Show(dataGridView, new System.Drawing.Point(x, y));
+
+                }
+            }
+        }
+
+        private void excluirDoGrupo(object sender, EventArgs e) {
+            string tagMenuItem = ((MenuItem)sender).Tag.ToString();
+            int idEquipe = Convert.ToInt32(tagMenuItem.Substring(0, tagMenuItem.IndexOf("|-|")));
+            int idGrupo = Convert.ToInt32(tagMenuItem.Substring(idEquipe.ToString().Length + 3));
+
+            // Identifica a equipe e a remove do grupo
+            EquipeCompeticao equipe = competicao.grupos[idGrupo].Find(equipeAEncontrar => equipeAEncontrar.id == idEquipe);
+            competicao.grupos[idGrupo].Remove(equipe);
+
+            CompeticaoRepositorio.Instance.deleteEquipeDoGrupo(competicao.id, idGrupo, equipe.id);
+
+            // Atualiza o DataSource dos grupos
+            DataGridView dgvGrupo = (DataGridView)tabs.Controls[idGrupo].Controls[0];
+            dgvGrupo.DataSource = null;
+            dgvGrupo.Refresh();
+            dgvGrupo.DataSource = competicao.grupos[idGrupo];
+            dgvGrupo.Refresh();
+
         }
     }
 }
