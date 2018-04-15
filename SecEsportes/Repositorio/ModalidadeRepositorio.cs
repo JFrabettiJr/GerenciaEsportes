@@ -6,17 +6,13 @@ using SecEsportes.Modelo;
 using SecEsportes.Infraestrutura;
 using System.Data.SQLite;
 
-namespace SecEsportes.Repositorio
-{
+namespace SecEsportes.Repositorio {
     public class ModalidadeRepositorio {
         #region Implementação Singleton
         private static ModalidadeRepositorio instance = null;
-        public static ModalidadeRepositorio Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
+        public static ModalidadeRepositorio Instance {
+            get {
+                if (instance == null) {
                     instance = new ModalidadeRepositorio();
                 }
                 return instance;
@@ -24,7 +20,7 @@ namespace SecEsportes.Repositorio
         }
         #endregion
 
-        private ModalidadeRepositorio(){
+        private ModalidadeRepositorio() {
 
         }
 
@@ -55,9 +51,11 @@ namespace SecEsportes.Repositorio
                 command.ExecuteNonQuery();
             }
         }
-
-        public Modalidade get(int id, ref string messageError)
-        {
+        public Modalidade get(int id) {
+            string myString = "";
+            return get(id, ref myString);
+        }
+        public Modalidade get(int id, ref string messageError) {
             try {
                 using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
                     connection.Open();
@@ -68,17 +66,12 @@ namespace SecEsportes.Repositorio
 
                     return esporte;
                 }
-            }
-            catch(Exception ex) {
+            } catch (Exception ex) {
                 messageError = ex.Message;
                 return null;
             }
         }
-        public Modalidade get(int id) {
-            string myString = String.Empty;
-            return get(id, ref myString);
-        }
-        public List<Modalidade> get(){
+        public List<Modalidade> get() {
             try {
                 using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
                     connection.Open();
@@ -86,8 +79,7 @@ namespace SecEsportes.Repositorio
                     List<Modalidade> esportes = connection.Query<Modalidade>("SELECT * FROM Modalidade").ToList();
                     return esportes;
                 }
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 return null;
             }
         }

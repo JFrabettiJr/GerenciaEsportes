@@ -8,7 +8,6 @@ using SecEsportes.Repositorio;
 namespace SecEsportes.Views {
     public partial class EditEquipe : Form {
         private Utilidades.WindowMode windowMode;
-        private List<Atleta> atletas;
         private EquipeCompeticao equipe;
         private string errorMessage;
         private InsertAtleta insertAtletaForm;
@@ -37,11 +36,6 @@ namespace SecEsportes.Views {
 
             cboTreinador.SelectedIndex = (equipe.treinador is null ? -1 : treinadores.FindIndex(treinador => treinador.id_pessoa == equipe.treinador.id_pessoa));
             cboRepresentante.SelectedIndex = (equipe.representante is null ? -1 : representantes.FindIndex(representante => representante.id_pessoa == equipe.representante.id_pessoa));
-
-            atletas = PessoaRepositorio.Instance.getAtletasPorEquipeCompeticao(competicao.id, equipe.id, ref errorMessage);
-            if (atletas is null) {
-                MessageBox.Show("Houve um erro ao tentar listar os registros." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
 
             refreshDataGridView();
 
@@ -72,7 +66,8 @@ namespace SecEsportes.Views {
 
             dgvAtletas.Columns.Clear();
 
-            dgvAtletas.DataSource = atletas;
+            //dgvAtletas.DataSource = atletas;
+            dgvAtletas.DataSource = equipe.atletas;
 
             // Cria duas novas colunas
             dgvAtletas.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Pessoa.nome) });
@@ -106,8 +101,10 @@ namespace SecEsportes.Views {
 
             //Preenche os campos que vieram sem preenchimento do data set
             for (var iCount = 0; iCount < dgvAtletas.Rows.Count; iCount++) {
-                dgvAtletas.Rows[iCount].Cells[nameof(Pessoa.nome)].Value = atletas[iCount].pessoa.nome;
-                dgvAtletas.Rows[iCount].Cells[nameof(Pessoa.dataNascimento)].Value = atletas[iCount].pessoa.dataNascimento.ToString("dd/MM/yyyy");
+                //dgvAtletas.Rows[iCount].Cells[nameof(Pessoa.nome)].Value = atletas[iCount].pessoa.nome;
+                dgvAtletas.Rows[iCount].Cells[nameof(Pessoa.nome)].Value = equipe.atletas[iCount].pessoa.nome;
+                //dgvAtletas.Rows[iCount].Cells[nameof(Pessoa.dataNascimento)].Value = atletas[iCount].pessoa.dataNascimento.ToString("dd/MM/yyyy");
+                dgvAtletas.Rows[iCount].Cells[nameof(Pessoa.dataNascimento)].Value = equipe.atletas[iCount].pessoa.dataNascimento.ToString("dd/MM/yyyy");
             }
 
             dgvAtletas.Refresh();
@@ -122,7 +119,7 @@ namespace SecEsportes.Views {
 
         private void insertEquipeForm_FormClosing(object sender, FormClosingEventArgs e) {
             foreach (Atleta_Insert atleta in insertAtletaForm.atletasAInserir) {
-                atletas.Add(new Atleta(atleta.id, atleta.funcao, atleta.pessoa, null));
+                equipe.atletas.Add(new Atleta(atleta.id, atleta.funcao, atleta.pessoa, null));
                 EquipeRepositorio.Instance.insertAtletaEmEquipe(competicao.id, equipe.id, atleta);
             }
             refreshDataGridView();
@@ -130,12 +127,12 @@ namespace SecEsportes.Views {
         private void btnExcluirAtleta_Click(object sender, EventArgs e) {
             if (dgvAtletas.SelectedCells.Count > 0) {
                 Atleta atleta;
-                atleta = atletas[dgvAtletas.SelectedCells[0].RowIndex];
+                atleta = equipe.atletas[dgvAtletas.SelectedCells[0].RowIndex];
                 if (MessageBox.Show("Confirma a deleção do registro ?" +
                     Environment.NewLine + Environment.NewLine +
                     atleta.ToString(), "Confirmação", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
                     if (EquipeRepositorio.Instance.deletaAtletaDaEquipe(competicao.id, equipe.id, atleta, ref errorMessage)) {
-                        atletas.RemoveAt(dgvAtletas.SelectedCells[0].RowIndex);
+                        equipe.atletas.RemoveAt(dgvAtletas.SelectedCells[0].RowIndex);
                         refreshDataGridView();
                     }else {
                         MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -145,15 +142,27 @@ namespace SecEsportes.Views {
         }
         private void btnSalvar_Click(object sender, EventArgs e) {
             // Salva as alterações da competição
-            Cargo treinador, representante;
-            treinador = treinadores[cboTreinador.SelectedIndex];
-            representante = representantes[cboRepresentante.SelectedIndex];
+            Cargo treinador = null, representante = null;
+            if (cboTreinador.SelectedIndex > -1)
+                treinador = treinadores[cboTreinador.SelectedIndex];
+            if (cboRepresentante.SelectedIndex > -1)
+                representante = representantes[cboRepresentante.SelectedIndex];
 
             EquipeCompeticao newEquipe = new EquipeCompeticao(equipe.codigo, equipe.nome, treinador, representante);
             newEquipe.id = equipe.id;
+            newEquipe.atletas = equipe.atletas;
             
-            if (EquipeRepositorio.Instance.update(newEquipe, competicao)) {
-                //competicoes[dgvCompeticoes.SelectedCells[0].RowIndex] = competicao;
+            for (int iCount = 0; iCount < dgvAtletas.Rows.Count; iCount++) {
+                int numAtleta = -1;
+                bool isNumber;
+                isNumber = int.TryParse(dgvAtletas[nameof(Atleta.Numero), iCount].Value.ToString(), out numAtleta);
+                if (isNumber && numAtleta > 0) {
+                    newEquipe.atletas[iCount].Numero = numAtleta;
+                    newEquipe.atletas[iCount].Numero = numAtleta;
+                }
+            }
+
+            if (EquipeRepositorio.Instance.updateEquipeCompeticao(newEquipe, competicao)) {
                 equipe = newEquipe;
             } else {
                 MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);

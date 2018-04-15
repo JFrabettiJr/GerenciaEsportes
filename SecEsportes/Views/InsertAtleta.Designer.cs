@@ -30,6 +30,8 @@
         {
             this.btnInserir = new System.Windows.Forms.Button();
             this.dgvAtletas = new System.Windows.Forms.DataGridView();
+            this.btnMarcarTudo = new System.Windows.Forms.Button();
+            this.btnDesmarcarTudo = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAtletas)).BeginInit();
             this.SuspendLayout();
             // 
@@ -52,14 +54,36 @@
             this.dgvAtletas.Location = new System.Drawing.Point(10, 39);
             this.dgvAtletas.MultiSelect = false;
             this.dgvAtletas.Name = "dgvAtletas";
-            this.dgvAtletas.Size = new System.Drawing.Size(410, 363);
+            this.dgvAtletas.Size = new System.Drawing.Size(410, 340);
             this.dgvAtletas.TabIndex = 5;
+            // 
+            // btnMarcarTudo
+            // 
+            this.btnMarcarTudo.Location = new System.Drawing.Point(10, 385);
+            this.btnMarcarTudo.Name = "btnMarcarTudo";
+            this.btnMarcarTudo.Size = new System.Drawing.Size(91, 23);
+            this.btnMarcarTudo.TabIndex = 6;
+            this.btnMarcarTudo.Text = "Marcar tudo";
+            this.btnMarcarTudo.UseVisualStyleBackColor = true;
+            this.btnMarcarTudo.Click += new System.EventHandler(this.btnMarcarTudo_Click);
+            // 
+            // btnDesmarcarTudo
+            // 
+            this.btnDesmarcarTudo.Location = new System.Drawing.Point(107, 385);
+            this.btnDesmarcarTudo.Name = "btnDesmarcarTudo";
+            this.btnDesmarcarTudo.Size = new System.Drawing.Size(91, 23);
+            this.btnDesmarcarTudo.TabIndex = 7;
+            this.btnDesmarcarTudo.Text = "Desmarcar tudo";
+            this.btnDesmarcarTudo.UseVisualStyleBackColor = true;
+            this.btnDesmarcarTudo.Click += new System.EventHandler(this.btnDesmarcarTudo_Click);
             // 
             // InsertAtleta
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(434, 421);
+            this.Controls.Add(this.btnDesmarcarTudo);
+            this.Controls.Add(this.btnMarcarTudo);
             this.Controls.Add(this.dgvAtletas);
             this.Controls.Add(this.btnInserir);
             this.Name = "InsertAtleta";
@@ -74,5 +98,7 @@
         #endregion
         private System.Windows.Forms.Button btnInserir;
         private System.Windows.Forms.DataGridView dgvAtletas;
+        private System.Windows.Forms.Button btnMarcarTudo;
+        private System.Windows.Forms.Button btnDesmarcarTudo;
     }
 }

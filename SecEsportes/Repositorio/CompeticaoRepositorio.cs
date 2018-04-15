@@ -42,6 +42,7 @@ namespace SecEsportes.Repositorio {
                     "jogosIdaEVolta_MataMata INTEGER, " +
                     "status INTEGER, " +
                     "nomesGrupos INTEGER, " +
+                    "numMinimoJogadores INTEGER, " +
                     "FOREIGN KEY(id_Modalidade) REFERENCES modalidade(id) " +
                     ") ";
                 command.ExecuteNonQuery();
@@ -118,7 +119,7 @@ namespace SecEsportes.Repositorio {
                     List<List<EquipeCompeticao>> grupos = new List<List<EquipeCompeticao>>();
 
                     string strSQL;
-                    strSQL = "SELECT count(1) FROM Competicao_Grupos WHERE id_competicao = @id_competicao GROUP BY numGrupo ";
+                    strSQL = "SELECT COUNT(DISTINCT numGrupo) FROM Competicao_Grupos WHERE id_competicao = @id_competicao ";
 
                     int numGrupos = connection.Query<int>(strSQL,
                         new {   id_competicao
@@ -154,9 +155,9 @@ namespace SecEsportes.Repositorio {
             try {
                 competicao.id = SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query<int>("" +
                     "INSERT INTO Competicao " +
-                    "(Nome, dataInicial, dataFinal, id_Modalidade, numTimes, numGrupos, mataMata, jogosIdaEVolta, jogosIdaEvolta_MataMata, status, nomesGrupos) " +
+                    "(Nome, dataInicial, dataFinal, id_Modalidade, numTimes, numGrupos, mataMata, jogosIdaEVolta, jogosIdaEvolta_MataMata, status, nomesGrupos, numMinimoJogadores) " +
                     "VALUES " +
-                    "(@Nome, @dataInicial, @dataFinal, @id_Modalidade, @numTimes, @numGrupos, @mataMata, @jogosIdaEVolta, @jogosIdaEVolta_MataMata, @status, @nomesGrupos); " +
+                    "(@Nome, @dataInicial, @dataFinal, @id_Modalidade, @numTimes, @numGrupos, @mataMata, @jogosIdaEVolta, @jogosIdaEVolta_MataMata, @status, @nomesGrupos, @numMinimoJogadores); " +
                     "select last_insert_rowid()",
                     new {
                         competicao.nome,
@@ -169,7 +170,8 @@ namespace SecEsportes.Repositorio {
                         jogosIdaEVolta = (competicao.jogosIdaEVolta == true ? 1 : 0),
                         jogosIdaEVolta_MataMata = (competicao.jogosIdaEVolta_MataMata == true ? 1 : 0),
                         competicao.status,
-                        competicao.nomesGrupos
+                        competicao.nomesGrupos,
+                        competicao.numMinimoJogadores
                     }).First();
                 return true;
             } catch (Exception ex) {
@@ -177,13 +179,13 @@ namespace SecEsportes.Repositorio {
                 return false;
             }
         }
-        public bool insertEquipeEmCompeticao(int idCompeticao, Equipe_Insert equipe) {
+        public bool insertEquipeEmCompeticao(int idCompeticao, Equipe equipe) {
             try {
                 SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query("" +
                     "INSERT INTO Equipe_Competicao " +
-                    "(id_Equipe, id_Competicao, id_Treinador, id_Representante, jogos, golsPro, golsContra, vitorias, empates, derrotas, nome) " +
+                    "(id_Equipe, id_Competicao, id_Treinador, id_Representante, jogos, golsPro, golsContra, vitorias, empates, derrotas, pontos, nome) " +
                     "VALUES " +
-                    "(@idEquipe, @idCompeticao, @idTreinador, @idRepresentante, @jogos, @golsPro, @golsContra, @vitorias, @empates, @derrotas, @nome); ",
+                    "(@idEquipe, @idCompeticao, @idTreinador, @idRepresentante, @jogos, @golsPro, @golsContra, @vitorias, @empates, @derrotas, @pontos, @nome); ",
                     new {
                         idEquipe = equipe.id,
                         idCompeticao,
@@ -195,6 +197,7 @@ namespace SecEsportes.Repositorio {
                         vitorias = 0,
                         empates = 0,
                         derrotas = 0,
+                        pontos = 0,
                         nome = ""
                     });
                 return true;
@@ -217,7 +220,8 @@ namespace SecEsportes.Repositorio {
                             "       jogosIdaEVolta = @jogosIdaEVolta, " +
                             "       jogosIdaEVolta_MataMata = @jogosIdaEVolta_MataMata, " +
                             "       status = @status, " +
-                            "       nomesGrupos = @nomesGrupos " +
+                            "       nomesGrupos = @nomesGrupos, " +
+                            "       numMinimoJogadores = @numMinimoJogadores " +
                             "WHERE id = @id";
 
                 SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(strSQL,
@@ -233,6 +237,7 @@ namespace SecEsportes.Repositorio {
                         jogosIdaEVolta_MataMata = (competicao.jogosIdaEVolta_MataMata == true ? 1 : 0),
                         competicao.status,
                         competicao.nomesGrupos,
+                        competicao.numMinimoJogadores,
                         competicao.id
                     });
                 return true;

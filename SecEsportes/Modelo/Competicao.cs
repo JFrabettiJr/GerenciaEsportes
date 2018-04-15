@@ -15,6 +15,7 @@ namespace SecEsportes.Modelo{
         public int id_Modalidade { get; set;  }
         public int numTimes { get; set; }
         public int numGrupos { get; set; }
+        public int numMinimoJogadores { get; set; }
         public MataMataEnum mataMata { get; set; }
         public StatusEnum status { get; set; }
         public bool jogosIdaEVolta { get; set; }

@@ -110,6 +110,7 @@ namespace SecEsportes.Views {
             newCompeticao.modalidade = modalidade;
             newCompeticao.numTimes = Convert.ToInt32(txtNumTimes.Text);
             newCompeticao.numGrupos = Convert.ToInt32(txtNumGrupos.Text);
+            newCompeticao.numMinimoJogadores = Convert.ToInt32(txtNumMinJogadores.Text);
 
             switch (cboMataMata.SelectedIndex) {
                 case 0:
@@ -165,11 +166,19 @@ namespace SecEsportes.Views {
             fillFields();
 
             // Verifica qual o modo que a competição está para avaliar qual será a visualizaçao
-            int posicaoInicial, tamanhoTotal;
+            int posicaoInicial, tamanhoTotal = 0;
             posicaoInicial = dgvEquipes.Location.Y;
-            tamanhoTotal = dgvEquipes.Size.Height + tabs.Size.Height;
+            if (dgvEquipes.Visible)
+                tamanhoTotal += dgvEquipes.Size.Height;
+            if (tabs.Visible)
+                tamanhoTotal += tabs.Size.Height;
+
+            // Bloqueia os campos para edição
+            bloqueiaCampos(false);
 
             if (competicao.status == StatusEnum._1_Aberta) {
+                // Competição aberta
+
                 // Reajusta o DataGridView com as equipes
                 dgvEquipes.Location = new System.Drawing.Point(dgvEquipes.Location.X, posicaoInicial);
                 dgvEquipes.Size = new System.Drawing.Size(dgvEquipes.Size.Width, tamanhoTotal);
@@ -183,6 +192,8 @@ namespace SecEsportes.Views {
                 tabs.Visible = false;
                 btnGerarGrupos.Visible = false;
             } else {
+                // Competição em preparação, encerrada ou iniciada
+
                 // Deixa visível os botões/informações
                 tabs.Visible = true;
 
@@ -194,13 +205,16 @@ namespace SecEsportes.Views {
                 tabs.Controls.Clear();
                 for (int numGrupo = 0; numGrupo < competicao.numGrupos; numGrupo++) {
                     DataGridView dataGridView = criaAbaDeGrupo(getNomeGrupo(numGrupo + 1), numGrupo);
-                    dataGridView.DataSource = null;
-                    dataGridView.Refresh();
-                    dataGridView.DataSource = competicao.grupos[numGrupo];
-                    dataGridView.Refresh();
+
+                    if (numGrupo < competicao.grupos.Count)
+                        refreshDataGridViewGrupos(dataGridView, competicao.grupos[numGrupo]);
+                    else
+                        refreshDataGridViewGrupos(dataGridView, null);
                 }
 
                 if (competicao.status == StatusEnum._3_EmPreparacao) {
+                    // Competição em preparação
+
                     // Deixa visível os botões/informações
                     dgvEquipes.Visible = true;
                     btnGerarGrupos.Visible = true;
@@ -217,15 +231,32 @@ namespace SecEsportes.Views {
                     dgvEquipes.CellMouseClick += dgvEquipes_CellMouseClick;
 
                 } else {
+                    // Competição encerrada ou iniciada
+
+                    // Bloqueia os campos para edição
+                    bloqueiaCampos(true);
+
+                    // Deleta o evento que seria acionado no clique do DataGridView dos grupos
+                    for (int iCount = 0; iCount < tabs.Controls.Count; iCount++) {
+                        TabPage tabPage = (TabPage)tabs.Controls[iCount];
+                        ((DataGridView)tabPage.Controls[0]).CellMouseClick -= dgvGrupoEquipes_CellMouseClick;
+                    }
+                    
                     // Reajusta as abas com os grupos
                     tabs.Location = new System.Drawing.Point(tabs.Location.X, posicaoInicial);
                     tabs.Size = new System.Drawing.Size(tabs.Size.Width, tamanhoTotal);
 
                     // Deixa invisível os botões/informações
                     dgvEquipes.Visible = false;
+                    btnGerarGrupos.Visible = false;
                 }
 
             }
+        }
+
+        private void bloqueiaCampos(bool bloqueia) {
+            tlp1.Enabled = !bloqueia;
+            tlp2.Enabled = !bloqueia;
         }
 
         private void dgvEquipes_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
@@ -235,7 +266,7 @@ namespace SecEsportes.Views {
                     // Cria o menu de contexto e suas respectivas configurações
                     ContextMenu contextMenu = new ContextMenu();
                     for (var iCount = 0; iCount < tabs.Controls.Count; iCount++) {
-                        MenuItem menuItem = new MenuItem("Enviar " + equipes[e.RowIndex].codigo + " para o " + tabs.Controls[iCount].Text);
+                        MenuItem menuItem = new MenuItem("Enviar " + equipes[e.RowIndex].codigo + " - " + equipes[e.RowIndex].nome + " para o " + tabs.Controls[iCount].Text);
                         menuItem.Click += menuAdicionarGrupo_click;
                         menuItem.Tag = equipes[e.RowIndex].id.ToString() + "|-|" + iCount.ToString();
                         contextMenu.MenuItems.Add(menuItem);
@@ -293,14 +324,101 @@ namespace SecEsportes.Views {
 
             // Atualiza o DataSource dos grupos
             DataGridView dgvGrupo = (DataGridView)tabs.Controls[idGrupo].Controls[0];
-            dgvGrupo.DataSource = null;
-            dgvGrupo.Refresh();
-            dgvGrupo.DataSource = competicao.grupos[idGrupo];
-            dgvGrupo.Refresh();
+
+            refreshDataGridViewGrupos(dgvGrupo, competicao.grupos[idGrupo]);
 
             CompeticaoRepositorio.Instance.updateGrupos(competicao.id, idGrupo, equipe.id);
         }
 
+        private void refreshDataGridViewGrupos(DataGridView dgvGrupo, List<EquipeCompeticao> dataSource) {
+            dgvGrupo.DataSource = null;
+            dgvGrupo.Refresh();
+
+            dgvGrupo.Columns.Clear();
+
+            dgvGrupo.DataSource = dataSource;
+
+            if (!(dataSource is null)) {
+                dgvGrupo.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "SaldoGols" });
+                dgvGrupo.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "NumJogos" });
+                dgvGrupo.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "Aproveitamento" });
+            }
+
+            for (var iCount = 0; iCount < dgvGrupo.Columns.Count; iCount++) {
+                switch (dgvGrupo.Columns[iCount].DataPropertyName) {
+                    case nameof(EquipeCompeticao.nome):
+                        dgvGrupo.Columns[iCount].HeaderText = "Nome da equipe";
+                        dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
+                        break;
+                    case nameof(EquipeCompeticao.codigo):
+                        dgvGrupo.Columns[iCount].HeaderText = "Código";
+                        dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
+                        break;
+                    case "NumJogos":
+                        dgvGrupo.Columns[iCount].HeaderText = "J";
+                        dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
+                        dgvGrupo.Columns[iCount].Width = 40;
+                        break;
+                    case nameof(EquipeCompeticao.vitorias):
+                        dgvGrupo.Columns[iCount].HeaderText = "V";
+                        dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
+                        dgvGrupo.Columns[iCount].Width = 40;
+                        break;
+                    case nameof(EquipeCompeticao.empates):
+                        dgvGrupo.Columns[iCount].HeaderText = "E";
+                        dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
+                        dgvGrupo.Columns[iCount].Width = 40;
+                        break;
+                    case nameof(EquipeCompeticao.pontos):
+                        dgvGrupo.Columns[iCount].HeaderText = "Pts.";
+                        dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
+                        dgvGrupo.Columns[iCount].Width = 50;
+                        break;
+                    case nameof(EquipeCompeticao.derrotas):
+                        dgvGrupo.Columns[iCount].HeaderText = "D";
+                        dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
+                        dgvGrupo.Columns[iCount].Width = 40;
+                        break;
+                    case nameof(EquipeCompeticao.golsPro):
+                        dgvGrupo.Columns[iCount].HeaderText = "GP";
+                        dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
+                        dgvGrupo.Columns[iCount].Width = 40;
+                        break;
+                    case nameof(EquipeCompeticao.golsContra):
+                        dgvGrupo.Columns[iCount].HeaderText = "GC";
+                        dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
+                        dgvGrupo.Columns[iCount].Width = 40;
+                        break;
+                    case "SaldoGols":
+                        dgvGrupo.Columns[iCount].HeaderText = "SG";
+                        dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
+                        dgvGrupo.Columns[iCount].Width = 40;
+                        break;
+                    case "Aproveitamento":
+                        dgvGrupo.Columns[iCount].HeaderText = " %";
+                        dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
+                        dgvGrupo.Columns[iCount].Width = 50;
+                        break;
+                    default:
+                        dgvGrupo.Columns[iCount].Visible = false;
+                        break;
+                }
+            }
+
+            //Preenche os campos que vieram sem preenchimento do data set
+            for (var iCount = 0; iCount < dgvGrupo.Rows.Count; iCount++) {
+                dgvGrupo.Rows[iCount].Cells["NumJogos"].Value = dataSource[iCount].vitorias + dataSource[iCount].derrotas + dataSource[iCount].empates;
+
+                dgvGrupo.Rows[iCount].Cells["SaldoGols"].Value = dataSource[iCount].golsPro - dataSource[iCount].golsContra;
+
+                if (dataSource[iCount].vitorias + dataSource[iCount].derrotas + dataSource[iCount].empates > 0)
+                    dgvGrupo.Rows[iCount].Cells["Aproveitamento"].Value = dataSource[iCount].pontos * 100 / ((dataSource[iCount].vitorias + dataSource[iCount].derrotas + dataSource[iCount].empates) * 3);
+                else
+                    dgvGrupo.Rows[iCount].Cells["Aproveitamento"].Value = 0;
+            }
+
+            dgvGrupo.Refresh();
+        }
         private string getNomeGrupo(int numeroGrupo) {
             string nomeGrupo = "Grupo ";
 
@@ -330,23 +448,53 @@ namespace SecEsportes.Views {
             return nomeGrupo;
 
         }
-        private void btnIniciarCompeticao_Click(object sender, EventArgs e) {
-            /*  Requisitos para poder iniciar o campeonato
-             *      - Ter o numero de times conforme definido na competição
-             *      - Ter o número de jogadores mínimos em cada equipe
-             *      - O número de grupos deve ser maior que 0
-             *      - É necessário ter representante
-             *      - É necessário ter treinador
-             */
+        private void btnAvancar_Click(object sender, EventArgs e) {
+            Competicao newCompeticao;
 
             switch (competicao.status) {
                 case StatusEnum._0_Encerrada:
                     break;
                 case StatusEnum._1_Aberta:
-                    Competicao newCompeticao = competicao;
+
+                    // Mais de 1 equipe
+                    if (dgvEquipes.Rows.Count == 1) {
+                        MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
+                            "É necessário pelo menos 2 equipes para realizar o campeonato",
+                            "Não foi possível avançar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    // Mais de 0 grupo
+                    if (competicao.numGrupos == 0) {
+                        MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
+                            "É necessário pelo menos 1 grupo para realizar o campeonato",
+                            "Não foi possível avançar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    // Verifica o número de equipes
+                    if (dgvEquipes.Rows.Count != competicao.numTimes) {
+                        MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
+                            "O número de equipes definidas na competição e o número de times inseridos é diferente.",
+                            "Não foi possível avançar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    foreach (EquipeCompeticao equipe in equipes) {
+                        // Verifica se toda equipe tem o numero minimo de jogadores
+                        if (equipe.atletas.Count < competicao.numMinimoJogadores) {
+                            MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
+                            "Existem equipes que não tem o número mínimo de jogadores para a competição",
+                            "Não foi possível avançar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+                    }
+
+                    newCompeticao = competicao;
                     newCompeticao.status = StatusEnum._3_EmPreparacao;
 
-                    for (int iCount = 0; iCount < newCompeticao.grupos.Count; iCount++) {
+                    competicao.grupos = new List<List<EquipeCompeticao>>();
+                    for (int iCount = 0; iCount < newCompeticao.numGrupos; iCount++) {
                         newCompeticao.grupos.Add(new List<EquipeCompeticao>());
                     }
 
@@ -356,13 +504,68 @@ namespace SecEsportes.Views {
                         MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
 
-                    fillFields();
+                    load(null, null);
 
                     break;
                 case StatusEnum._2_Iniciada:
+                    newCompeticao = competicao;
+                    newCompeticao.status = StatusEnum._0_Encerrada;
+
+                    if (CompeticaoRepositorio.Instance.update(newCompeticao, ref errorMessage)) {
+                        competicao = newCompeticao;
+                    } else {
+                        MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+
+                    load(null, null);
                     break;
+
                 case StatusEnum._3_EmPreparacao:
-                    competicao.status = StatusEnum._2_Iniciada;
+                    foreach (EquipeCompeticao equipe in equipes) {
+                        // Verifica se toda equipe tem representante e treinador
+                        if (equipe.treinador is null || equipe.representante is null) {
+                            MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
+                            "Existem equipes que não tem treinador ou representante definido",
+                            "Não foi possível avançar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+
+                        // Verifica se todos os jogadores tem número
+                        foreach (Atleta atleta in equipe.atletas) {
+                            if (atleta.Numero is null || atleta.Numero < 1) {
+                                MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
+                                "Existem equipes que têm atletas sem a numeração definida",
+                                "Não foi possível avançar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                return;
+                            }
+                        }
+
+                    }
+
+                    // Verifica se todas as equipes têm grupo
+                    int numTotalEquipes = dgvEquipes.Rows.Count, numTotalEquipesEmGrupo = 0;
+                    for (int iCount = 0; iCount < tabs.Controls.Count; iCount++) {
+                        TabPage tabPage = ((TabPage)tabs.Controls[0]);
+                        numTotalEquipesEmGrupo += ((DataGridView)(tabPage.Controls[0])).Rows.Count;
+                    }
+
+                    if (numTotalEquipesEmGrupo != numTotalEquipes) {
+                        MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
+                                "O número total de equipes que estão em um grupo e o número de equipes é diferente.",
+                                "Não foi possível avançar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    newCompeticao = competicao;
+                    newCompeticao.status = StatusEnum._2_Iniciada;
+
+                    if (CompeticaoRepositorio.Instance.update(newCompeticao, ref errorMessage)) {
+                        competicao = newCompeticao;
+                    } else {
+                        MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+
+                    load(null, null);
                     break;
             }
 
@@ -380,7 +583,8 @@ namespace SecEsportes.Views {
 
             for (int iCount = 0; iCount < insertEquipeForm.equipesAInserir.Count; iCount++) {
                 equipes.Add(new EquipeCompeticao(insertEquipeForm.equipesAInserir[iCount].codigo, insertEquipeForm.equipesAInserir[iCount].nome, null, null));
-                CompeticaoRepositorio.Instance.insertEquipeEmCompeticao(competicao.id, insertEquipeForm.equipesAInserir[iCount]);
+                Equipe equipe = insertEquipeForm.equipesAInserir[iCount];
+                CompeticaoRepositorio.Instance.insertEquipeEmCompeticao(competicao.id, equipe);
             }
             refreshDataGridView();
         }
@@ -411,6 +615,7 @@ namespace SecEsportes.Views {
             txtDtFim.Text = "";
             cboModalidades.SelectedIndex = -1;
             txtNumTimes.Text = "0";
+            txtNumMinJogadores.Text = "0";
             txtNumGrupos.Text = "0";
             cboMataMata.SelectedIndex = -1;
             chkIdaEVolta.Checked = false;
@@ -458,6 +663,7 @@ namespace SecEsportes.Views {
             cboModalidades.SelectedIndex = modalidades.FindIndex(modalidade => modalidade.id == competicao.modalidade.id);
             txtNumTimes.Text = competicao.numTimes.ToString();
             txtNumGrupos.Text = competicao.numGrupos.ToString();
+            txtNumMinJogadores.Text = competicao.numMinimoJogadores.ToString();
 
             switch (competicao.mataMata) {
                 case MataMataEnum._1_Nao:
@@ -486,23 +692,39 @@ namespace SecEsportes.Views {
             switch (competicao.status) {
                 case StatusEnum._0_Encerrada:
                     txtStatus.Text = "Competição encerrada";
-                    btnAcaoCompeticao.Text = "Reabrir competição";
+
+                    btnAvancar.Text = "";
+                    btnAvancar.Visible = false;
+                    btnVoltar.Text = "Reabrir";
+                    btnVoltar.Visible = true;
                     break;
                 case StatusEnum._1_Aberta:
                     txtStatus.Text = "Competição aberta";
-                    btnAcaoCompeticao.Text = "Preparar competição";
+
+                    btnAvancar.Text = "Preparar";
+                    btnAvancar.Visible = true;
+                    btnVoltar.Text = "";
+                    btnVoltar.Visible = false;
                     break;
                 case StatusEnum._2_Iniciada:
                     txtStatus.Text = "Competição iniciada";
-                    btnAcaoCompeticao.Text = "Encerrar competição";
+
+                    btnAvancar.Text = "Encerrar";
+                    btnAvancar.Visible = true;
+                    btnVoltar.Text = "Voltar";
+                    btnVoltar.Visible = true;
                     break;
                 case StatusEnum._3_EmPreparacao:
                     txtStatus.Text = "Competição em preparação";
-                    btnAcaoCompeticao.Text = "Iniciar competição";
+
+                    btnAvancar.Text = "Iniciar";
+                    btnAvancar.Visible = true;
+                    btnVoltar.Text = "Voltar";
+                    btnVoltar.Visible = true;
                     break;
                 default:
                     txtStatus.Text = "";
-                    btnAcaoCompeticao.Text = "";
+                    btnAvancar.Text = "";
                     break;
             }
 
@@ -531,21 +753,21 @@ namespace SecEsportes.Views {
                     btnSalvar.Enabled = false;
                     dgvEquipes.Enabled = true;
                     btnAtualizar.Enabled = true;
-                    btnAcaoCompeticao.Enabled = true;
+                    btnAvancar.Enabled = true;
                     break;
                 case Utilidades.WindowMode.ModoDeEdicao:
                     btnCancelar.Enabled = true;
                     btnSalvar.Enabled = true;
                     dgvEquipes.Enabled = false;
                     btnAtualizar.Enabled = false;
-                    btnAcaoCompeticao.Enabled = false;
+                    btnAvancar.Enabled = false;
                     break;
                 case Utilidades.WindowMode.ModoDeInsercao:
                     btnCancelar.Enabled = true;
                     btnSalvar.Enabled = true;
                     dgvEquipes.Enabled = false;
                     btnAtualizar.Enabled = false;
-                    btnAcaoCompeticao.Enabled = false;
+                    btnAvancar.Enabled = false;
                     break;
             }
         }
@@ -612,10 +834,7 @@ namespace SecEsportes.Views {
                     }
 
                     //Atualiza o DataGridView com as equipes daquele grupo
-                    dataGridView.DataSource = null;
-                    dataGridView.Refresh();
-                    dataGridView.DataSource = competicao.grupos[numGrupo];
-                    dataGridView.Refresh();
+                    refreshDataGridViewGrupos(dataGridView, competicao.grupos[numGrupo]);
                 }
             }
         }
@@ -659,7 +878,7 @@ namespace SecEsportes.Views {
 
                     // Cria o menu de contexto e suas respectivas configurações para cada equipe do grupo
                     ContextMenu contextMenu = new ContextMenu();
-                    MenuItem menuItem = new MenuItem("Excluir " + competicao.grupos[indiceGrupo][e.RowIndex].codigo + " do " + tabs.Controls[indiceGrupo].Text);
+                    MenuItem menuItem = new MenuItem("Excluir " + competicao.grupos[indiceGrupo][e.RowIndex].codigo + " - " + competicao.grupos[indiceGrupo][e.RowIndex].nome + " do " + tabs.Controls[indiceGrupo].Text);
                     menuItem.Click += excluirDoGrupo;
                     menuItem.Tag = competicao.grupos[indiceGrupo][e.RowIndex].id.ToString() + "|-|" + indiceGrupo.ToString();
                     contextMenu.MenuItems.Add(menuItem);
@@ -687,11 +906,55 @@ namespace SecEsportes.Views {
 
             // Atualiza o DataSource dos grupos
             DataGridView dgvGrupo = (DataGridView)tabs.Controls[idGrupo].Controls[0];
-            dgvGrupo.DataSource = null;
-            dgvGrupo.Refresh();
-            dgvGrupo.DataSource = competicao.grupos[idGrupo];
-            dgvGrupo.Refresh();
+            refreshDataGridViewGrupos(dgvGrupo, competicao.grupos[idGrupo]);
 
+        }
+
+        private void btnVoltar_Click(object sender, EventArgs e) {
+            Competicao newCompeticao;
+
+            switch (competicao.status) {
+                case StatusEnum._0_Encerrada:
+                    newCompeticao = competicao;
+                    newCompeticao.status = StatusEnum._2_Iniciada;
+
+                    if (CompeticaoRepositorio.Instance.update(newCompeticao, ref errorMessage)) {
+                        competicao = newCompeticao;
+                    } else {
+                        MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+
+                    load(null, null);
+
+                    break;
+                case StatusEnum._1_Aberta:
+                     break;
+                case StatusEnum._2_Iniciada:
+                    newCompeticao = competicao;
+                    newCompeticao.status = StatusEnum._3_EmPreparacao;
+
+                    if (CompeticaoRepositorio.Instance.update(newCompeticao, ref errorMessage)) {
+                        competicao = newCompeticao;
+                    } else {
+                        MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+
+                    load(null, null);
+                    break;
+
+                case StatusEnum._3_EmPreparacao:
+                    newCompeticao = competicao;
+                    newCompeticao.status = StatusEnum._1_Aberta;
+
+                    if (CompeticaoRepositorio.Instance.update(newCompeticao, ref errorMessage)) {
+                        competicao = newCompeticao;
+                    } else {
+                        MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+
+                    load(null, null);
+                    break;
+            }
         }
     }
 }

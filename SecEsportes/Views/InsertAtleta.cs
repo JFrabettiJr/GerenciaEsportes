@@ -18,7 +18,7 @@ namespace SecEsportes.Views
             InitializeComponent();
             CenterToScreen();
 
-            atletas = FuncaoRepositorio.Instance.getAtletasForaCompeticao(ref errorMessage, idCompeticao);
+            atletas = FuncaoRepositorio.Instance.getAtletasForaCompeticao(idCompeticao, ref errorMessage);
             if (atletas is null) {
                 MessageBox.Show("Houve um erro ao tentar listar os registros." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -80,6 +80,18 @@ namespace SecEsportes.Views
         private void btnInserir_Click(object sender, EventArgs e) {
             atletasAInserir = atletas.FindAll(match => match.selected == true);
             Close();
+        }
+
+        private void btnMarcarTudo_Click(object sender, EventArgs e) {
+            for (int iCount = 0; iCount < atletas.Count; iCount++) {
+                dgvAtletas.Rows[iCount].Cells[nameof(Atleta_Insert.selected)].Value = true;
+            }
+        }
+
+        private void btnDesmarcarTudo_Click(object sender, EventArgs e) {
+            for (int iCount = 0; iCount < atletas.Count; iCount++) {
+                dgvAtletas.Rows[iCount].Cells[nameof(Atleta_Insert.selected)].Value = false;
+            }
         }
     }
 }

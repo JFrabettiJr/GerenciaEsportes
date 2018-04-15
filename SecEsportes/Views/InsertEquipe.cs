@@ -60,5 +60,17 @@ namespace SecEsportes.Views {
             equipesAInserir = equipes.FindAll(match => match.selected == true);
             Close();
         }
+
+        private void btnMarcarTudo_Click(object sender, EventArgs e) {
+            for (int iCount = 0; iCount < equipes.Count; iCount++) {
+                dgvEquipes.Rows[iCount].Cells[nameof(Equipe_Insert.selected)].Value = true;
+            }
+        }
+
+        private void btnDesmarcarTudo_Click(object sender, EventArgs e) {
+            for (int iCount = 0; iCount < equipes.Count; iCount++) {
+                dgvEquipes.Rows[iCount].Cells[nameof(Equipe_Insert.selected)].Value = false;
+            }
+        }
     }
 }

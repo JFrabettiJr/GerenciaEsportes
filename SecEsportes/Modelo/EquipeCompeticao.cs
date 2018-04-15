@@ -12,6 +12,7 @@ namespace SecEsportes.Modelo{
         public int id_representante { get; set; }
         public List<Cargo> comissaotecnica { get; set; }
         public List<Atleta> atletas { get; set; }
+        public int pontos { get; set; }
         public int jogos { get; set; }
         public int golsPro { get; set; }
         public int golsContra { get; set; }

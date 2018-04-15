@@ -8,17 +8,13 @@ using SecEsportes.Modelo;
 using SecEsportes.Infraestrutura;
 using System.Data.SQLite;
 
-namespace SecEsportes.Repositorio
-{
-    public class PessoaRepositorio{
+namespace SecEsportes.Repositorio {
+    public class PessoaRepositorio {
         #region Implementação Singleton
         private static PessoaRepositorio instance = null;
-        public static PessoaRepositorio Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
+        public static PessoaRepositorio Instance {
+            get {
+                if (instance == null) {
                     instance = new PessoaRepositorio();
                 }
                 return instance;
@@ -26,7 +22,7 @@ namespace SecEsportes.Repositorio
         }
         #endregion
 
-        private PessoaRepositorio(){
+        private PessoaRepositorio() {
 
         }
 
@@ -76,14 +72,16 @@ namespace SecEsportes.Repositorio
 
                     return pessoa;
                 }
-            }
-            catch(Exception ex) {
+            } catch (Exception ex) {
                 messageError = ex.Message;
                 return null;
             }
         }
-        public List<Pessoa> get(ref string messageError)
-        {
+        public List<Pessoa> get() {
+            string myString = "";
+            return get(ref myString);
+        }
+        public List<Pessoa> get(ref string messageError) {
             try {
                 using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
                     connection.Open();
@@ -95,28 +93,31 @@ namespace SecEsportes.Repositorio
 
                     return pessoas;
                 }
-            }
-            catch(Exception ex) {
+            } catch (Exception ex) {
                 messageError = ex.Message;
                 return null;
             }
         }
-
-        public List<Atleta> getAtletasPorEquipeCompeticao(int id_Competicao, int id_Equipe, ref string errorMessage) {
+        public List<Atleta> getAtletasByEquipeCompeticao(int id_Competicao, int id_Equipe) {
+            string myString = "";
+            return getAtletasByEquipeCompeticao(id_Competicao, id_Equipe, ref myString);
+        }
+        public List<Atleta> getAtletasByEquipeCompeticao(int id_Competicao, int id_Equipe, ref string errorMessage) {
             try {
                 using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
                     connection.Open();
 
                     string strSQL;
-                    strSQL = "SELECT	pessoa.id as id_pessoa, EA.id_funcao " +
+                    strSQL = "SELECT	pessoa.id as id_pessoa, EA.id_funcao, EA.Numero " +
                                 "FROM   Equipe_Atletas AS EA " +
                                 "       INNER JOIN Pessoa ON Pessoa.id = EA.id_Atleta " +
                                 "WHERE  EA.id_Competicao = @id_Competicao " +
                                 "       AND EA.id_Equipe = @id_Equipe; ";
 
                     List<Atleta> atletas = connection.Query<Atleta>(strSQL,
-                        new {   id_Competicao,
-                                id_Equipe
+                        new {
+                            id_Competicao,
+                            id_Equipe
                         }).ToList();
                     foreach (Atleta atleta in atletas) {
                         atleta.funcao = FuncaoRepositorio.Instance.get(atleta.id_funcao);
@@ -125,8 +126,7 @@ namespace SecEsportes.Repositorio
 
                     return atletas;
                 }
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 errorMessage = ex.Message;
                 return null;
             }
@@ -143,7 +143,8 @@ namespace SecEsportes.Repositorio
                                 "WHERE  Pessoa.id = @id_Pessoa ";
 
                     Cargo cargo = connection.Query<Cargo>(strSQL,
-                        new {   id_Pessoa
+                        new {
+                            id_Pessoa
                         }).First();
 
                     cargo.funcao = FuncaoRepositorio.Instance.get(cargo.id_funcao);
@@ -161,7 +162,7 @@ namespace SecEsportes.Repositorio
                     connection.Open();
 
                     string strSQL;
-                    strSQL =    "SELECT pessoa.id AS id_pessoa, Pessoa_Funcoes.id_Funcao " +
+                    strSQL = "SELECT pessoa.id AS id_pessoa, Pessoa_Funcoes.id_Funcao " +
                                 "FROM   pessoa " +
                                 "       INNER JOIN Pessoa_Funcoes ON Pessoa.id = Pessoa_Funcoes.id_Pessoa " +
                                 "WHERE  Pessoa_Funcoes.id_Funcao IN (   SELECT  id " +
@@ -173,9 +174,10 @@ namespace SecEsportes.Repositorio
                                 "                                                       AND id_Equipe <> @id_Equipe) ";
 
                     List<Cargo> representantes = connection.Query<Cargo>(strSQL,
-                        new {   FuncaoRepositorio.Instance.codigoRepresentante,
-                                id_Competicao,
-                                id_Equipe
+                        new {
+                            FuncaoRepositorio.Instance.codigoRepresentante,
+                            id_Competicao,
+                            id_Equipe
                         }).ToList();
 
                     foreach (Cargo representante in representantes) {
@@ -225,7 +227,7 @@ namespace SecEsportes.Repositorio
             }
         }
         public bool insert(ref Pessoa pessoa, ref string messageError) {
-            try{
+            try {
                 SQLiteConnection connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection();
                 pessoa.id = connection.Query<int>("" +
                     "INSERT INTO pessoa (CPF, Nome, DataNascimento) VALUES (@CPF, @Nome, @DataNascimento); select last_insert_rowid()",
@@ -238,13 +240,13 @@ namespace SecEsportes.Repositorio
                 }
 
                 return true;
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 messageError = ex.Message;
                 return false;
             }
         }
         public bool update(Pessoa pessoa, ref string messageError) {
-            try{
+            try {
                 SQLiteConnection connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection();
                 connection.Query(
                     "UPDATE pessoa SET CPF = @CPF, Nome = @Nome, DataNascimento = @DataNascimento WHERE id = @id", pessoa);
@@ -266,13 +268,13 @@ namespace SecEsportes.Repositorio
                 }
 
                 return true;
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 messageError = ex.Message;
                 return false;
             }
         }
         public bool delete(Pessoa pessoa, ref string messageError) {
-            try{
+            try {
                 SQLiteConnection connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection();
                 connection.Query(
                     "DELETE FROM pessoa WHERE id = @id", pessoa);
@@ -281,7 +283,7 @@ namespace SecEsportes.Repositorio
                     "DELETE FROM Pessoa_Funcoes WHERE id_Pessoa = @id", pessoa);
 
                 return true;
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 messageError = ex.Message;
                 return false;
             }

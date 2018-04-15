@@ -153,6 +153,7 @@
             this.txtDtNascimento.Name = "txtDtNascimento";
             this.txtDtNascimento.Size = new System.Drawing.Size(118, 20);
             this.txtDtNascimento.TabIndex = 5;
+            this.txtDtNascimento.KeyDown += new System.Windows.Forms.KeyEventHandler(this.fields_KeyDown);
             // 
             // chkLstFuncoes
             // 

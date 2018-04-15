@@ -52,6 +52,7 @@ namespace SecEsportes.Repositorio {
                     "vitorias INTEGER, " +
                     "empates INTEGER, " +
                     "derrotas INTEGER, " +
+                    "pontos INTEGER, " +
                     "nome NVARCHAR(100) NOT NULL, " +
                     "FOREIGN KEY(id_Equipe) REFERENCES Equipe(id), " +
                     "FOREIGN KEY(id_Competicao) REFERENCES Competicao(id), " +
@@ -168,7 +169,7 @@ namespace SecEsportes.Repositorio {
                 return false;
             }
         }
-        public bool insertAtletaEmEquipe(int idCompeticao, int idEquipe, Atleta_Insert atleta) {
+        public bool insertAtletaEmEquipe(int idCompeticao, int idEquipe, Atleta atleta) {
             try {
 
                 string strSQL;
@@ -182,7 +183,7 @@ namespace SecEsportes.Repositorio {
                         id_Competicao = idCompeticao,
                         id_Funcao = atleta.id_funcao,
                         id_Atleta = atleta.id_pessoa,
-                        numero = 0
+                        numero = atleta.Numero
                     });
                 return true;
             }
@@ -201,7 +202,7 @@ namespace SecEsportes.Repositorio {
                 return false;
             }
         }
-        public bool update(EquipeCompeticao equipe, Competicao competicao) {
+        public bool updateEquipeCompeticao(EquipeCompeticao equipe, Competicao competicao) {
             try {
 
                 string strSQL;
@@ -211,12 +212,43 @@ namespace SecEsportes.Repositorio {
                             "WHERE  id_Equipe = @id_Equipe " +
                             "       AND id_Competicao = @id_Competicao ";
 
+                int id_Treinador, id_Representante;
+                if (equipe.treinador is null)
+                    id_Treinador = -1;
+                else
+                    id_Treinador = equipe.treinador.id_pessoa;
+
+                if (equipe.representante is null)
+                    id_Representante = -1;
+                else
+                    id_Representante = equipe.representante.id_pessoa;
+
                 SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(strSQL,
-                    new {   id_Treinador = equipe.treinador.id_pessoa,
-                            id_Representante = equipe.representante.id_pessoa,
+                    new {   id_Treinador,
+                            id_Representante,
                             id_Equipe = equipe.id,
                             id_Competicao = competicao.id
                     });
+
+                // Atualiza a numeração da equipe
+                if (!(equipe.atletas is null)) {
+                    strSQL = "UPDATE Equipe_Atletas " +
+                            "SET    numero = @numero " +
+                            "WHERE  id_Equipe = @id_Equipe " +
+                            "       AND id_Competicao = @id_Competicao " +
+                            "       AND id_Atleta = @id_Atleta ";
+
+                    foreach (Atleta atleta in equipe.atletas) {
+                        SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(strSQL,
+                            new {
+                                numero = atleta.Numero,
+                                id_Equipe = equipe.id,
+                                id_Competicao = competicao.id,
+                                id_Atleta = atleta.id_pessoa
+                            });
+                    }
+                }                
+
                 return true;
             } catch (Exception ex) { 
                 return false;
@@ -277,7 +309,7 @@ namespace SecEsportes.Repositorio {
                         }).First();
 
                     equipe.comissaotecnica = getFuncoesByEquipeCompeticao(id_Competicao, equipe.id);
-                    equipe.atletas = getAtletasByEquipeCompeticao(id_Competicao, equipe.id);
+                    equipe.atletas = PessoaRepositorio.Instance.getAtletasByEquipeCompeticao(id_Competicao, equipe.id);
                     equipe.representante = PessoaRepositorio.Instance.getCargo(equipe.id_representante);
                     equipe.treinador = PessoaRepositorio.Instance.getCargo(equipe.id_treinador);
 
@@ -304,7 +336,7 @@ namespace SecEsportes.Repositorio {
 
                     for (int iCount = 0; iCount < equipes.Count; iCount++) {
                         equipes[iCount].comissaotecnica = getFuncoesByEquipeCompeticao(idCompeticao, equipes[iCount].id);
-                        equipes[iCount].atletas = getAtletasByEquipeCompeticao(idCompeticao, equipes[iCount].id);
+                        equipes[iCount].atletas = PessoaRepositorio.Instance.getAtletasByEquipeCompeticao(idCompeticao, equipes[iCount].id);
                         equipes[iCount].representante = PessoaRepositorio.Instance.getCargo(equipes[iCount].id_representante);
                         equipes[iCount].treinador = PessoaRepositorio.Instance.getCargo(equipes[iCount].id_treinador);
                     }
@@ -317,31 +349,6 @@ namespace SecEsportes.Repositorio {
                 return null;
             }
         }
-
-        private List<Atleta> getAtletasByEquipeCompeticao(int idCompeticao, int idEquipe) {
-            try {
-                using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
-                    connection.Open();
-
-                    List<Atleta> atletas = connection.Query<Atleta>("" +
-                        "SELECT Equipe_Atletas.id, " +
-                        "       Funcao.*, " +
-                        "       Pessoa.* " +
-                        "FROM   Equipe_Atletas " +
-                        "       INNER JOIN Funcao ON Equipe_Atletas.id_Funcao = Funcao.id " +
-                        "       INNER JOIN Pessoa ON Equipe_Atletas.id_Pessoa = Pessoa.id " +
-                        "WHERE  Equipe_Atletas.id_Equipe = " + idEquipe + " " +
-                        "       AND Equipe_Atletas.id_Competicao = " + idCompeticao +
-                        "       AND Equipe_Atletas.Codigo = '" + FuncaoRepositorio.Instance.codigoAtleta + "'").ToList();
-
-                    return atletas;
-                }
-            }
-            catch (Exception ex) {
-                return null;
-            }
-        }
-
         private List<Cargo> getFuncoesByEquipeCompeticao(int idCompeticao, int idEquipe) {
             try {
                 using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {

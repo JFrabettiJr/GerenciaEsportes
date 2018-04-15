@@ -8,17 +8,13 @@ using SecEsportes.Modelo;
 using SecEsportes.Infraestrutura;
 using System.Data.SQLite;
 
-namespace SecEsportes.Repositorio
-{
-    public class FuncaoRepositorio{
+namespace SecEsportes.Repositorio {
+    public class FuncaoRepositorio {
         #region Implementação Singleton
         private static FuncaoRepositorio instance = null;
-        public static FuncaoRepositorio Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
+        public static FuncaoRepositorio Instance {
+            get {
+                if (instance == null) {
                     instance = new FuncaoRepositorio();
                 }
                 return instance;
@@ -26,12 +22,12 @@ namespace SecEsportes.Repositorio
         }
         #endregion
 
-        public string codigoAtleta {get {   return "ATL";   }}
+        public string codigoAtleta { get { return "ATL"; } }
         public string codigoRepresentante { get { return "REP"; } }
         public string codigoTreinador { get { return "TEC"; } }
         public string codigoArbitro { get { return "ARB"; } }
 
-        private FuncaoRepositorio(){
+        private FuncaoRepositorio() {
 
         }
 
@@ -48,7 +44,7 @@ namespace SecEsportes.Repositorio
             }
 
             //Inserção do registro de atleta
-            if (connection.Query("SELECT 1 FROM Funcao WHERE codigo = '" + codigoAtleta + "' LIMIT 1; ").Count() < 1){
+            if (connection.Query("SELECT 1 FROM Funcao WHERE codigo = '" + codigoAtleta + "' LIMIT 1; ").Count() < 1) {
                 SQLiteCommand command = connection.CreateCommand();
 
                 command.CommandText = "INSERT INTO Funcao (codigo, descricao) VALUES ('" + codigoAtleta + "', 'Atleta') ";
@@ -95,14 +91,16 @@ namespace SecEsportes.Repositorio
 
                     return funcao;
                 }
-            }
-            catch(Exception ex) {
+            } catch (Exception ex) {
                 messageError = ex.Message;
                 return null;
             }
         }
-        public List<Funcao> get(ref string messageError)
-        {
+        public List<Funcao> get() {
+            string myString = "";
+            return get(ref myString);
+        }
+        public List<Funcao> get(ref string messageError) {
             try {
                 using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
                     connection.Open();
@@ -111,8 +109,7 @@ namespace SecEsportes.Repositorio
 
                     return funcoes;
                 }
-            }
-            catch(Exception ex) {
+            } catch (Exception ex) {
                 messageError = ex.Message;
                 return null;
             }
@@ -131,12 +128,50 @@ namespace SecEsportes.Repositorio
 
                     return funcoes;
                 }
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 return null;
             }
         }
-        public List<Atleta_Insert> getAtletasForaCompeticao(ref string errorMessage, int idCompeticao) {
+        public List<Atleta> getAtletas() {
+            string myString = "";
+            return getAtletas(ref myString);
+        }
+        public List<Atleta> getAtletas(ref string errorMessage) {
+            try {
+                using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
+                    connection.Open();
+
+                    string strSQL;
+                    strSQL = "SELECT 0 As Selected, pessoa.id as id_pessoa, Pessoa_Funcoes.id_funcao " +
+                                "FROM   Pessoa " +
+                                "       INNER JOIN Pessoa_Funcoes ON Pessoa.id = Pessoa_Funcoes.id_Pessoa " +
+                                "WHERE   1 = 1 " +
+                                "        AND Pessoa_Funcoes.id_Funcao IN(SELECT  id " +
+                                "                                        FROM    Funcao WHERE codigo = @codigoAtleta) " +
+                                "ORDER BY  Pessoa.Nome";
+
+                    List<Atleta> atletas = connection.Query<Atleta>(strSQL,
+                        new {
+                            codigoAtleta
+                        }).ToList();
+
+                    foreach (Atleta atleta in atletas) {
+                        atleta.funcao = FuncaoRepositorio.Instance.get(atleta.id_funcao);
+                        atleta.pessoa = PessoaRepositorio.Instance.get(atleta.id_pessoa);
+                    }
+
+                    return atletas;
+                }
+            } catch (Exception ex) {
+                errorMessage = ex.Message;
+                return null;
+            }
+        }
+        public List<Atleta_Insert> getAtletasForaCompeticao(int idCompeticao){
+            string myString = "";
+            return getAtletasForaCompeticao(idCompeticao, ref myString);
+        }
+        public List<Atleta_Insert> getAtletasForaCompeticao(int idCompeticao, ref string errorMessage) {
             try {
                 using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
                     connection.Open();
@@ -154,9 +189,10 @@ namespace SecEsportes.Repositorio
                                 "ORDER BY  Pessoa.Nome";
 
                     List<Atleta_Insert> atletas = connection.Query<Atleta_Insert>(strSQL,
-                        new {   codigoAtleta,
-                                idCompeticao
-                    }).ToList();
+                        new {
+                            codigoAtleta,
+                            idCompeticao
+                        }).ToList();
 
                     foreach (Atleta atleta in atletas) {
                         atleta.funcao = FuncaoRepositorio.Instance.get(atleta.id_funcao);
@@ -165,47 +201,48 @@ namespace SecEsportes.Repositorio
 
                     return atletas;
                 }
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 errorMessage = ex.Message;
                 return null;
             }
         }
         public bool insert(ref Funcao funcao, ref string messageError) {
-            try{
+            try {
                 funcao.id = SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query<int>("" +
                     "INSERT INTO Funcao (Codigo, Descricao) VALUES (@Codigo, @Descricao); select last_insert_rowid()",
                     funcao).First();
                 return true;
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 messageError = ex.Message;
                 return false;
             }
         }
         public bool update(Funcao funcao, ref string messageError) {
-            try{
+            try {
                 SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(
-                    "UPDATE Funcao SET Codigo = @Codigo, Descricao = @Descricao WHERE id = @id WHERE Codigo <> @codigoAtleta", 
-                        new {   funcao.codigo,
-                                funcao.descricao,
-                                funcao.id,
-                                codigoAtleta
+                    "UPDATE Funcao SET Codigo = @Codigo, Descricao = @Descricao WHERE id = @id WHERE Codigo <> @codigoAtleta",
+                        new {
+                            funcao.codigo,
+                            funcao.descricao,
+                            funcao.id,
+                            codigoAtleta
                         });
                 return true;
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 messageError = ex.Message;
                 return false;
             }
         }
         public bool delete(Funcao funcao, ref string messageError) {
-            try{
+            try {
                 SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(
-                    "DELETE FROM Funcao WHERE id = @id AND Codigo <> @codigoAtleta", 
-                    new {   funcao.id,
-                            codigoAtleta
+                    "DELETE FROM Funcao WHERE id = @id AND Codigo <> @codigoAtleta",
+                    new {
+                        funcao.id,
+                        codigoAtleta
                     });
                 return true;
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 messageError = ex.Message;
                 return false;
             }

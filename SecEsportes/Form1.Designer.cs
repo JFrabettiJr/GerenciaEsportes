@@ -40,6 +40,7 @@
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
             this.button1 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
+            this.btnIncluirTestes = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
@@ -193,11 +194,22 @@
             this.label3.Text = "Cadastro de competições";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // btnIncluirTestes
+            // 
+            this.btnIncluirTestes.Location = new System.Drawing.Point(456, 59);
+            this.btnIncluirTestes.Name = "btnIncluirTestes";
+            this.btnIncluirTestes.Size = new System.Drawing.Size(96, 66);
+            this.btnIncluirTestes.TabIndex = 4;
+            this.btnIncluirTestes.Text = "Incluir dados de teste";
+            this.btnIncluirTestes.UseVisualStyleBackColor = true;
+            this.btnIncluirTestes.Click += new System.EventHandler(this.btnIncluirTestes_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 561);
+            this.Controls.Add(this.btnIncluirTestes);
             this.Controls.Add(this.tableLayoutPanel4);
             this.Controls.Add(this.tableLayoutPanel3);
             this.Controls.Add(this.tableLayoutPanel2);
@@ -226,6 +238,7 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button btnIncluirTestes;
     }
 }
 
