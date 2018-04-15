@@ -48,7 +48,7 @@ namespace SecEsportes.Repositorio {
                 command.ExecuteNonQuery();
             }
 
-            //Criação da tabela Competicoes
+            //Criação da tabela Competicao_Grupos
             if (connection.GetSchema("Tables", new[] { null, null, "Competicao_Grupos", null }).Rows.Count == 0) {
                 SQLiteCommand command = connection.CreateCommand();
 
@@ -60,6 +60,43 @@ namespace SecEsportes.Repositorio {
                     "FOREIGN KEY(id_Competicao) REFERENCES Competicao(id), " +
                     "FOREIGN KEY(id_Equipe) REFERENCES Equipe_Competicao(id_Equipe) " +
                     ") ";
+                command.ExecuteNonQuery();
+            }
+
+            //Criação da tabela Competicao_Partida
+            if (connection.GetSchema("Tables", new[] { null, null, "Competicao_Partida", null }).Rows.Count == 0) {
+                SQLiteCommand command = connection.CreateCommand();
+
+                command.CommandText = "CREATE TABLE Competicao_Partida( " +
+                                        "    id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                                        "    id_Competicao INTEGER, " +
+                                        "    id_Equipe1 INTEGER, " +
+                                        "    id_Equipe2 INTEGER, " +
+                                        "    Data DATETIME, " +
+                                        "    Rodada INT, /* > 0 Representa o nº da Rodada | < 0 Representa MataMata (-1 Final, -2 SemiFinal, -3 Quartas de final, etc.)*/ " +
+                                        "    numGrupo INT, " +
+                                        "    FOREIGN KEY(id_Competicao) REFERENCES Competicao(id), " +
+                                        "    FOREIGN KEY(id_Equipe1) REFERENCES Equipe_Competicao(id_Equipe), " +
+                                        "    FOREIGN KEY(id_Equipe2) REFERENCES Equipe_Competicao(id_Equipe), " +
+                                        "    FOREIGN KEY(numGrupo) REFERENCES Competicao_Grupos(numGrupo) " +
+                                        ")";
+                command.ExecuteNonQuery();
+            }
+
+            //Criação da tabela Competicao_Partida_Evento
+            if (connection.GetSchema("Tables", new[] { null, null, "Competicao_Partida_Evento", null }).Rows.Count == 0) {
+                SQLiteCommand command = connection.CreateCommand();
+
+                command.CommandText =   "CREATE TABLE Competicao_Partida_Evento( " +
+                                        "    id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                                        "    id_Partida INTEGER, " +
+                                        "    id_Equipe INTEGER, " +
+                                        "    id_Atleta INTEGER, " +
+                                        "    tpEvento INTEGER, " +
+                                        "    FOREIGN KEY(id_Partida) REFERENCES Competicao_Partida(id), " +
+                                        "    FOREIGN KEY(id_Equipe) REFERENCES Equipe_Competicao(id_Equipe), " +
+                                        "    FOREIGN KEY(id_Atleta) REFERENCES Pessoa(id) " +
+                                        ") ";
                 command.ExecuteNonQuery();
             }
 
@@ -78,7 +115,9 @@ namespace SecEsportes.Repositorio {
                         .FirstOrDefault();
 
                     competicao.equipes = EquipeRepositorio.Instance.getEquipesByCompeticao(competicao.id);
-                    competicao.grupos = new List<List<EquipeCompeticao>>();
+                    competicao.modalidade = ModalidadeRepositorio.Instance.get(competicao.id_Modalidade);
+                    competicao.grupos = getGruposPorCompeticao(competicao.id);
+                    competicao.partidas = getPartidasPorCompeticao(competicao.id);
 
                     return competicao;
                 }
@@ -101,12 +140,67 @@ namespace SecEsportes.Repositorio {
                         competicoes[iCount].equipes = EquipeRepositorio.Instance.getEquipesByCompeticao(competicoes[iCount].id);
                         competicoes[iCount].modalidade = ModalidadeRepositorio.Instance.get(competicoes[iCount].id_Modalidade);
                         competicoes[iCount].grupos = getGruposPorCompeticao(competicoes[iCount].id);
+                        competicoes[iCount].partidas = getPartidasPorCompeticao(competicoes[iCount].id);
                     }
 
                     return competicoes;
                 }
             } catch (Exception ex) {
                 messageError = ex.Message;
+                return null;
+            }
+        }
+
+        private List<Competicao_Partida> getPartidasPorCompeticao(int id_Competicao) {
+            try {
+                using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
+                    connection.Open();
+
+                    string strSQL;
+                    strSQL =    "SELECT *" +
+                                "FROM   Competicao_Partida " +
+                                "WHERE  id_Competicao = @id_Competicao ";
+
+                    List<Competicao_Partida> partidas = connection.Query<Competicao_Partida>(strSQL,
+                        new {
+                            id_Competicao
+                        }).ToList();
+
+                    foreach (Competicao_Partida partida in partidas) {
+                        partida.equipe1 = EquipeRepositorio.Instance.getEquipeCompeticao(partida.id_Equipe1, id_Competicao);
+                        partida.equipe2 = EquipeRepositorio.Instance.getEquipeCompeticao(partida.id_Equipe2, id_Competicao);
+                        partida.eventos = getEventosPorPartida(partida.id, id_Competicao);
+                    }
+
+                    return partidas;
+                }
+            } catch (Exception ex) {
+                return null;
+            }
+        }
+
+        private List<Competicao_Partida_Evento> getEventosPorPartida(int id_Partida, int id_Competicao) {
+            try {
+                using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
+                    connection.Open();
+
+                    string strSQL;
+                    strSQL =    "SELECT * " +
+                                "FROM   Competicao_Partida_Evento " +
+                                "WHERE  id_Partida = @id_Partida ";
+
+                    List<Competicao_Partida_Evento> eventos = connection.Query<Competicao_Partida_Evento>(strSQL,
+                        new {   id_Partida
+                        }).ToList();
+
+                    foreach (Competicao_Partida_Evento evento in eventos) {
+                        evento.atleta = PessoaRepositorio.Instance.getAtleta(evento.id_Atleta);
+                        evento.equipe = EquipeRepositorio.Instance.getEquipeCompeticao(evento.id_Equipe, id_Competicao);
+                    }
+
+                    return eventos;
+                }
+            } catch (Exception ex) {
                 return null;
             }
         }
@@ -150,7 +244,50 @@ namespace SecEsportes.Repositorio {
                 return null;
             }
         }
+        public int getNumRodadas(Competicao competicao) {
+            try {
+                using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
+                    connection.Open();
 
+                    string strSQL;
+                    strSQL = "SELECT MAX(rodada) FROM Competicao_Partida WHERE id_Competicao = @id_Competicao ";
+
+                    int partidaJaExistente = connection.Query<int>(strSQL,
+                        new {
+                            id_Competicao = competicao.id,
+                        }).First();
+
+                    return partidaJaExistente;
+                }
+            } catch (Exception ex) {
+                return -1;
+            }
+        }
+        public bool partidaJaExiste(Competicao competicao, Competicao_Partida partida) {
+            try {
+                using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
+                    connection.Open();
+
+                    string strSQL;
+                    strSQL =    "SELECT COUNT(1) as Existe " +
+                                "FROM   Competicao_Partida " +
+                                "WHERE  id_Competicao = @id_Competicao " +
+                                "       AND (   (id_Equipe1 = @id_Equipe1 AND id_Equipe2 = @id_Equipe2) OR " +
+                                "               (id_Equipe1 = @id_Equipe2 AND id_Equipe2 = @id_Equipe1) ) ";
+
+                    int partidaJaExistente = connection.Query<int>(strSQL,
+                        new {
+                            id_Competicao = competicao.id,
+                            id_Equipe1 = partida.equipe1.id,
+                            id_Equipe2 = partida.equipe2.id
+                        }).First();
+
+                    return partidaJaExistente > 0;
+                }
+            } catch (Exception ex) {
+                return true;
+            }
+        }
         public bool insert(ref Competicao competicao, ref string messageError) {
             try {
                 competicao.id = SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query<int>("" +
@@ -200,6 +337,50 @@ namespace SecEsportes.Repositorio {
                         pontos = 0,
                         nome = ""
                     });
+                return true;
+            } catch (Exception ex) {
+                return false;
+            }
+        }
+        public bool deletaPartidas(ref Competicao competicao) {
+            try {
+
+                string strSQL;
+                strSQL = "DELETE FROM Competicao_Partida WHERE id_Competicao = @id_Competicao";
+
+                SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(strSQL,
+                    new {
+                        id_Competicao = competicao.id
+                    });
+
+                competicao.partidas = new List<Competicao_Partida>();
+
+                return true;
+            } catch (Exception ex) {
+                return false;
+            }
+        }
+        public bool insertPartida(ref Competicao competicao, Competicao_Partida partida) {
+            try {
+
+                string strSQL;
+                strSQL = "INSERT INTO Competicao_Partida " +
+                            "(id_Competicao, id_Equipe1, id_Equipe2, Data, Rodada, numGrupo) " +
+                            "VALUES " +
+                            "(@id_Competicao, @id_Equipe1, @id_Equipe2, @Data, @Rodada, @numGrupo) ";
+
+                SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(strSQL,
+                    new {
+                        id_Competicao = competicao.id,
+                        id_Equipe1 = partida.equipe1.id,
+                        id_Equipe2 = partida.equipe2.id,
+                        Data = partida.data,
+                        Rodada = partida.rodada,
+                        partida.numGrupo
+                    });
+
+                competicao.partidas.Add(partida);
+
                 return true;
             } catch (Exception ex) {
                 return false;
@@ -270,16 +451,6 @@ namespace SecEsportes.Repositorio {
             try {
                 SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(
                     "DELETE FROM Competicao WHERE id = @id", competicao);
-                return true;
-            } catch (Exception ex) {
-                messageError = ex.Message;
-                return false;
-            }
-        }
-        public bool deleteEquipe(EquipeCompeticao equipe, ref string messageError) {
-            try {
-                SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(
-                    "DELETE FROM Equipe_Competicao WHERE id = @id", equipe);
                 return true;
             } catch (Exception ex) {
                 messageError = ex.Message;

@@ -18,7 +18,7 @@ namespace SecEsportes.Views
             InitializeComponent();
             CenterToScreen();
 
-            atletas = FuncaoRepositorio.Instance.getAtletasForaCompeticao(idCompeticao, ref errorMessage);
+            atletas = PessoaRepositorio.Instance.getAtletasForaCompeticao(idCompeticao, ref errorMessage);
             if (atletas is null) {
                 MessageBox.Show("Houve um erro ao tentar listar os registros." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

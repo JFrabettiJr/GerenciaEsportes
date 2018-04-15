@@ -61,6 +61,7 @@
             this.btnExcluirEquipe = new System.Windows.Forms.Button();
             this.btnGerarGrupos = new System.Windows.Forms.Button();
             this.btnVoltar = new System.Windows.Forms.Button();
+            this.btnGerarPartidas = new System.Windows.Forms.Button();
             this.tlp1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvEquipes)).BeginInit();
             this.tlp2.SuspendLayout();
@@ -483,11 +484,22 @@
             this.btnVoltar.UseVisualStyleBackColor = true;
             this.btnVoltar.Click += new System.EventHandler(this.btnVoltar_Click);
             // 
+            // btnGerarPartidas
+            // 
+            this.btnGerarPartidas.Location = new System.Drawing.Point(470, 141);
+            this.btnGerarPartidas.Name = "btnGerarPartidas";
+            this.btnGerarPartidas.Size = new System.Drawing.Size(122, 23);
+            this.btnGerarPartidas.TabIndex = 16;
+            this.btnGerarPartidas.Text = "Gerar partidas";
+            this.btnGerarPartidas.UseVisualStyleBackColor = true;
+            this.btnGerarPartidas.Click += new System.EventHandler(this.btnGerarPartidas_Click);
+            // 
             // EditCompeticao
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(734, 536);
+            this.Controls.Add(this.btnGerarPartidas);
             this.Controls.Add(this.btnVoltar);
             this.Controls.Add(this.btnGerarGrupos);
             this.Controls.Add(this.btnExcluirEquipe);
@@ -552,5 +564,6 @@
         private System.Windows.Forms.MaskedTextBox txtNumMinJogadores;
         private System.Windows.Forms.Label lblNumJogadores;
         private System.Windows.Forms.Button btnVoltar;
+        private System.Windows.Forms.Button btnGerarPartidas;
     }
 }

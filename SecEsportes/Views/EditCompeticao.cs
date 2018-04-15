@@ -99,9 +99,10 @@ namespace SecEsportes.Views {
                 dataFim = dataFim_aux;
             }
 
-            Competicao newCompeticao = new Competicao(txtNome.Text, dataInicio, modalidade);
+            Competicao newCompeticao = competicao;
             newCompeticao.id = competicao.id;
             newCompeticao.dataInicial = dataInicio;
+            newCompeticao.grupos = competicao.grupos;
 
             if (!(dataFim is null)) {
                 newCompeticao.dataFinal = dataFim;
@@ -176,6 +177,8 @@ namespace SecEsportes.Views {
             // Bloqueia os campos para edição
             bloqueiaCampos(false);
 
+            btnGerarPartidas.Enabled = false;
+
             if (competicao.status == StatusEnum._1_Aberta) {
                 // Competição aberta
 
@@ -185,12 +188,12 @@ namespace SecEsportes.Views {
 
                 // Deixa visível os botões/informações
                 dgvEquipes.Visible = true;
-                btnIncluirEquipes.Visible = true;
-                btnExcluirEquipe.Visible = true;
+                btnIncluirEquipes.Enabled = true;
+                btnExcluirEquipe.Enabled = true;
 
                 // Deixa invisível os botões/informações
                 tabs.Visible = false;
-                btnGerarGrupos.Visible = false;
+                btnGerarGrupos.Enabled = false;
             } else {
                 // Competição em preparação, encerrada ou iniciada
 
@@ -198,8 +201,8 @@ namespace SecEsportes.Views {
                 tabs.Visible = true;
 
                 // Deixa invisível os botões/informações
-                btnIncluirEquipes.Visible = false;
-                btnExcluirEquipe.Visible = false;
+                btnIncluirEquipes.Enabled = false;
+                btnExcluirEquipe.Enabled = false;
 
                 // Cria a abas e os grupos
                 tabs.Controls.Clear();
@@ -217,7 +220,8 @@ namespace SecEsportes.Views {
 
                     // Deixa visível os botões/informações
                     dgvEquipes.Visible = true;
-                    btnGerarGrupos.Visible = true;
+                    btnGerarGrupos.Enabled = true;
+                    btnGerarPartidas.Enabled = true;
 
                     // Reajusta a lista de equipes
                     dgvEquipes.Location = new System.Drawing.Point(dgvEquipes.Location.X, posicaoInicial);
@@ -248,7 +252,7 @@ namespace SecEsportes.Views {
 
                     // Deixa invisível os botões/informações
                     dgvEquipes.Visible = false;
-                    btnGerarGrupos.Visible = false;
+                    btnGerarGrupos.Enabled = false;
                 }
 
             }
@@ -454,10 +458,18 @@ namespace SecEsportes.Views {
             switch (competicao.status) {
                 case StatusEnum._0_Encerrada:
                     break;
-                case StatusEnum._1_Aberta:
+                case StatusEnum._1_Aberta:  // Aberta >> Em preparação
+
+                    // Verifica se foi definida o numero minimo de atletas
+                    if (competicao.numMinimoJogadores <= 0) {
+                        MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
+                            "É necessário definir o número mínimo de atletas por equipe",
+                            "Não foi possível avançar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
 
                     // Mais de 1 equipe
-                    if (dgvEquipes.Rows.Count == 1) {
+                    if (dgvEquipes.Rows.Count <= 1 || competicao.numTimes <= 1) {
                         MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
                             "É necessário pelo menos 2 equipes para realizar o campeonato",
                             "Não foi possível avançar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -507,7 +519,7 @@ namespace SecEsportes.Views {
                     load(null, null);
 
                     break;
-                case StatusEnum._2_Iniciada:
+                case StatusEnum._2_Iniciada:    // Iniciada >> Encerrada
                     newCompeticao = competicao;
                     newCompeticao.status = StatusEnum._0_Encerrada;
 
@@ -520,7 +532,7 @@ namespace SecEsportes.Views {
                     load(null, null);
                     break;
 
-                case StatusEnum._3_EmPreparacao:
+                case StatusEnum._3_EmPreparacao:    // Em preparação >> Iniciada
                     foreach (EquipeCompeticao equipe in equipes) {
                         // Verifica se toda equipe tem representante e treinador
                         if (equipe.treinador is null || equipe.representante is null) {
@@ -552,6 +564,21 @@ namespace SecEsportes.Views {
                     if (numTotalEquipesEmGrupo != numTotalEquipes) {
                         MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
                                 "O número total de equipes que estão em um grupo e o número de equipes é diferente.",
+                                "Não foi possível avançar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    // Verifica se já foram criadas as partidas
+                    int numCorretoPartidas = 0;
+                    for (int iCount = 0; iCount < competicao.grupos.Count; iCount++) {
+                        numCorretoPartidas += (competicao.grupos[iCount].Count - (competicao.grupos[iCount].Count % 2 == 1 ? 0 : 1)) * competicao.grupos[iCount].Count / 2;
+                    }
+                    if (competicao.jogosIdaEVolta)
+                        numCorretoPartidas *= 2;
+
+                    if (numCorretoPartidas != competicao.partidas.Count) {
+                        MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
+                                "Não foram criadas todas as partidas que tinham que ser criadas. Clique em Gerar partidas e tente novamente.",
                                 "Não foi possível avançar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
                     }
@@ -694,33 +721,33 @@ namespace SecEsportes.Views {
                     txtStatus.Text = "Competição encerrada";
 
                     btnAvancar.Text = "";
-                    btnAvancar.Visible = false;
+                    btnAvancar.Enabled = false;
                     btnVoltar.Text = "Reabrir";
-                    btnVoltar.Visible = true;
+                    btnVoltar.Enabled = true;
                     break;
                 case StatusEnum._1_Aberta:
                     txtStatus.Text = "Competição aberta";
 
                     btnAvancar.Text = "Preparar";
-                    btnAvancar.Visible = true;
+                    btnAvancar.Enabled = true;
                     btnVoltar.Text = "";
-                    btnVoltar.Visible = false;
+                    btnVoltar.Enabled = false;
                     break;
                 case StatusEnum._2_Iniciada:
                     txtStatus.Text = "Competição iniciada";
 
                     btnAvancar.Text = "Encerrar";
-                    btnAvancar.Visible = true;
+                    btnAvancar.Enabled = true;
                     btnVoltar.Text = "Voltar";
-                    btnVoltar.Visible = true;
+                    btnVoltar.Enabled = true;
                     break;
                 case StatusEnum._3_EmPreparacao:
                     txtStatus.Text = "Competição em preparação";
 
                     btnAvancar.Text = "Iniciar";
-                    btnAvancar.Visible = true;
+                    btnAvancar.Enabled = true;
                     btnVoltar.Text = "Voltar";
-                    btnVoltar.Visible = true;
+                    btnVoltar.Enabled = true;
                     break;
                 default:
                     txtStatus.Text = "";
@@ -954,6 +981,89 @@ namespace SecEsportes.Views {
 
                     load(null, null);
                     break;
+            }
+        }
+
+        private void btnGerarPartidas_Click(object sender, EventArgs e) {
+            // Verifica se todas as equipes têm grupo
+            int numTotalEquipes = dgvEquipes.Rows.Count, numTotalEquipesEmGrupo = 0;
+            for (int iCount = 0; iCount < tabs.Controls.Count; iCount++) {
+                TabPage tabPage = ((TabPage)tabs.Controls[0]);
+                numTotalEquipesEmGrupo += ((DataGridView)(tabPage.Controls[0])).Rows.Count;
+            }
+
+            if (numTotalEquipesEmGrupo != numTotalEquipes) {
+                MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
+                        "O número total de equipes que estão em um grupo e o número de equipes é diferente.",
+                        "Não foi possível gerar as partidas", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Deleta as partidas até então criadas
+            CompeticaoRepositorio.Instance.deletaPartidas(ref competicao);
+
+            // Faz a criação das partidas pelos grupos
+            for (int numGrupo = 0; numGrupo < competicao.grupos.Count; numGrupo++) {
+                List<EquipeCompeticao> grupo = competicao.grupos[numGrupo];
+                int timesNoGrupo = grupo.Count;
+
+                // Define o número de rodas únicas
+                int numRodadasUnicas = timesNoGrupo - (timesNoGrupo % 2 == 1 ? 0 : 1);
+
+                int timesASobrarPorRodada = timesNoGrupo % 2;
+
+                for (int numRodada = 0; numRodada < numRodadasUnicas; numRodada++) {
+
+                    List<EquipeCompeticao> timesRodada = new List<EquipeCompeticao>(grupo);
+
+                    // Faz o sorteio das rodadas
+                    while (timesRodada.Count > timesASobrarPorRodada) {
+
+                        Competicao_Partida partida;
+                        EquipeCompeticao equipe1;
+                        EquipeCompeticao equipe2;
+
+                        //Verifica se a partida que está sendo criada já existe
+                        do {
+
+                            int index1 = new Random().Next(timesRodada.Count), index2;
+
+                            do {
+                                index2 = new Random().Next(timesRodada.Count);
+                            } while (index1 == index2);
+
+                            equipe1 = timesRodada[index1];
+                            equipe2 = timesRodada[index2];
+
+                            partida = new Competicao_Partida(equipe1, equipe2, numRodada + 1, numGrupo);
+
+                        } while (CompeticaoRepositorio.Instance.partidaJaExiste(competicao, partida));
+
+                        timesRodada.Remove(equipe1);
+                        timesRodada.Remove(equipe2);
+
+                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                    }
+
+                }
+            }
+
+            if (competicao.jogosIdaEVolta) {
+                // Cria as partidas de volta
+                int numRodadasIda = CompeticaoRepositorio.Instance.getNumRodadas(competicao);
+                int numPartidas = competicao.partidas.Count;
+
+                for (int numPartida = 0; numPartida < numPartidas; numPartida++) {
+                    Competicao_Partida partida = competicao.partidas[numPartida];
+
+                    Competicao_Partida partidaDeVolta = partida;
+                    partidaDeVolta.equipe1 = partida.equipe2;
+                    partidaDeVolta.equipe2 = partida.equipe1;
+                    partidaDeVolta.rodada += numRodadasIda;
+
+                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                }
             }
         }
     }

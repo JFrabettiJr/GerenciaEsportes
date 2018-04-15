@@ -11,6 +11,7 @@ namespace SecEsportes.Modelo{
         public DateTime dataInicial { get; set; }
         public DateTime? dataFinal { get; set; }
         public List<EquipeCompeticao> equipes { get; set; }
+        public List<Competicao_Partida> partidas { get; set; }
         public Modalidade modalidade { get; set; }
         public int id_Modalidade { get; set;  }
         public int numTimes { get; set; }
@@ -33,10 +34,10 @@ namespace SecEsportes.Modelo{
     }
 
     public enum StatusEnum {
-        _0_Encerrada,
-        _1_Aberta,
-        _2_Iniciada,
-        _3_EmPreparacao
+        _0_Encerrada,   // Campeonato encerrado
+        _1_Aberta,      // As equipes e atletas são inseridos
+        _2_Iniciada,    // Campeonato em andamento
+        _3_EmPreparacao // São definidos os grupos
     }
 
     public enum NomesGruposEnum {

@@ -267,6 +267,8 @@
     <Compile Include="Modelo\Atleta_Insert.cs" />
     <Compile Include="Modelo\Atleta.cs" />
     <Compile Include="Modelo\Cargo.cs" />
+    <Compile Include="Modelo\Competicao_Partida_Evento.cs" />
+    <Compile Include="Modelo\Competicao_Partida.cs" />
     <Compile Include="Modelo\Competicao.cs" />
     <Compile Include="Modelo\Equipe_Insert.cs" />
     <Compile Include="Modelo\Equipe.cs" />
@@ -278,9 +280,6 @@
     <Compile Include="Modelo\Eventos\Evento_CartaoAmarelo.cs" />
     <Compile Include="Modelo\Eventos\Evento_Gol.cs" />
     <Compile Include="Modelo\Funcao.cs" />
-    <Compile Include="Modelo\InformacaoAdicionalResposta.cs" />
-    <Compile Include="Modelo\InformacaoAdicional.cs" />
-    <Compile Include="Modelo\Partida.cs" />
     <Compile Include="Modelo\Pessoa.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

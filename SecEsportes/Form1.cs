@@ -246,7 +246,7 @@ namespace SecEsportes
             PessoaRepositorio.Instance.insert(ref pessoa, ref myString);
 
             if ((!(equipe is null)) && (!(competicao is null))) {
-                Atleta atleta = FuncaoRepositorio.Instance.getAtletas().Find(atletaAEncontrar => atletaAEncontrar.pessoa.cpf.Equals(pessoa.cpf));
+                Atleta atleta = PessoaRepositorio.Instance.getAtletas().Find(atletaAEncontrar => atletaAEncontrar.pessoa.cpf.Equals(pessoa.cpf));
                 atleta.Numero = numero;
                 EquipeRepositorio.Instance.insertAtletaEmEquipe(competicao.id, equipe.id, atleta);
             }            
