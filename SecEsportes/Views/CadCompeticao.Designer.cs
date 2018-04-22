@@ -27,6 +27,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CadCompeticao));
             this.tlpCadFuncao = new System.Windows.Forms.TableLayoutPanel();
             this.cboModalidades = new System.Windows.Forms.ComboBox();
             this.txtDtInicio = new System.Windows.Forms.MaskedTextBox();
@@ -200,6 +201,7 @@
             this.Controls.Add(this.btnAdicionar);
             this.Controls.Add(this.btnSalvar);
             this.Controls.Add(this.tlpCadFuncao);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CadCompeticao";
             this.Padding = new System.Windows.Forms.Padding(20);
             this.Text = "Cadastro de competições";

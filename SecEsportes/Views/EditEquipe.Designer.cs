@@ -27,6 +27,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditEquipe));
             this.tlpCadFuncao = new System.Windows.Forms.TableLayoutPanel();
             this.txtNome = new System.Windows.Forms.TextBox();
             this.lblNome = new System.Windows.Forms.Label();
@@ -240,6 +241,7 @@
             this.Controls.Add(this.dgvAtletas);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.tlpCadFuncao);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "EditEquipe";
             this.Padding = new System.Windows.Forms.Padding(20);
             this.Text = "Cadastro de equipes - Inserção de atletas";

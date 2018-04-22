@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CadFuncao));
             this.tlpCadFuncao = new System.Windows.Forms.TableLayoutPanel();
             this.txtDescFuncao = new System.Windows.Forms.TextBox();
             this.lblDescricao = new System.Windows.Forms.Label();
@@ -179,6 +180,7 @@
             this.Controls.Add(this.btnAdicionar);
             this.Controls.Add(this.btnSalvar);
             this.Controls.Add(this.tlpCadFuncao);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CadFuncao";
             this.Padding = new System.Windows.Forms.Padding(20);
             this.Text = "Cadastro de funções";

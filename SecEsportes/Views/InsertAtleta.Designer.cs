@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InsertAtleta));
             this.btnInserir = new System.Windows.Forms.Button();
             this.dgvAtletas = new System.Windows.Forms.DataGridView();
             this.btnMarcarTudo = new System.Windows.Forms.Button();
@@ -86,6 +87,7 @@
             this.Controls.Add(this.btnMarcarTudo);
             this.Controls.Add(this.dgvAtletas);
             this.Controls.Add(this.btnInserir);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "InsertAtleta";
             this.Padding = new System.Windows.Forms.Padding(20);
             this.Text = "Inserir atletas na equipe";

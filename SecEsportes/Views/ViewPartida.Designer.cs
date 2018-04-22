@@ -27,6 +27,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ViewPartida));
             this.lblTime1 = new System.Windows.Forms.Label();
             this.lblCompeticao = new System.Windows.Forms.Label();
             this.tlpPartida = new System.Windows.Forms.TableLayoutPanel();
@@ -271,9 +272,10 @@
             this.Controls.Add(this.dgvEquipe1);
             this.Controls.Add(this.tlpPartida);
             this.Controls.Add(this.lblCompeticao);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ViewPartida";
             this.Padding = new System.Windows.Forms.Padding(20);
-            this.Text = "Cadastro de competições";
+            this.Text = "Partida";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ViewPartida_FormClosing);
             this.Load += new System.EventHandler(this.load);
             this.tlpPartida.ResumeLayout(false);
