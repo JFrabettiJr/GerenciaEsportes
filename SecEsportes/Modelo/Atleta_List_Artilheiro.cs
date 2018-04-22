@@ -5,6 +5,8 @@
         public int num_Gols { get; set; }
         public int num_Partidas { get; set; }
         public int id_Atleta { get; set; }
+        public string nome_Atleta { get; set; }
+        public double media { get; set; }
         public Atleta atleta { get; set; }
 
         public Atleta_List_Artilheiro() { }

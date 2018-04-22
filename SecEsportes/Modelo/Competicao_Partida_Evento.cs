@@ -30,7 +30,8 @@ namespace SecEsportes.Modelo {
     public enum tpEventoEnum {
         Gol,
         CartaoAmarelo,
-        CartaoVermelho
+        CartaoVermelho,
+        Gol_Penalti
     }
 
 }

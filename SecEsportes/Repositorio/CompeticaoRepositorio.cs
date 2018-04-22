@@ -292,6 +292,11 @@ namespace SecEsportes.Repositorio {
 
                     foreach(Atleta_List_Artilheiro artilheiro in artilheiros){
                         artilheiro.atleta = PessoaRepositorio.Instance.getAtleta(artilheiro.id_Atleta, id_Competicao);
+                        artilheiro.nome_Atleta = artilheiro.atleta.numero + " - " + artilheiro.atleta.pessoa.nome;
+                        if (artilheiro.num_Partidas > 0)
+                            artilheiro.media = Convert.ToDouble(artilheiro.num_Gols) / Convert.ToDouble(artilheiro.num_Partidas);
+                        else
+                            artilheiro.media = 0;
                     }
 
                     return artilheiros;
@@ -554,8 +559,6 @@ namespace SecEsportes.Repositorio {
                                 "       AND id_Competicao = @id_Competicao ";
 
                     int vitorias, empates, derrotas, pontos;
-                    golsEquipe1 = partida.eventos.FindAll(gols => gols.equipe.id.Equals(partida.equipe1.id) && gols.tpEvento.Equals(tpEventoEnum.Gol)).Count;
-                    golsEquipe2 = partida.eventos.FindAll(gols => gols.equipe.id.Equals(partida.equipe2.id) && gols.tpEvento.Equals(tpEventoEnum.Gol)).Count;
 
                     // Atualiza a equipe 1
                     vitorias = (golsEquipe1 > golsEquipe2 ? 1 : 0);
@@ -591,8 +594,9 @@ namespace SecEsportes.Repositorio {
                             id_Competicao = competicao.id
                         });
                 }
-
-                if (competicao.fase_Atual == -1) {
+                
+                // Verifica se é a final e atribui o campeão
+                if ( (competicao.fase_Atual == -1) && (competicao.partidas.FindAll(partidas => partidas.rodada == partida.rodada && partidas.encerrada == false).Count == 0)) {
                     competicao.status = StatusEnum._0_Encerrada;
                     competicao.campeao = (golsEquipe1 > golsEquipe2 ? partida.equipe1 : (golsEquipe2 > golsEquipe1 ? partida.equipe2 : null));
                     competicao.id_Campeao = competicao.campeao.id;

@@ -118,6 +118,11 @@ namespace SecEsportes.Views
                 List<Competicao_Partida> partidas = competicao.partidas.FindAll(partidasAEncontrar => partidasAEncontrar.rodada == numRodada);
 
                 CompeticaoViewUtilidades.refreshDataGridViewRodadas(dgvRodadas, partidas, competicao, numRodada);
+
+                if (competicao.status == StatusEnum._0_Encerrada)
+                    btnProximaFase.Enabled = false;
+                else
+                    btnProximaFase.Enabled = true;
             }
 
 
@@ -184,17 +189,16 @@ namespace SecEsportes.Views
             dataGridView.DataSource = artilheiros;
 
             if (!(artilheiros is null)) {
-                dataGridView.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "NomeAtleta" });
-                dataGridView.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "Media" });
-
+                dataGridView.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Atleta_List_Artilheiro.nome_Atleta) });
                 dataGridView.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Atleta_List_Artilheiro.nome_Equipe) });
                 dataGridView.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Atleta_List_Artilheiro.num_Gols) });
                 dataGridView.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Atleta_List_Artilheiro.num_Partidas) });
+                dataGridView.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Atleta_List_Artilheiro.media) });
             }
 
             for (int iCount = 0; iCount < dataGridView.Columns.Count; iCount++) {
                 switch (dataGridView.Columns[iCount].DataPropertyName) {
-                    case "NomeAtleta":
+                    case nameof(Atleta_List_Artilheiro.nome_Atleta):
                         dataGridView.Columns[iCount].HeaderText = "Atleta";
                         dataGridView.Columns[iCount].Name = dataGridView.Columns[iCount].DataPropertyName;
                         dataGridView.Columns[iCount].DisplayIndex = 0;
@@ -214,7 +218,7 @@ namespace SecEsportes.Views
                         dataGridView.Columns[iCount].Name = dataGridView.Columns[iCount].DataPropertyName;
                         dataGridView.Columns[iCount].DisplayIndex = 3;
                         break;
-                    case "Media":
+                    case nameof(Atleta_List_Artilheiro.media):
                         dataGridView.Columns[iCount].HeaderText = "Média";
                         dataGridView.Columns[iCount].Name = dataGridView.Columns[iCount].DataPropertyName;
                         dataGridView.Columns[iCount].DisplayIndex = 4;
@@ -227,11 +231,11 @@ namespace SecEsportes.Views
 
             //Preenche os campos que vieram sem preenchimento do data set
             for (int iCount = 0; iCount < dataGridView.Rows.Count; iCount++) {
-                dataGridView.Rows[iCount].Cells["NomeAtleta"].Value = artilheiros[iCount].atleta.numero + " - " + artilheiros[iCount].atleta.pessoa.nome;
-                if (artilheiros[iCount].num_Partidas > 0)
-                    dataGridView.Rows[iCount].Cells["Media"].Value = artilheiros[iCount].num_Gols / artilheiros[iCount].num_Partidas;
-                else
-                    dataGridView.Rows[iCount].Cells["Media"].Value = "";
+                //dataGridView.Rows[iCount].Cells["NomeAtleta"].Value = artilheiros[iCount].atleta.numero + " - " + artilheiros[iCount].atleta.pessoa.nome;
+                //if (artilheiros[iCount].num_Partidas > 0)
+                //    dataGridView.Rows[iCount].Cells["Media"].Value = Convert.ToDouble(artilheiros[iCount].num_Gols / artilheiros[iCount].num_Partidas);
+                //else
+                //    dataGridView.Rows[iCount].Cells["Media"].Value = "";
             }
 
             dataGridView.Refresh();
@@ -254,7 +258,7 @@ namespace SecEsportes.Views
                 int numPartidasASeremGeradas = 0;
 
                 // Caso a fase atual seja a fase classificatória
-                if (competicao.fase_Atual > 0) {
+                if (competicao.fase_Atual >= 0) {
                     switch (competicao.mataMata) {
                         case MataMataEnum._5_OitavasFinal: numProximaFase = -4; numPartidasASeremGeradas = 8; break;
                         case MataMataEnum._4_QuartasFinal: numProximaFase = -3; numPartidasASeremGeradas = 4; break;
@@ -286,14 +290,31 @@ namespace SecEsportes.Views
                     switch (numPartidasASeremGeradas) {
                         case 2:
                             if (numTimesRestantes == 0) {
-                                equipe1 = timesProximaFase[0][0];
-                                equipe2 = timesProximaFase[1][1];
+                                equipe1 = timesProximaFase[0][0];   equipe2 = timesProximaFase[1][1];
                                 partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
                                 CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
 
-                                equipe1 = timesProximaFase[0][1];
-                                equipe2 = timesProximaFase[1][0];
+                                equipe1 = timesProximaFase[0][1];   equipe2 = timesProximaFase[1][0];
                                 partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
+                                CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                            }
+                            break;
+                        case 4:
+                            if (numTimesRestantes == 0) {
+                                equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[1][1];
+                                partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
+                                CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                equipe1 = timesProximaFase[0][1]; equipe2 = timesProximaFase[1][0];
+                                partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
+                                CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                equipe1 = timesProximaFase[2][0]; equipe2 = timesProximaFase[3][1];
+                                partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 3);
+                                CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                equipe1 = timesProximaFase[2][1]; equipe2 = timesProximaFase[3][0];
+                                partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 4);
                                 CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
                             }
                             break;
@@ -321,14 +342,39 @@ namespace SecEsportes.Views
 
                     // Define os classificados
                     for (int iCount = 0; iCount < partidasFaseAnterior.Count; iCount++) {
+                        EquipeCompeticao equipeVencedora = null;
+
                         if (competicao.jogosIdaEVolta_MataMata) {
 
                         } else {
+                            // Verifica o vencedor
                             int golsEquipe1, golsEquipe2;
                             golsEquipe1 = partidasFaseAnterior[iCount].eventos.FindAll(eventosAEncontrar => eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol) && eventosAEncontrar.equipe.id == partidasFaseAnterior[iCount].equipe1.id).Count;
                             golsEquipe2 = partidasFaseAnterior[iCount].eventos.FindAll(eventosAEncontrar => eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol) && eventosAEncontrar.equipe.id == partidasFaseAnterior[iCount].equipe2.id).Count;
 
-                            EquipeCompeticao equipeVencedora = (golsEquipe1 > golsEquipe2 ? partidasFaseAnterior[iCount].equipe1 : (golsEquipe2 > golsEquipe1 ? partidasFaseAnterior[iCount].equipe2 : null));
+                            // Verifica se a partida empatou e foi para os penaltis
+                            if (golsEquipe1 == golsEquipe2) {
+                                int golsPenaltiEquipe1, golsPenaltiEquipe2;
+                                golsPenaltiEquipe1 = partidasFaseAnterior[iCount].eventos.FindAll(eventosAEncontrar => eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol_Penalti) && eventosAEncontrar.equipe.id == partidasFaseAnterior[iCount].equipe1.id).Count;
+                                golsPenaltiEquipe2 = partidasFaseAnterior[iCount].eventos.FindAll(eventosAEncontrar => eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol_Penalti) && eventosAEncontrar.equipe.id == partidasFaseAnterior[iCount].equipe2.id).Count;
+
+                                if (golsPenaltiEquipe1 > golsPenaltiEquipe2) {
+                                    equipeVencedora = partidasFaseAnterior[iCount].equipe1;
+                                } else {
+                                    if (golsPenaltiEquipe2 > golsPenaltiEquipe1) {
+                                        equipeVencedora = partidasFaseAnterior[iCount].equipe2;
+                                    }
+                                }
+                            } else {
+                                if (golsEquipe1 > golsEquipe2) {
+                                    equipeVencedora = partidasFaseAnterior[iCount].equipe1;
+                                } else {
+                                    if (golsEquipe2 > golsEquipe1) {
+                                        equipeVencedora = partidasFaseAnterior[iCount].equipe2;
+                                    }
+                                }
+                            }
+
                             timesClassificadosFaseAnterior.Add(equipeVencedora);
                         }
                     }
@@ -342,13 +388,20 @@ namespace SecEsportes.Views
                         case -1: // Final
                             numPartidasASeremGeradasProximaFase = 1;
 
-                            equipe1 = timesClassificadosFaseAnterior[0];
-                            equipe2 = timesClassificadosFaseAnterior[1];
+                            equipe1 = timesClassificadosFaseAnterior[0];    equipe2 = timesClassificadosFaseAnterior[1];
                             partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
                             CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
 
                             break;
                         case -2: // Semi-Final
+                            equipe1 = timesClassificadosFaseAnterior[0]; equipe2 = timesClassificadosFaseAnterior[1];
+                            partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesClassificadosFaseAnterior[2]; equipe2 = timesClassificadosFaseAnterior[3];
+                            partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
                             numPartidasASeremGeradasProximaFase = 2;
                             break;
                         case -3: // Quartas de Final

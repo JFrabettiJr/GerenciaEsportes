@@ -16,7 +16,6 @@ namespace SecEsportes
         public Form1(){
             InitializeComponent();
             CenterToScreen();
-            //Infraestrutura.SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query("delete from competicao_partida where rodada = -1; delete from Competicao_Partida_Evento where id_Partida = 15;");
         }
 
         private void btnCadEquipes_Click(object sender, EventArgs e){
@@ -61,10 +60,10 @@ namespace SecEsportes
             competicao.dataFinal = new DateTime(2014, 07, 01);
             competicao.jogosIdaEVolta = false;
             competicao.jogosIdaEVolta_MataMata = false;
-            competicao.mataMata = MataMataEnum._3_SemiFinal;
+            competicao.mataMata = MataMataEnum._4_QuartasFinal;
             competicao.nomesGrupos = NomesGruposEnum._0_PorNumeracao;
-            competicao.numGrupos = 2;
-            competicao.numTimes = 8;
+            competicao.numGrupos = 4;
+            competicao.numTimes = 16;
             competicao.status = StatusEnum._1_Aberta;
             competicao.numMinimoJogadores = 5;
             CompeticaoRepositorio.Instance.insert(ref competicao, ref myString);
@@ -284,6 +283,176 @@ namespace SecEsportes
 
             criaTreinador("02721281399", "Didier Deschamps", equipeCompeticao, competicao);
             criaRepresentante("17220074271", "Emmanuel Macron", equipeCompeticao, competicao);
+
+
+            // Cria a equipe do Camarões
+            equipeCompeticao = criaEquipe("Cam", "Camarões", competicao);
+
+            // Cria os atletas do Camarões
+            criaAtleta("03138834671", "Feudjou", 1, equipeCompeticao, competicao);
+            criaAtleta("03138834671", "Assou-Ekotto", 2, equipeCompeticao, competicao);
+            criaAtleta("37183873102", "Nkoulou", 3, equipeCompeticao, competicao);
+            criaAtleta("10647041669", "Djeugoué", 4, equipeCompeticao, competicao);
+            criaAtleta("40830672508", "Nounkeu", 5, equipeCompeticao, competicao);
+            criaAtleta("76427726293", "Song", 6, equipeCompeticao, competicao);
+            criaAtleta("48022277525", "N'Guémo", 7, equipeCompeticao, competicao);
+            criaAtleta("23655426461", "Muokandjo", 8, equipeCompeticao, competicao);
+            criaAtleta("04730452143", "Eto'o", 9, equipeCompeticao, competicao);
+            criaAtleta("35757467614", "Aboubakar", 10, equipeCompeticao, competicao);
+            criaAtleta("66536670221", "Makoun", 11, equipeCompeticao, competicao);
+
+            // Cria a comissão técnica do Camarões
+            criaTreinador("22672133115", "Volker Finke", equipeCompeticao, competicao);
+            criaRepresentante("50361627572", "Michel Temer", equipeCompeticao, competicao);
+
+
+            // Cria a equipe do Croácia
+            equipeCompeticao = criaEquipe("Cro", "Croácia", competicao);
+
+            // Cria os atletas do Croácia
+            criaAtleta("06437263733", "Pletikosa", 1, equipeCompeticao, competicao);
+            criaAtleta("75486152809", "Vrsalkjo", 2, equipeCompeticao, competicao);
+            criaAtleta("22655751515", "Prankic", 3, equipeCompeticao, competicao);
+            criaAtleta("25335077840", "Perisic", 4, equipeCompeticao, competicao);
+            criaAtleta("74251577213", "Corluka", 5, equipeCompeticao, competicao);
+            criaAtleta("03284337644", "Lovren", 6, equipeCompeticao, competicao);
+            criaAtleta("04854288736", "Rakitic", 7, equipeCompeticao, competicao);
+            criaAtleta("04361866759", "Vukojevic", 8, equipeCompeticao, competicao);
+            criaAtleta("23533852300", "Jelavic", 9, equipeCompeticao, competicao);
+            criaAtleta("63243410622", "Modric", 10, equipeCompeticao, competicao);
+            criaAtleta("38586833029", "Srna", 11, equipeCompeticao, competicao);
+
+            // Cria a comissão técnica do Croácia
+            criaTreinador("27401734150", "Niko Kovač", equipeCompeticao, competicao);
+            criaRepresentante("27145547848", "Michel Temer", equipeCompeticao, competicao);
+
+
+            // Cria a equipe do México
+            equipeCompeticao = criaEquipe("Mex", "México", competicao);
+
+            // Cria os atletas do México
+            criaAtleta("88852601368", "Corona", 1, equipeCompeticao, competicao);
+            criaAtleta("82582310492", "Rodriguez", 2, equipeCompeticao, competicao);
+            criaAtleta("03616318807", "Salcido", 3, equipeCompeticao, competicao);
+            criaAtleta("63450333321", "Márquez", 4, equipeCompeticao, competicao);
+            criaAtleta("18858017420", "Reyes", 5, equipeCompeticao, competicao);
+            criaAtleta("03210566712", "H. Herrera", 6, equipeCompeticao, competicao);
+            criaAtleta("61608000869", "Layun", 7, equipeCompeticao, competicao);
+            criaAtleta("57526480170", "Fabian", 8, equipeCompeticao, competicao);
+            criaAtleta("81745654186", "Jumenez", 9, equipeCompeticao, competicao);
+            criaAtleta("10836704681", "Dos Santos", 10, equipeCompeticao, competicao);
+            criaAtleta("15408238814", "Pulido", 11, equipeCompeticao, competicao);
+
+            // Cria a comissão técnica do México
+            criaTreinador("87075850393", "Miguel Herrera", equipeCompeticao, competicao);
+            criaRepresentante("15704868320", "Michel Temer", equipeCompeticao, competicao);
+
+
+            // Cria a equipe do Austrália
+            equipeCompeticao = criaEquipe("Aus", "Austrália", competicao);
+
+            // Cria os atletas do Austrália
+            criaAtleta("48687235887", "Ryan", 1, equipeCompeticao, competicao);
+            criaAtleta("40816614210", "Franju", 2, equipeCompeticao, competicao);
+            criaAtleta("88027405858", "Davidon", 3, equipeCompeticao, competicao);
+            criaAtleta("62784753328", "Cahill", 4, equipeCompeticao, competicao);
+            criaAtleta("74048031449", "Miligan", 5, equipeCompeticao, competicao);
+            criaAtleta("80618508180", "Spiranovic", 6, equipeCompeticao, competicao);
+            criaAtleta("47634623180", "Leckie", 7, equipeCompeticao, competicao);
+            criaAtleta("76214517425", "Wright", 8, equipeCompeticao, competicao);
+            criaAtleta("81330410157", "Taggart", 9, equipeCompeticao, competicao);
+            criaAtleta("40864635125", "Halloran", 10, equipeCompeticao, competicao);
+            criaAtleta("17303015337", "Oar", 11, equipeCompeticao, competicao);
+
+            // Cria a comissão técnica do Austrália
+            criaTreinador("66184237160", "Ange Postecoglou", equipeCompeticao, competicao);
+            criaRepresentante("56162856330", "Michel Temer", equipeCompeticao, competicao);
+
+
+            // Cria a equipe do Chile
+            equipeCompeticao = criaEquipe("Chi", "Chile", competicao);
+
+            // Cria os atletas do Chile
+            criaAtleta("00828557810", "Bravo", 1, equipeCompeticao, competicao);
+            criaAtleta("38263752205", "Mena", 2, equipeCompeticao, competicao);
+            criaAtleta("65771566705", "Albornoz", 3, equipeCompeticao, competicao);
+            criaAtleta("50461231000", "Isla", 4, equipeCompeticao, competicao);
+            criaAtleta("68785273171", "Silva", 5, equipeCompeticao, competicao);
+            criaAtleta("10583610587", "Carmina", 6, equipeCompeticao, competicao);
+            criaAtleta("14681847682", "Sanchez", 7, equipeCompeticao, competicao);
+            criaAtleta("65002760350", "Vidal", 8, equipeCompeticao, competicao);
+            criaAtleta("85576345797", "Pinilla", 9, equipeCompeticao, competicao);
+            criaAtleta("14543783018", "Valdivia", 10, equipeCompeticao, competicao);
+            criaAtleta("77523111467", "Vargas", 11, equipeCompeticao, competicao);
+
+            // Cria a comissão técnica do Chile
+            criaTreinador("87204753496", "Jorge Sampaoli", equipeCompeticao, competicao);
+            criaRepresentante("77736281572", "Michel Temer", equipeCompeticao, competicao);
+
+
+            // Cria a equipe do Colombia
+            equipeCompeticao = criaEquipe("Col", "Colombia", competicao);
+
+            // Cria os atletas do Colombia
+            criaAtleta("77655517606", "Ospina", 1, equipeCompeticao, competicao);
+            criaAtleta("38757478872", "Zapata", 2, equipeCompeticao, competicao);
+            criaAtleta("03166022643", "Yepes", 3, equipeCompeticao, competicao);
+            criaAtleta("51388164469", "Arias", 4, equipeCompeticao, competicao);
+            criaAtleta("67341348496", "Carbonero", 5, equipeCompeticao, competicao);
+            criaAtleta("34550670347", "Sanchez", 6, equipeCompeticao, competicao);
+            criaAtleta("84524038442", "Armero", 7, equipeCompeticao, competicao);
+            criaAtleta("11576381552", "Aguilar", 8, equipeCompeticao, competicao);
+            criaAtleta("33256713572", "Gutiérrez", 9, equipeCompeticao, competicao);
+            criaAtleta("68377727242", "James", 10, equipeCompeticao, competicao);
+            criaAtleta("21843108593", "Quadrado", 11, equipeCompeticao, competicao);
+
+            // Cria a comissão técnica do Colombia
+            criaTreinador("28472777570", "José Pékerman", equipeCompeticao, competicao);
+            criaRepresentante("56603530104", "Michel Temer", equipeCompeticao, competicao);
+
+
+            // Cria a equipe do Costa do Marfim
+            equipeCompeticao = criaEquipe("CDM", "Costa do Marfim", competicao);
+
+            // Cria os atletas do Costa do Marfim
+            criaAtleta("02002806004", "Barry", 1, equipeCompeticao, competicao);
+            criaAtleta("85047683842", "Viera", 2, equipeCompeticao, competicao);
+            criaAtleta("61407145320", "Boka", 3, equipeCompeticao, competicao);
+            criaAtleta("08306377532", "K. Touré", 4, equipeCompeticao, competicao);
+            criaAtleta("47056538312", "Zokora", 5, equipeCompeticao, competicao);
+            criaAtleta("07682613254", "Boly", 6, equipeCompeticao, competicao);
+            criaAtleta("27756664426", "Akpa-Akpro", 7, equipeCompeticao, competicao);
+            criaAtleta("02034740238", "Kaliu", 8, equipeCompeticao, competicao);
+            criaAtleta("73101667879", "Tioté", 9, equipeCompeticao, competicao);
+            criaAtleta("01426201575", "Gervinho", 10, equipeCompeticao, competicao);
+            criaAtleta("82823323481", "Droga", 11, equipeCompeticao, competicao);
+
+            // Cria a comissão técnica do Costa do Marfim
+            criaTreinador("13076844083", "Sabri Lamouchi", equipeCompeticao, competicao);
+            criaRepresentante("88268541814", "Michel Temer", equipeCompeticao, competicao);
+
+
+            // Cria a equipe do Grécia
+            equipeCompeticao = criaEquipe("Gre", "Grécia", competicao);
+
+            // Cria os atletas do Grécia
+            criaAtleta("26503783876", "Karnezis", 1, equipeCompeticao, competicao);
+            criaAtleta("36013810877", "Maniatis", 2, equipeCompeticao, competicao);
+            criaAtleta("36075351752", "Tzavelas", 3, equipeCompeticao, competicao);
+            criaAtleta("73854350848", "Manolas", 4, equipeCompeticao, competicao);
+            criaAtleta("51626808007", "Moras", 5, equipeCompeticao, competicao);
+            criaAtleta("16714100841", "Tziolis", 6, equipeCompeticao, competicao);
+            criaAtleta("56621883358", "Samaras", 7, equipeCompeticao, competicao);
+            criaAtleta("52264813300", "Kone", 8, equipeCompeticao, competicao);
+            criaAtleta("48220808110", "Mitroglou", 9, equipeCompeticao, competicao);
+            criaAtleta("21637852207", "Karagounis", 10, equipeCompeticao, competicao);
+            criaAtleta("23335257200", "Vyntra", 11, equipeCompeticao, competicao);
+
+            // Cria a comissão técnica do Grécia
+            criaTreinador("25014613713", "Fernando Santos", equipeCompeticao, competicao);
+            criaRepresentante("56088252766", "Michel Temer", equipeCompeticao, competicao);
+
+
         }
 
         public void criaTreinador(string cpf, string nome, EquipeCompeticao equipeCompeticao = null, Competicao competicao = null) {

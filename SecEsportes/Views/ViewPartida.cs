@@ -11,6 +11,7 @@ namespace SecEsportes.Views {
         private Competicao competicao;
         private bool partidaIniciada;
         private string errorMessage = "";
+        private bool penalidades = false;
 
         #region Inicialização da classe
         public ViewPartida(Competicao competicao, Competicao_Partida partida) {
@@ -32,12 +33,14 @@ namespace SecEsportes.Views {
             lblTecnico1.Text = "Técnico: " + partida.equipe1.treinador.pessoa.nome;
             lblRepresentante1.Text = "Representante: " + partida.equipe1.representante.pessoa.nome;
             lblPlacarTime1.Text = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.equipe.id == partida.equipe1.id && eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol)).Count.ToString();
+            lblPlacarTime1_Penalti.Text = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.equipe.id == partida.equipe1.id && eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol_Penalti)).Count.ToString();
             refreshDataGridViewAtletas(dgvEquipe1, partida.equipe1, partida.equipe1.atletas);
 
             lblTime2.Text = partida.equipe2.nome;
             lblTecnico2.Text = "Técnico: " + partida.equipe2.treinador.pessoa.nome;
             lblRepresentante2.Text = "Representante: " + partida.equipe2.representante.pessoa.nome;
             lblPlacarTime2.Text = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.equipe.id == partida.equipe2.id && eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol)).Count.ToString();
+            lblPlacarTime2_Penalti.Text = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.equipe.id == partida.equipe2.id && eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol_Penalti)).Count.ToString();
             refreshDataGridViewAtletas(dgvEquipe2, partida.equipe2, partida.equipe2.atletas);
 
             if (partidaIniciada) {
@@ -52,6 +55,12 @@ namespace SecEsportes.Views {
                 btnEncerrarPartida.Enabled = false;
                 btnIniciarPartida.Enabled = true;
             }
+
+            if (partida.rodada > 0)
+                btnDisputaPenaltis.Visible = false;
+            else
+                btnDisputaPenaltis.Visible = true;
+
         }
 
         public void refreshDataGridViewAtletas(DataGridView dgvAtletas, EquipeCompeticao equipe, List<Atleta> atletas) {
@@ -134,22 +143,28 @@ namespace SecEsportes.Views {
                         ContextMenu contextMenu = new ContextMenu();
                         MenuItem menuItem;
 
-                        menuItem = new MenuItem("Gol");
-                        menuItem.Click += mnuNewEvento;
-                        menuItem.Tag = new List<Object>() { tpEventoEnum.Gol, numEquipe, equipe.atletas[e.RowIndex]};
-                        contextMenu.MenuItems.Add(menuItem);
+                        if (penalidades) {
+                            menuItem = new MenuItem("Gol de pênalti");
+                            menuItem.Click += mnuNewEvento;
+                            menuItem.Tag = new List<Object>() { tpEventoEnum.Gol_Penalti, numEquipe, equipe.atletas[e.RowIndex] };
+                            contextMenu.MenuItems.Add(menuItem);
+                        } else {
+                            menuItem = new MenuItem("Gol");
+                            menuItem.Click += mnuNewEvento;
+                            menuItem.Tag = new List<Object>() { tpEventoEnum.Gol, numEquipe, equipe.atletas[e.RowIndex] };
+                            contextMenu.MenuItems.Add(menuItem);
 
-                        menuItem = new MenuItem("Cartão Amarelo");
-                        menuItem.Tag = new List<Object>() { tpEventoEnum.CartaoAmarelo, numEquipe, equipe.atletas[e.RowIndex] };
-                        menuItem.Click += mnuNewEvento;
-                        contextMenu.MenuItems.Add(menuItem);
+                            menuItem = new MenuItem("Cartão Amarelo");
+                            menuItem.Tag = new List<Object>() { tpEventoEnum.CartaoAmarelo, numEquipe, equipe.atletas[e.RowIndex] };
+                            menuItem.Click += mnuNewEvento;
+                            contextMenu.MenuItems.Add(menuItem);
 
-                        menuItem = new MenuItem("Cartão Vermelho");
-                        menuItem.Tag = new List<Object>() { tpEventoEnum.CartaoVermelho, numEquipe, equipe.atletas[e.RowIndex] };
-                        menuItem.Click += mnuNewEvento;
-                        contextMenu.MenuItems.Add(menuItem);
-
-
+                            menuItem = new MenuItem("Cartão Vermelho");
+                            menuItem.Tag = new List<Object>() { tpEventoEnum.CartaoVermelho, numEquipe, equipe.atletas[e.RowIndex] };
+                            menuItem.Click += mnuNewEvento;
+                            contextMenu.MenuItems.Add(menuItem);
+                        }
+                        
                         // Exibe o menu de contexto
                         contextMenu.Show(dgvEquipe, new System.Drawing.Point(dgvEquipe.RowHeadersWidth, dgvEquipe.ColumnHeadersHeight));
                     }
@@ -189,17 +204,51 @@ namespace SecEsportes.Views {
         }
 
         private void btnEncerrarPartida_Click(object sender, EventArgs e) {
+            //Verifica se terá que ter desempate
+            if (partida.rodada < 0) {
+                if (penalidades) {
+                    int golsPenaltiEquipe1, golsPenaltiEquipe2;
+                    golsPenaltiEquipe1 = partida.eventos.FindAll(eventos => eventos.tpEvento.Equals(tpEventoEnum.Gol_Penalti) && eventos.equipe.id == partida.equipe1.id).Count;
+                    golsPenaltiEquipe2 = partida.eventos.FindAll(eventos => eventos.tpEvento.Equals(tpEventoEnum.Gol_Penalti) && eventos.equipe.id == partida.equipe2.id).Count;
+
+                    if (golsPenaltiEquipe1 == golsPenaltiEquipe2) {
+                        return;
+                    }
+
+                } else {
+                    int golsEquipe1, golsEquipe2;
+                    golsEquipe1 = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol) && eventosAEncontrar.equipe.id.Equals(partida.equipe1.id)).Count;
+                    golsEquipe2 = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol) && eventosAEncontrar.equipe.id.Equals(partida.equipe2.id)).Count;
+
+                    // Soma os gols da partida de ida
+                    if (competicao.jogosIdaEVolta_MataMata == true) {
+                        Competicao_Partida partidaIda = competicao.partidas.Find(find_P_Ida => find_P_Ida.rodada == partida.rodada && find_P_Ida.numGrupo == partida.numGrupo && find_P_Ida.id_Equipe1 == partida.equipe2.id && find_P_Ida.id_Equipe2 == partida.equipe1.id);
+                        golsEquipe1 += partidaIda.eventos.FindAll(eventos => eventos.tpEvento.Equals(tpEventoEnum.Gol) && eventos.equipe.id == partida.equipe2.id).Count;
+                        golsEquipe2 += partidaIda.eventos.FindAll(eventos => eventos.tpEvento.Equals(tpEventoEnum.Gol) && eventos.equipe.id == partida.equipe1.id).Count;
+                    }
+
+                    if (golsEquipe1 == golsEquipe2) {
+                        btnDisputaPenaltis.Enabled = true;
+                        btnDisputaPenaltis_Click(null, null);
+                        return;
+                    }
+                }
+            }
+
             partidaIniciada = false;
             partida.encerrada = true;
             partida.data = DateTime.Now;;
             CompeticaoRepositorio.Instance.updatePartida(ref competicao, partida);
 
-            if (competicao.fase_Atual == -1) {
-                competicao.status = StatusEnum._0_Encerrada;
-                CompeticaoRepositorio.Instance.update(competicao, ref errorMessage);
-            }
-
             load(null, null);
+        }
+
+        private void btnDisputaPenaltis_Click(object sender, EventArgs e) {
+            lblPlacarTime1_Penalti.Visible = true;
+            lblPlacarTime2_Penalti.Visible = true;
+            
+            penalidades = true;
+            btnEncerrarPartida.Enabled = true;
         }
     }
 }

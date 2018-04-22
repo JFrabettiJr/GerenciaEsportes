@@ -154,37 +154,6 @@ namespace SecEsportes.Infraestrutura
             //Preenche os campos que vieram sem preenchimento do data set
             for (var iCount = 0; iCount < dgvRodada.Rows.Count; iCount++) {
                 if (numRodada < 0) {
-                    //int numJogo = iCount + 1;
-                    //switch (numRodada) {
-                    //    case -1: // Final
-                    //        switch (competicao.mataMata) {
-                    //            case MataMataEnum._2_Final: numJogo += 0; break;
-                    //            case MataMataEnum._3_SemiFinal: numJogo += 2 + (competicao.jogosIdaEVolta_MataMata ? 2 : 0); break;
-                    //            case MataMataEnum._4_QuartasFinal: numJogo += 4 + (competicao.jogosIdaEVolta_MataMata ? 4 : 0); break;
-                    //            case MataMataEnum._5_OitavasFinal: numJogo += 8 + (competicao.jogosIdaEVolta_MataMata ? 8 : 0); break;
-                    //        }
-                    //        break;
-                    //    case -2: // Semi-final
-                    //        switch (competicao.mataMata) {
-                    //            case MataMataEnum._3_SemiFinal: numJogo += 0; break;
-                    //            case MataMataEnum._4_QuartasFinal: numJogo += 4 + (competicao.jogosIdaEVolta_MataMata ? 4 : 0); break;
-                    //            case MataMataEnum._5_OitavasFinal: numJogo += 8 + (competicao.jogosIdaEVolta_MataMata ? 8 : 0); break;
-                    //        }
-                    //        break;
-                    //    case -3: //Quartas de final
-                    //        switch (competicao.mataMata) {
-                    //            case MataMataEnum._4_QuartasFinal: numJogo += 0; break;
-                    //            case MataMataEnum._5_OitavasFinal: numJogo += 8 + (competicao.jogosIdaEVolta_MataMata ? 8 : 0); break;
-                    //        }
-                    //        break;
-                    //    case -4: // Oitavas de final
-                    //        switch (competicao.mataMata) {
-                    //            case MataMataEnum._5_OitavasFinal: numJogo += 0; break;
-                    //        }
-                    //        break;
-                    //}
-
-                    //dgvRodada.Rows[iCount].Cells["Nome_Grupo_Jogo"].Value = "Jogo " + numJogo.ToString();
                     dgvRodada.Rows[iCount].Cells["Nome_Grupo_Jogo"].Value = "Jogo " + dataSource[iCount].numGrupo.ToString();
                 } else
                     dgvRodada.Rows[iCount].Cells["Nome_Grupo_Jogo"].Value = getNomeGrupo(competicao.nomesGrupos, dataSource[iCount].numGrupo + 1); 
@@ -200,21 +169,53 @@ namespace SecEsportes.Infraestrutura
                 DataGridViewCellStyle dataGridViewCellStyle = new DataGridViewCellStyle(dgvRodada.Rows[iCount].DefaultCellStyle);
                 dataGridViewCellStyle.Font = new Font(dgvRodada.Font, FontStyle.Bold);
 
-                int golsEquipe1, golsEquipe2;
-                golsEquipe1 = dataSource[iCount].eventos.FindAll(eventosAEncontrar => eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol) && eventosAEncontrar.equipe.id == dataSource[iCount].equipe1.id).Count;
-                golsEquipe2 = dataSource[iCount].eventos.FindAll(eventosAEncontrar => eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol) && eventosAEncontrar.equipe.id == dataSource[iCount].equipe2.id).Count;
-
                 dgvRodada.Rows[iCount].Cells["PtsEquipe1"].Style = dataGridViewCellStyle;
                 dgvRodada.Rows[iCount].Cells["Vs"].Style = dataGridViewCellStyle;
                 dgvRodada.Rows[iCount].Cells["PtsEquipe2"].Style = dataGridViewCellStyle;
 
-                if (golsEquipe1 > golsEquipe2) {
-                    dgvRodada.Rows[iCount].Cells["NomeEquipe1"].Style = dataGridViewCellStyle;
+                int golsEquipe1, golsEquipe2;
+                golsEquipe1 = dataSource[iCount].eventos.FindAll(eventosAEncontrar => eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol) && eventosAEncontrar.equipe.id == dataSource[iCount].equipe1.id).Count;
+                golsEquipe2 = dataSource[iCount].eventos.FindAll(eventosAEncontrar => eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol) && eventosAEncontrar.equipe.id == dataSource[iCount].equipe2.id).Count;
+
+                if (dataSource[iCount].rodada < 0) {
+                    // Jogo de fase final
+                    int golsPenaltiEquipe1, golsPenaltiEquipe2;
+                    golsPenaltiEquipe1 = dataSource[iCount].eventos.FindAll(eventosAEncontrar => eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol_Penalti) && eventosAEncontrar.equipe.id == dataSource[iCount].equipe1.id).Count;
+                    golsPenaltiEquipe2 = dataSource[iCount].eventos.FindAll(eventosAEncontrar => eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol_Penalti) && eventosAEncontrar.equipe.id == dataSource[iCount].equipe2.id).Count;
+
+                    // Verifica se o jogo foi para os pênaltis
+                    if (golsPenaltiEquipe1 > 0 || golsPenaltiEquipe2 > 0) {
+
+                        dgvRodada.Rows[iCount].Cells["NomeEquipe1"].Value = dgvRodada.Rows[iCount].Cells["NomeEquipe1"].Value + " (" + golsPenaltiEquipe1 + ")";
+                        dgvRodada.Rows[iCount].Cells["NomeEquipe2"].Value = dgvRodada.Rows[iCount].Cells["NomeEquipe2"].Value + " (" + golsPenaltiEquipe2 + ")";
+
+                        if (golsPenaltiEquipe1 > golsPenaltiEquipe2) {
+                            dgvRodada.Rows[iCount].Cells["NomeEquipe1"].Style = dataGridViewCellStyle;
+                        } else {
+                            if (golsPenaltiEquipe2 > golsPenaltiEquipe1) {
+                                dgvRodada.Rows[iCount].Cells["NomeEquipe2"].Style = dataGridViewCellStyle;
+                            }
+                        }
+                    } else {
+                        if (golsEquipe1 > golsEquipe2) {
+                            dgvRodada.Rows[iCount].Cells["NomeEquipe1"].Style = dataGridViewCellStyle;
+                        } else {
+                            if (golsEquipe2 > golsEquipe1) {
+                                dgvRodada.Rows[iCount].Cells["NomeEquipe2"].Style = dataGridViewCellStyle;
+                            }
+                        }
+                    }
                 } else {
-                    if (golsEquipe2 > golsEquipe1) {
-                        dgvRodada.Rows[iCount].Cells["NomeEquipe2"].Style = dataGridViewCellStyle;
+                    // Jogo de fase classificatória
+                    if (golsEquipe1 > golsEquipe2) {
+                        dgvRodada.Rows[iCount].Cells["NomeEquipe1"].Style = dataGridViewCellStyle;
+                    } else {
+                        if (golsEquipe2 > golsEquipe1) {
+                            dgvRodada.Rows[iCount].Cells["NomeEquipe2"].Style = dataGridViewCellStyle;
+                        }
                     }
                 }
+
             }
 
             dgvRodada.Refresh();

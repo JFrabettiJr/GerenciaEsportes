@@ -666,7 +666,6 @@ namespace SecEsportes.Views {
                     btnSalvar.Enabled = false;
                     dgvEquipes.Enabled = true;
                     btnAtualizar.Enabled = true;
-                    btnAvancar.Enabled = true;
                     break;
                 case Utilidades.WindowMode.ModoDeEdicao:
                     btnCancelar.Enabled = true;
