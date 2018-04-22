@@ -87,7 +87,7 @@ namespace SecEsportes.Views {
                         dgvAtletas.Columns[iCount].Width = 100;
                         dgvAtletas.Columns[iCount].ReadOnly = true;
                         break;
-                    case nameof(Atleta.Numero):
+                    case nameof(Atleta.numero):
                         dgvAtletas.Columns[iCount].Name = dgvAtletas.Columns[iCount].DataPropertyName;
                         dgvAtletas.Columns[iCount].HeaderText = "Númeração";
                         dgvAtletas.Columns[iCount].Width = 75;
@@ -155,10 +155,10 @@ namespace SecEsportes.Views {
             for (int iCount = 0; iCount < dgvAtletas.Rows.Count; iCount++) {
                 int numAtleta = -1;
                 bool isNumber;
-                isNumber = int.TryParse(dgvAtletas[nameof(Atleta.Numero), iCount].Value.ToString(), out numAtleta);
+                isNumber = int.TryParse(dgvAtletas[nameof(Atleta.numero), iCount].Value.ToString(), out numAtleta);
                 if (isNumber && numAtleta > 0) {
-                    newEquipe.atletas[iCount].Numero = numAtleta;
-                    newEquipe.atletas[iCount].Numero = numAtleta;
+                    newEquipe.atletas[iCount].numero = numAtleta;
+                    newEquipe.atletas[iCount].numero = numAtleta;
                 }
             }
 

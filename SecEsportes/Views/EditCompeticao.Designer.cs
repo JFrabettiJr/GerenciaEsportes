@@ -62,6 +62,7 @@
             this.btnGerarGrupos = new System.Windows.Forms.Button();
             this.btnVoltar = new System.Windows.Forms.Button();
             this.btnGerarPartidas = new System.Windows.Forms.Button();
+            this.btnVisaoGeral = new System.Windows.Forms.Button();
             this.tlp1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvEquipes)).BeginInit();
             this.tlp2.SuspendLayout();
@@ -238,7 +239,7 @@
             this.dgvEquipes.AllowUserToAddRows = false;
             this.dgvEquipes.AllowUserToDeleteRows = false;
             this.dgvEquipes.AllowUserToOrderColumns = true;
-            this.dgvEquipes.BackgroundColor = System.Drawing.Color.Gainsboro;
+            this.dgvEquipes.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.dgvEquipes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvEquipes.Location = new System.Drawing.Point(10, 169);
             this.dgvEquipes.Name = "dgvEquipes";
@@ -440,7 +441,7 @@
             this.txtStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtStatus.Location = new System.Drawing.Point(299, 13);
             this.txtStatus.Name = "txtStatus";
-            this.txtStatus.Size = new System.Drawing.Size(211, 17);
+            this.txtStatus.Size = new System.Drawing.Size(230, 17);
             this.txtStatus.TabIndex = 11;
             this.txtStatus.Text = "Status:";
             // 
@@ -494,11 +495,22 @@
             this.btnGerarPartidas.UseVisualStyleBackColor = true;
             this.btnGerarPartidas.Click += new System.EventHandler(this.btnGerarPartidas_Click);
             // 
+            // btnVisaoGeral
+            // 
+            this.btnVisaoGeral.Location = new System.Drawing.Point(266, 141);
+            this.btnVisaoGeral.Name = "btnVisaoGeral";
+            this.btnVisaoGeral.Size = new System.Drawing.Size(198, 23);
+            this.btnVisaoGeral.TabIndex = 17;
+            this.btnVisaoGeral.Text = "Visão geral do campeonato";
+            this.btnVisaoGeral.UseVisualStyleBackColor = true;
+            this.btnVisaoGeral.Click += new System.EventHandler(this.btnVisaoGeral_Click);
+            // 
             // EditCompeticao
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(734, 536);
+            this.Controls.Add(this.btnVisaoGeral);
             this.Controls.Add(this.btnGerarPartidas);
             this.Controls.Add(this.btnVoltar);
             this.Controls.Add(this.btnGerarGrupos);
@@ -565,5 +577,6 @@
         private System.Windows.Forms.Label lblNumJogadores;
         private System.Windows.Forms.Button btnVoltar;
         private System.Windows.Forms.Button btnGerarPartidas;
+        private System.Windows.Forms.Button btnVisaoGeral;
     }
 }

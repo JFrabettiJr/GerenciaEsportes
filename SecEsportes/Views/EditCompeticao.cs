@@ -129,12 +129,6 @@ namespace SecEsportes.Views {
                 case 4:
                     newCompeticao.mataMata = MataMataEnum._5_OitavasFinal;
                     break;
-                case 5:
-                    newCompeticao.mataMata = MataMataEnum._6_16AvosFinal;
-                    break;
-                case 6:
-                    newCompeticao.mataMata = MataMataEnum._7_32AvosFinal;
-                    break;
             }
 
             switch (cboNomeacaoGrupos.SelectedIndex) {
@@ -177,7 +171,9 @@ namespace SecEsportes.Views {
             // Bloqueia os campos para edição
             bloqueiaCampos(false);
 
+
             btnGerarPartidas.Enabled = false;
+            btnVisaoGeral.Enabled = false;
 
             if (competicao.status == StatusEnum._1_Aberta) {
                 // Competição aberta
@@ -207,12 +203,12 @@ namespace SecEsportes.Views {
                 // Cria a abas e os grupos
                 tabs.Controls.Clear();
                 for (int numGrupo = 0; numGrupo < competicao.numGrupos; numGrupo++) {
-                    DataGridView dataGridView = criaAbaDeGrupo(getNomeGrupo(numGrupo + 1), numGrupo);
+                    DataGridView dataGridView = CompeticaoViewUtilidades.criaAba(CompeticaoViewUtilidades.getNomeGrupo(competicao.nomesGrupos, numGrupo + 1), numGrupo, tabs, dgvGrupoEquipes_CellMouseClick);
 
                     if (numGrupo < competicao.grupos.Count)
-                        refreshDataGridViewGrupos(dataGridView, competicao.grupos[numGrupo]);
+                        CompeticaoViewUtilidades.refreshDataGridViewGrupos(dataGridView, competicao.grupos[numGrupo]);
                     else
-                        refreshDataGridViewGrupos(dataGridView, null);
+                        CompeticaoViewUtilidades.refreshDataGridViewGrupos(dataGridView, null);
                 }
 
                 if (competicao.status == StatusEnum._3_EmPreparacao) {
@@ -253,6 +249,7 @@ namespace SecEsportes.Views {
                     // Deixa invisível os botões/informações
                     dgvEquipes.Visible = false;
                     btnGerarGrupos.Enabled = false;
+                    btnVisaoGeral.Enabled = true;
                 }
 
             }
@@ -329,129 +326,10 @@ namespace SecEsportes.Views {
             // Atualiza o DataSource dos grupos
             DataGridView dgvGrupo = (DataGridView)tabs.Controls[idGrupo].Controls[0];
 
-            refreshDataGridViewGrupos(dgvGrupo, competicao.grupos[idGrupo]);
+            CompeticaoViewUtilidades.refreshDataGridViewGrupos(dgvGrupo, competicao.grupos[idGrupo]);
 
             CompeticaoRepositorio.Instance.updateGrupos(competicao.id, idGrupo, equipe.id);
-        }
-
-        private void refreshDataGridViewGrupos(DataGridView dgvGrupo, List<EquipeCompeticao> dataSource) {
-            dgvGrupo.DataSource = null;
-            dgvGrupo.Refresh();
-
-            dgvGrupo.Columns.Clear();
-
-            dgvGrupo.DataSource = dataSource;
-
-            if (!(dataSource is null)) {
-                dgvGrupo.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "SaldoGols" });
-                dgvGrupo.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "NumJogos" });
-                dgvGrupo.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "Aproveitamento" });
-            }
-
-            for (var iCount = 0; iCount < dgvGrupo.Columns.Count; iCount++) {
-                switch (dgvGrupo.Columns[iCount].DataPropertyName) {
-                    case nameof(EquipeCompeticao.nome):
-                        dgvGrupo.Columns[iCount].HeaderText = "Nome da equipe";
-                        dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
-                        break;
-                    case nameof(EquipeCompeticao.codigo):
-                        dgvGrupo.Columns[iCount].HeaderText = "Código";
-                        dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
-                        break;
-                    case "NumJogos":
-                        dgvGrupo.Columns[iCount].HeaderText = "J";
-                        dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
-                        dgvGrupo.Columns[iCount].Width = 40;
-                        break;
-                    case nameof(EquipeCompeticao.vitorias):
-                        dgvGrupo.Columns[iCount].HeaderText = "V";
-                        dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
-                        dgvGrupo.Columns[iCount].Width = 40;
-                        break;
-                    case nameof(EquipeCompeticao.empates):
-                        dgvGrupo.Columns[iCount].HeaderText = "E";
-                        dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
-                        dgvGrupo.Columns[iCount].Width = 40;
-                        break;
-                    case nameof(EquipeCompeticao.pontos):
-                        dgvGrupo.Columns[iCount].HeaderText = "Pts.";
-                        dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
-                        dgvGrupo.Columns[iCount].Width = 50;
-                        break;
-                    case nameof(EquipeCompeticao.derrotas):
-                        dgvGrupo.Columns[iCount].HeaderText = "D";
-                        dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
-                        dgvGrupo.Columns[iCount].Width = 40;
-                        break;
-                    case nameof(EquipeCompeticao.golsPro):
-                        dgvGrupo.Columns[iCount].HeaderText = "GP";
-                        dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
-                        dgvGrupo.Columns[iCount].Width = 40;
-                        break;
-                    case nameof(EquipeCompeticao.golsContra):
-                        dgvGrupo.Columns[iCount].HeaderText = "GC";
-                        dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
-                        dgvGrupo.Columns[iCount].Width = 40;
-                        break;
-                    case "SaldoGols":
-                        dgvGrupo.Columns[iCount].HeaderText = "SG";
-                        dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
-                        dgvGrupo.Columns[iCount].Width = 40;
-                        break;
-                    case "Aproveitamento":
-                        dgvGrupo.Columns[iCount].HeaderText = " %";
-                        dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
-                        dgvGrupo.Columns[iCount].Width = 50;
-                        break;
-                    default:
-                        dgvGrupo.Columns[iCount].Visible = false;
-                        break;
-                }
-            }
-
-            //Preenche os campos que vieram sem preenchimento do data set
-            for (var iCount = 0; iCount < dgvGrupo.Rows.Count; iCount++) {
-                dgvGrupo.Rows[iCount].Cells["NumJogos"].Value = dataSource[iCount].vitorias + dataSource[iCount].derrotas + dataSource[iCount].empates;
-
-                dgvGrupo.Rows[iCount].Cells["SaldoGols"].Value = dataSource[iCount].golsPro - dataSource[iCount].golsContra;
-
-                if (dataSource[iCount].vitorias + dataSource[iCount].derrotas + dataSource[iCount].empates > 0)
-                    dgvGrupo.Rows[iCount].Cells["Aproveitamento"].Value = dataSource[iCount].pontos * 100 / ((dataSource[iCount].vitorias + dataSource[iCount].derrotas + dataSource[iCount].empates) * 3);
-                else
-                    dgvGrupo.Rows[iCount].Cells["Aproveitamento"].Value = 0;
-            }
-
-            dgvGrupo.Refresh();
-        }
-        private string getNomeGrupo(int numeroGrupo) {
-            string nomeGrupo = "Grupo ";
-
-            if (competicao.nomesGrupos == NomesGruposEnum._0_PorNumeracao) {
-                nomeGrupo += numeroGrupo.ToString();
-            } else {
-                switch (numeroGrupo) {
-                    case 1: nomeGrupo += "A"; break;
-                    case 2: nomeGrupo += "B"; break;
-                    case 3: nomeGrupo += "C"; break;
-                    case 4: nomeGrupo += "D"; break;
-                    case 5: nomeGrupo += "E"; break;
-                    case 6: nomeGrupo += "F"; break;
-                    case 7: nomeGrupo += "G"; break;
-                    case 8: nomeGrupo += "H"; break;
-                    case 9: nomeGrupo += "I"; break;
-                    case 10: nomeGrupo += "J"; break;
-                    case 11: nomeGrupo += "K"; break;
-                    case 12: nomeGrupo += "L"; break;
-                    case 13: nomeGrupo += "M"; break;
-                    case 14: nomeGrupo += "N"; break;
-                    case 15: nomeGrupo += "O"; break;
-                    case 16: nomeGrupo += "P"; break;
-                }
-            }
-
-            return nomeGrupo;
-
-        }
+        }        
         private void btnAvancar_Click(object sender, EventArgs e) {
             Competicao newCompeticao;
 
@@ -520,6 +398,20 @@ namespace SecEsportes.Views {
 
                     break;
                 case StatusEnum._2_Iniciada:    // Iniciada >> Encerrada
+                    int numPartidasRestantes;
+                    if (competicao.fase_Atual == 0) {
+                        numPartidasRestantes = competicao.partidas.FindAll(partidas => partidas.encerrada == false && partidas.rodada > competicao.fase_Atual).Count;
+                    } else {
+                        numPartidasRestantes = competicao.partidas.FindAll(partidas => partidas.encerrada == false && partidas.rodada == competicao.fase_Atual).Count;
+                    }
+                    
+                    if (numPartidasRestantes > 0) {
+                        MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
+                            "Existem ainda " + numPartidasRestantes + " que não foram encerradas nesta fase.",
+                            "Não foi possível avançar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        break;
+                    }
+
                     newCompeticao = competicao;
                     newCompeticao.status = StatusEnum._0_Encerrada;
 
@@ -544,7 +436,7 @@ namespace SecEsportes.Views {
 
                         // Verifica se todos os jogadores tem número
                         foreach (Atleta atleta in equipe.atletas) {
-                            if (atleta.Numero is null || atleta.Numero < 1) {
+                            if (atleta.numero is null || atleta.numero < 1) {
                                 MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
                                 "Existem equipes que têm atletas sem a numeração definida",
                                 "Não foi possível avançar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -664,6 +556,8 @@ namespace SecEsportes.Views {
                 cboModalidades.Items.Add(modalidades[iCount].id + " - " + modalidades[iCount].descricao);
             }
 
+            competicao = CompeticaoRepositorio.Instance.get(competicao.id);
+
             // Carrega o combobox das opções de mata-mata (conferir o MataMataEnum da classe Competicao)
             cboMataMata.Items.Clear();
             cboMataMata.Items.Add("Não");               //_1_Nao,
@@ -671,8 +565,6 @@ namespace SecEsportes.Views {
             cboMataMata.Items.Add("Semi-Final");        //_3_SemiFinal,
             cboMataMata.Items.Add("Quartas de Final");  //_4_QuartasFinal,
             cboMataMata.Items.Add("Oitavas de Final");  //_5_OitavasFinal,
-            cboMataMata.Items.Add("16 avos de Final");  //_6_16AvosFinal,
-            cboMataMata.Items.Add("32 avos de Final");  //_7_32AvosFinal
 
             // Carrega o combobox das opções de nomeação dos grupos
             cboNomeacaoGrupos.Items.Clear();
@@ -707,12 +599,6 @@ namespace SecEsportes.Views {
                     break;
                 case MataMataEnum._5_OitavasFinal:
                     cboMataMata.SelectedIndex = 4;
-                    break;
-                case MataMataEnum._6_16AvosFinal:
-                    cboMataMata.SelectedIndex = 5;
-                    break;
-                case MataMataEnum._7_32AvosFinal:
-                    cboMataMata.SelectedIndex = 6;
                     break;
             }
 
@@ -849,7 +735,7 @@ namespace SecEsportes.Views {
                 tabs.Controls.Clear();
 
                 for (var numGrupo = 0; numGrupo < competicao.numGrupos; numGrupo++) {
-                    DataGridView dataGridView = criaAbaDeGrupo(getNomeGrupo(numGrupo + 1), numGrupo);
+                    DataGridView dataGridView = CompeticaoViewUtilidades.criaAba(CompeticaoViewUtilidades.getNomeGrupo(competicao.nomesGrupos, numGrupo + 1), numGrupo, tabs, dgvGrupoEquipes_CellMouseClick);
 
                     competicao.grupos.Add(new List<EquipeCompeticao>());
 
@@ -861,39 +747,9 @@ namespace SecEsportes.Views {
                     }
 
                     //Atualiza o DataGridView com as equipes daquele grupo
-                    refreshDataGridViewGrupos(dataGridView, competicao.grupos[numGrupo]);
+                    CompeticaoViewUtilidades.refreshDataGridViewGrupos(dataGridView, competicao.grupos[numGrupo]);
                 }
             }
-        }
-
-        private DataGridView criaAbaDeGrupo(string nomeGrupo, int indiceGrupo) {
-            // Cria o TabPage
-            TabPage tabPage = new TabPage(nomeGrupo);
-            tabPage.UseVisualStyleBackColor = true;
-            tabPage.Padding = new Padding(3);
-
-            // Cria o DataGridView
-            DataGridView dataGridView = new DataGridView();
-            dataGridView.AllowUserToAddRows = false;
-            dataGridView.AllowUserToDeleteRows = false;
-            dataGridView.AllowUserToOrderColumns = true;
-            dataGridView.BackgroundColor = System.Drawing.Color.Gainsboro;
-            dataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView.Dock = DockStyle.Fill;
-            dataGridView.ReadOnly = true;
-            dataGridView.RowTemplate.Resizable = DataGridViewTriState.True;
-            dataGridView.Tag = indiceGrupo;
-
-            dataGridView.CellMouseClick -= dgvGrupoEquipes_CellMouseClick;
-            dataGridView.CellMouseClick += dgvGrupoEquipes_CellMouseClick;
-
-            //Adiciona o DataGridView ao TabPage
-            tabPage.Controls.Add(dataGridView);
-
-            //Adiciona o TabPage às abas
-            tabs.Controls.Add(tabPage);
-
-            return dataGridView;
         }
 
         private void dgvGrupoEquipes_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
@@ -911,10 +767,7 @@ namespace SecEsportes.Views {
                     contextMenu.MenuItems.Add(menuItem);
 
                     // Define onde será aberto o menu de contexto
-                    int x, y;
-                    x = dataGridView.RowHeadersWidth;
-                    y = (dataGridView[e.ColumnIndex, e.RowIndex].Size.Height * e.RowIndex) + dataGridView.ColumnHeadersHeight;
-                    contextMenu.Show(dataGridView, new System.Drawing.Point(x, y));
+                    contextMenu.Show(dataGridView, new System.Drawing.Point(dataGridView.RowHeadersWidth, dataGridView.ColumnHeadersHeight));
 
                 }
             }
@@ -933,14 +786,14 @@ namespace SecEsportes.Views {
 
             // Atualiza o DataSource dos grupos
             DataGridView dgvGrupo = (DataGridView)tabs.Controls[idGrupo].Controls[0];
-            refreshDataGridViewGrupos(dgvGrupo, competicao.grupos[idGrupo]);
+            CompeticaoViewUtilidades.refreshDataGridViewGrupos(dgvGrupo, competicao.grupos[idGrupo]);
 
         }
 
         private void btnVoltar_Click(object sender, EventArgs e) {
             Competicao newCompeticao;
 
-            switch (competicao.status) {
+            switch (competicao.status) { // Encerrada >> Iniciada
                 case StatusEnum._0_Encerrada:
                     newCompeticao = competicao;
                     newCompeticao.status = StatusEnum._2_Iniciada;
@@ -956,7 +809,7 @@ namespace SecEsportes.Views {
                     break;
                 case StatusEnum._1_Aberta:
                      break;
-                case StatusEnum._2_Iniciada:
+                case StatusEnum._2_Iniciada: // Iniciada >> Em preparação
                     newCompeticao = competicao;
                     newCompeticao.status = StatusEnum._3_EmPreparacao;
 
@@ -969,7 +822,7 @@ namespace SecEsportes.Views {
                     load(null, null);
                     break;
 
-                case StatusEnum._3_EmPreparacao:
+                case StatusEnum._3_EmPreparacao: // Em preparação >> Aberta
                     newCompeticao = competicao;
                     newCompeticao.status = StatusEnum._1_Aberta;
 
@@ -1057,14 +910,15 @@ namespace SecEsportes.Views {
                 for (int numPartida = 0; numPartida < numPartidas; numPartida++) {
                     Competicao_Partida partida = competicao.partidas[numPartida];
 
-                    Competicao_Partida partidaDeVolta = partida;
-                    partidaDeVolta.equipe1 = partida.equipe2;
-                    partidaDeVolta.equipe2 = partida.equipe1;
-                    partidaDeVolta.rodada += numRodadasIda;
+                    Competicao_Partida partidaDeVolta = new Competicao_Partida(partida.equipe2, partida.equipe1, partida.rodada + numRodadasIda, partida.numGrupo);
 
-                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partidaDeVolta);
                 }
             }
+        }
+
+        private void btnVisaoGeral_Click(object sender, EventArgs e) {
+            new ViewCompeticao(competicao).ShowDialog();
         }
     }
 }

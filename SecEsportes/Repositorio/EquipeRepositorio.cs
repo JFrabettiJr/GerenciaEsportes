@@ -183,7 +183,7 @@ namespace SecEsportes.Repositorio {
                         id_Competicao = idCompeticao,
                         id_Funcao = atleta.id_funcao,
                         id_Atleta = atleta.id_pessoa,
-                        numero = atleta.Numero
+                        numero = atleta.numero
                     });
                 return true;
             }
@@ -241,7 +241,7 @@ namespace SecEsportes.Repositorio {
                     foreach (Atleta atleta in equipe.atletas) {
                         SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(strSQL,
                             new {
-                                numero = atleta.Numero,
+                                numero = atleta.numero,
                                 id_Equipe = equipe.id,
                                 id_Competicao = competicao.id,
                                 id_Atleta = atleta.id_pessoa

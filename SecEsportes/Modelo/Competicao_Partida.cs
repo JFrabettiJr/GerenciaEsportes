@@ -19,15 +19,18 @@ namespace SecEsportes.Modelo{
 
         public List<Competicao_Partida_Evento> eventos { get; set; }
         public DateTime data { get; set; }
-        public int rodada { get; set; } /* > 0 Representa o nº da Rodada | < 0 Representa MataMata (-1 Final, -2 SemiFinal, -3 Quartas de final, etc.)*/        
+        public int rodada { get; set; } /* > 0 Representa o nº da Rodada | < 0 Representa MataMata (-1 Final, -2 SemiFinal, -3 Quartas de final, etc.)*/
+        public bool encerrada { get; set; }
 
         public Competicao_Partida() { }
 
-        public Competicao_Partida(EquipeCompeticao equipe1, EquipeCompeticao equipe2, int rodada, int numGrupo) {
+        public Competicao_Partida(EquipeCompeticao equipe1, EquipeCompeticao equipe2, int rodada, int numGrupo = -1) {
             this.equipe1 = equipe1;
             this.equipe2 = equipe2;
             this.rodada = rodada;
-            this.numGrupo = numGrupo;
+            if (numGrupo > -1)
+                this.numGrupo = numGrupo;
+            this.eventos = new List<Competicao_Partida_Evento>();
         }
     }
 

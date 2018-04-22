@@ -23,6 +23,9 @@ namespace SecEsportes.Modelo{
         public bool jogosIdaEVolta_MataMata { get; set; }
         public NomesGruposEnum nomesGrupos { get; set; }
         public List<List<EquipeCompeticao>> grupos { get; set; }
+        public int id_Campeao { get; set; }
+        public EquipeCompeticao campeao { get; set; }
+        public int fase_Atual { get; set; }
 
         public Competicao() { }
 
@@ -50,9 +53,7 @@ namespace SecEsportes.Modelo{
         _2_Final,
         _3_SemiFinal,
         _4_QuartasFinal,
-        _5_OitavasFinal,
-        _6_16AvosFinal,
-        _7_32AvosFinal
+        _5_OitavasFinal
     }
 
 }

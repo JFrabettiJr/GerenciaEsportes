@@ -43,7 +43,10 @@ namespace SecEsportes.Repositorio {
                     "status INTEGER, " +
                     "nomesGrupos INTEGER, " +
                     "numMinimoJogadores INTEGER, " +
+                    "id_Campeao INTEGER, " +
+                    "fase_Atual INTEGER, " + 
                     "FOREIGN KEY(id_Modalidade) REFERENCES modalidade(id) " +
+                    "FOREIGN KEY(id_Campeao) REFERENCES Equipe_Competicao(id) " +
                     ") ";
                 command.ExecuteNonQuery();
             }
@@ -75,10 +78,10 @@ namespace SecEsportes.Repositorio {
                                         "    Data DATETIME, " +
                                         "    Rodada INT, /* > 0 Representa o nº da Rodada | < 0 Representa MataMata (-1 Final, -2 SemiFinal, -3 Quartas de final, etc.)*/ " +
                                         "    numGrupo INT, " +
+                                        "    encerrada INT, " +
                                         "    FOREIGN KEY(id_Competicao) REFERENCES Competicao(id), " +
                                         "    FOREIGN KEY(id_Equipe1) REFERENCES Equipe_Competicao(id_Equipe), " +
-                                        "    FOREIGN KEY(id_Equipe2) REFERENCES Equipe_Competicao(id_Equipe), " +
-                                        "    FOREIGN KEY(numGrupo) REFERENCES Competicao_Grupos(numGrupo) " +
+                                        "    FOREIGN KEY(id_Equipe2) REFERENCES Equipe_Competicao(id_Equipe) " +
                                         ")";
                 command.ExecuteNonQuery();
             }
@@ -101,6 +104,7 @@ namespace SecEsportes.Repositorio {
             }
 
         }
+
         public Competicao get(int id) {
             string myString = String.Empty;
             return get(id, ref myString);
@@ -118,6 +122,7 @@ namespace SecEsportes.Repositorio {
                     competicao.modalidade = ModalidadeRepositorio.Instance.get(competicao.id_Modalidade);
                     competicao.grupos = getGruposPorCompeticao(competicao.id);
                     competicao.partidas = getPartidasPorCompeticao(competicao.id);
+                    competicao.campeao = EquipeRepositorio.Instance.getEquipeCompeticao(competicao.id_Campeao, competicao.id);
 
                     return competicao;
                 }
@@ -141,6 +146,7 @@ namespace SecEsportes.Repositorio {
                         competicoes[iCount].modalidade = ModalidadeRepositorio.Instance.get(competicoes[iCount].id_Modalidade);
                         competicoes[iCount].grupos = getGruposPorCompeticao(competicoes[iCount].id);
                         competicoes[iCount].partidas = getPartidasPorCompeticao(competicoes[iCount].id);
+                        competicoes[iCount].campeao = EquipeRepositorio.Instance.getEquipeCompeticao(competicoes[iCount].id_Campeao, competicoes[iCount].id);
                     }
 
                     return competicoes;
@@ -150,7 +156,6 @@ namespace SecEsportes.Repositorio {
                 return null;
             }
         }
-
         private List<Competicao_Partida> getPartidasPorCompeticao(int id_Competicao) {
             try {
                 using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
@@ -178,7 +183,6 @@ namespace SecEsportes.Repositorio {
                 return null;
             }
         }
-
         private List<Competicao_Partida_Evento> getEventosPorPartida(int id_Partida, int id_Competicao) {
             try {
                 using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
@@ -204,7 +208,6 @@ namespace SecEsportes.Repositorio {
                 return null;
             }
         }
-
         private List<List<EquipeCompeticao>> getGruposPorCompeticao(int id_competicao) {
             try {
                 using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
@@ -263,6 +266,40 @@ namespace SecEsportes.Repositorio {
                 return -1;
             }
         }
+        public List<Atleta_List_Artilheiro> getArtilheiros(int id_Competicao) {
+            try {
+                using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
+                    connection.Open();
+
+                    string strSQL;
+                    strSQL =    "SELECT	id_Atleta, " +
+                                "       Equipe.nome AS nome_Equipe, " +
+                                "       (SELECT COUNT(1) FROM Competicao_Partida WHERE encerrada = 1 AND (id_Equipe1 = Equipe.id OR id_Equipe2 = Equipe.id)) AS num_Partidas, " +
+                                "       COUNT(1) AS num_Gols " +
+                                "FROM 	Competicao_Partida_Evento " +
+                                "		INNER JOIN Competicao_Partida ON Competicao_Partida_Evento.id_Partida = Competicao_Partida.id " +
+                                "		INNER JOIN Equipe_Competicao ON Competicao_Partida_Evento.id_Equipe = Equipe_Competicao.id_Equipe " +
+                                "		INNER JOIN Equipe ON Equipe_Competicao.id_Equipe = Equipe.id " +
+                                "WHERE 	tpEvento = @tpEvento " +
+                                "		AND Competicao_Partida.id_Competicao = @id_Competicao " +
+                                "GROUP BY Competicao_Partida_Evento.id_Atleta, Competicao_Partida_Evento.id_Equipe, Equipe.nome " +
+                                "ORDER BY num_Gols DESC, num_Partidas ASC; ";
+
+                    List<Atleta_List_Artilheiro> artilheiros = connection.Query<Atleta_List_Artilheiro>(strSQL,
+                        new {   tpEvento = tpEventoEnum.Gol,
+                                id_Competicao
+                        }).ToList();
+
+                    foreach(Atleta_List_Artilheiro artilheiro in artilheiros){
+                        artilheiro.atleta = PessoaRepositorio.Instance.getAtleta(artilheiro.id_Atleta, id_Competicao);
+                    }
+
+                    return artilheiros;
+                }
+            } catch (Exception ex) {
+                return null;
+            }
+        }
         public bool partidaJaExiste(Competicao competicao, Competicao_Partida partida) {
             try {
                 using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
@@ -292,9 +329,9 @@ namespace SecEsportes.Repositorio {
             try {
                 competicao.id = SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query<int>("" +
                     "INSERT INTO Competicao " +
-                    "(Nome, dataInicial, dataFinal, id_Modalidade, numTimes, numGrupos, mataMata, jogosIdaEVolta, jogosIdaEvolta_MataMata, status, nomesGrupos, numMinimoJogadores) " +
+                    "(Nome, dataInicial, dataFinal, id_Modalidade, numTimes, numGrupos, mataMata, jogosIdaEVolta, jogosIdaEvolta_MataMata, status, nomesGrupos, numMinimoJogadores, id_Campeao, fase_Atual) " +
                     "VALUES " +
-                    "(@Nome, @dataInicial, @dataFinal, @id_Modalidade, @numTimes, @numGrupos, @mataMata, @jogosIdaEVolta, @jogosIdaEVolta_MataMata, @status, @nomesGrupos, @numMinimoJogadores); " +
+                    "(@Nome, @dataInicial, @dataFinal, @id_Modalidade, @numTimes, @numGrupos, @mataMata, @jogosIdaEVolta, @jogosIdaEVolta_MataMata, @status, @nomesGrupos, @numMinimoJogadores, @id_Campeao, @fase_Atual); " +
                     "select last_insert_rowid()",
                     new {
                         competicao.nome,
@@ -308,7 +345,9 @@ namespace SecEsportes.Repositorio {
                         jogosIdaEVolta_MataMata = (competicao.jogosIdaEVolta_MataMata == true ? 1 : 0),
                         competicao.status,
                         competicao.nomesGrupos,
-                        competicao.numMinimoJogadores
+                        competicao.numMinimoJogadores,
+                        id_Campeao = (competicao.campeao is null ? 0 : competicao.campeao.id),
+                        competicao.fase_Atual
                     }).First();
                 return true;
             } catch (Exception ex) {
@@ -365,26 +404,55 @@ namespace SecEsportes.Repositorio {
 
                 string strSQL;
                 strSQL = "INSERT INTO Competicao_Partida " +
-                            "(id_Competicao, id_Equipe1, id_Equipe2, Data, Rodada, numGrupo) " +
+                            "(id_Competicao, id_Equipe1, id_Equipe2, Data, Rodada, numGrupo, encerrada) " +
                             "VALUES " +
-                            "(@id_Competicao, @id_Equipe1, @id_Equipe2, @Data, @Rodada, @numGrupo) ";
+                            "(@id_Competicao, @id_Equipe1, @id_Equipe2, @Data, @Rodada, @numGrupo, @encerrada); " +
+                            "SELECT last_insert_rowid()";
 
-                SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(strSQL,
+                int idPartida = 0;
+
+                idPartida = SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query<int>(strSQL,
                     new {
                         id_Competicao = competicao.id,
                         id_Equipe1 = partida.equipe1.id,
                         id_Equipe2 = partida.equipe2.id,
                         Data = partida.data,
                         Rodada = partida.rodada,
-                        partida.numGrupo
-                    });
+                        partida.numGrupo,
+                        partida.encerrada
+                    }).First<int>();
 
+                partida.id = idPartida;
                 competicao.partidas.Add(partida);
 
                 return true;
             } catch (Exception ex) {
                 return false;
             }
+        }
+        public bool insertEvento(Competicao_Partida partida, Competicao_Partida_Evento evento) {
+            try {
+
+                string strSQL;
+                strSQL = "INSERT INTO Competicao_Partida_Evento " +
+                            "(id_Partida, id_Equipe, id_Atleta, tpEvento) " +
+                            "VALUES " +
+                            "(@id_Partida, @id_Equipe, @id_Atleta, @tpEvento) ";
+
+                SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(strSQL,
+                    new {   id_Partida = partida.id,
+                            id_Equipe = evento.equipe.id,
+                            id_Atleta = evento.atleta.pessoa.id,
+                            tpEvento = tpEventoEnum.Gol
+                    });
+                return true;
+            } catch (Exception ex) {
+                return false;
+            }
+        }
+        public bool update(Competicao competicao) {
+            string myString = "";
+            return update(competicao, ref myString);
         }
         public bool update(Competicao competicao, ref string messageError) {
             try {
@@ -402,7 +470,9 @@ namespace SecEsportes.Repositorio {
                             "       jogosIdaEVolta_MataMata = @jogosIdaEVolta_MataMata, " +
                             "       status = @status, " +
                             "       nomesGrupos = @nomesGrupos, " +
-                            "       numMinimoJogadores = @numMinimoJogadores " +
+                            "       numMinimoJogadores = @numMinimoJogadores, " +
+                            "       id_Campeao = @id_Campeao, " +
+                            "       fase_Atual = @fase_Atual " + 
                             "WHERE id = @id";
 
                 SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(strSQL,
@@ -419,6 +489,8 @@ namespace SecEsportes.Repositorio {
                         competicao.status,
                         competicao.nomesGrupos,
                         competicao.numMinimoJogadores,
+                        id_Campeao = (competicao.campeao is null ? 0 : competicao.campeao.id),
+                        competicao.fase_Atual,
                         competicao.id
                     });
                 return true;
@@ -442,6 +514,91 @@ namespace SecEsportes.Repositorio {
                         id_Equipe,
                         numGrupo
                     });
+                return true;
+            } catch (Exception ex) {
+                return false;
+            }
+        }
+        public bool updatePartida(ref Competicao competicao, Competicao_Partida partida) {
+            try {
+                string strSQL;
+
+                // Define a partida como finalizada
+                strSQL = "UPDATE Competicao_Partida " +
+                            "SET    encerrada = @encerrada, " +
+                            "       data = @data " +
+                            "WHERE  id = @id_Partida ";
+
+                SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(strSQL,
+                    new {   partida.encerrada,
+                            partida.data,
+                            id_Partida = partida.id
+                    });
+
+                int golsEquipe1, golsEquipe2;
+                golsEquipe1 = partida.eventos.FindAll(gols => gols.equipe.id.Equals(partida.equipe1.id) && gols.tpEvento.Equals(tpEventoEnum.Gol)).Count;
+                golsEquipe2 = partida.eventos.FindAll(gols => gols.equipe.id.Equals(partida.equipe2.id) && gols.tpEvento.Equals(tpEventoEnum.Gol)).Count;
+
+                // Se for os jogos da fase de classificação, atribui a pontuação
+                if (partida.rodada > 0) {
+                    // Atualiza as informações das equipes
+                    strSQL = "UPDATE Equipe_Competicao " +
+                                "SET    jogos = jogos + 1, " +
+                                "       golsPro = golsPro + @golsPro, " +
+                                "       golsContra = golsContra + @golsContra, " +
+                                "       vitorias = vitorias + @vitorias, " +
+                                "       empates = empates + @empates, " +
+                                "       derrotas = derrotas + @derrotas, " +
+                                "       pontos = pontos + @pontos " +
+                                "WHERE  id_Equipe = @id_Equipe " +
+                                "       AND id_Competicao = @id_Competicao ";
+
+                    int vitorias, empates, derrotas, pontos;
+                    golsEquipe1 = partida.eventos.FindAll(gols => gols.equipe.id.Equals(partida.equipe1.id) && gols.tpEvento.Equals(tpEventoEnum.Gol)).Count;
+                    golsEquipe2 = partida.eventos.FindAll(gols => gols.equipe.id.Equals(partida.equipe2.id) && gols.tpEvento.Equals(tpEventoEnum.Gol)).Count;
+
+                    // Atualiza a equipe 1
+                    vitorias = (golsEquipe1 > golsEquipe2 ? 1 : 0);
+                    derrotas = (golsEquipe2 > golsEquipe1 ? 1 : 0);
+                    empates = (golsEquipe2 == golsEquipe1 ? 1 : 0);
+                    pontos = (vitorias == 1 ? 3 : (empates == 1 ? 1 : 0));
+                    SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(strSQL,
+                        new {
+                            golsPro = golsEquipe1,
+                            golsContra = golsEquipe2,
+                            vitorias,
+                            empates,
+                            derrotas,
+                            pontos,
+                            id_Equipe = partida.equipe1.id,
+                            id_Competicao = competicao.id
+                        });
+
+                    // Atualiza a equipe 2
+                    vitorias = (golsEquipe2 > golsEquipe1 ? 1 : 0);
+                    derrotas = (golsEquipe1 > golsEquipe2 ? 1 : 0);
+                    empates = (golsEquipe2 == golsEquipe1 ? 1 : 0);
+                    pontos = (vitorias == 1 ? 3 : (empates == 1 ? 1 : 0));
+                    SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(strSQL,
+                        new {
+                            golsPro = golsEquipe2,
+                            golsContra = golsEquipe1,
+                            vitorias,
+                            empates,
+                            derrotas,
+                            pontos,
+                            id_Equipe = partida.equipe2.id,
+                            id_Competicao = competicao.id
+                        });
+                }
+
+                if (competicao.fase_Atual == -1) {
+                    competicao.status = StatusEnum._0_Encerrada;
+                    competicao.campeao = (golsEquipe1 > golsEquipe2 ? partida.equipe1 : (golsEquipe2 > golsEquipe1 ? partida.equipe2 : null));
+                    competicao.id_Campeao = competicao.campeao.id;
+                    update(competicao);
+                }
+
                 return true;
             } catch (Exception ex) {
                 return false;

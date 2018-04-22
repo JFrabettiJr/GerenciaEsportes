@@ -166,6 +166,15 @@ namespace SecEsportes.Repositorio {
                 return null;
             }
         }
+        public Atleta getAtleta(int id_Atleta, int id_Competicao) {
+            string myString = "";
+            return getAtleta(id_Atleta, id_Competicao, ref myString);
+        }
+        public Atleta getAtleta(int id_Atleta, int id_Competicao, ref string errorMessage) {
+            Atleta atleta = getAtleta(id_Atleta, ref errorMessage);
+            atleta.numero = getNumeroAtleta(atleta.id_pessoa, id_Competicao);
+            return atleta;
+        }
         public Atleta getAtleta(int id_Atleta) {
             string myString = "";
             return getAtleta(id_Atleta, ref myString);
@@ -200,6 +209,28 @@ namespace SecEsportes.Repositorio {
                 return null;
             }
         }
+
+        private int? getNumeroAtleta(int id_pessoa, int id_Competicao) {
+            try {
+                using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
+                    connection.Open();
+
+                    string strSQL;
+                    strSQL =    "SELECT numero " +
+                                "FROM   Equipe_Atletas " +
+                                "WHERE  id_Competicao = @id_Competicao " +
+                                "       AND id_Atleta = @id_Atleta";
+
+                    return connection.Query<int?>(strSQL,
+                        new {   id_Competicao,
+                                id_Atleta = id_pessoa
+                        }).First(); ;
+                }
+            } catch (Exception ex) {
+                return null;
+            }
+        }
+
         public List<Atleta_Insert> getAtletasForaCompeticao(int idCompeticao) {
             string myString = "";
             return getAtletasForaCompeticao(idCompeticao, ref myString);

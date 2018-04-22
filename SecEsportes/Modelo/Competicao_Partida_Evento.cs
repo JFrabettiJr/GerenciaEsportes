@@ -16,11 +16,11 @@ namespace SecEsportes.Modelo {
         public int id_Atleta { get; set; }
         public Atleta atleta { get; set; }
 
-        public int tpEvento { get; set; }
+        public tpEventoEnum tpEvento { get; set; }
 
         public Competicao_Partida_Evento() { }
 
-        public Competicao_Partida_Evento(EquipeCompeticao equipe, Atleta atleta, int tpEvento) {
+        public Competicao_Partida_Evento(EquipeCompeticao equipe, Atleta atleta, tpEventoEnum tpEvento) {
             this.equipe = equipe;
             this.atleta = atleta;
             this.tpEvento = tpEvento;

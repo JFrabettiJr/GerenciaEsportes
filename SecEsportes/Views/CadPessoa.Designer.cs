@@ -216,7 +216,7 @@
             this.dgvPessoas.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.dgvPessoas.BackgroundColor = System.Drawing.Color.Gainsboro;
+            this.dgvPessoas.BackgroundColor = System.Drawing.Color.FromArgb(238, 238, 238);
             this.dgvPessoas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvPessoas.Location = new System.Drawing.Point(10, 167);
             this.dgvPessoas.MultiSelect = false;
