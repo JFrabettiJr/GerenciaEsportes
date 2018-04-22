@@ -27,6 +27,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditEquipe));
             this.tlpCadFuncao = new System.Windows.Forms.TableLayoutPanel();
             this.txtNome = new System.Windows.Forms.TextBox();
             this.lblNome = new System.Windows.Forms.Label();
@@ -108,6 +109,7 @@
             this.dgvAtletas.AllowUserToAddRows = false;
             this.dgvAtletas.AllowUserToDeleteRows = false;
             this.dgvAtletas.AllowUserToOrderColumns = true;
+            this.dgvAtletas.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.dgvAtletas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvAtletas.Location = new System.Drawing.Point(10, 133);
             this.dgvAtletas.MultiSelect = false;
@@ -240,6 +242,7 @@
             this.Controls.Add(this.dgvAtletas);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.tlpCadFuncao);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "EditEquipe";
             this.Padding = new System.Windows.Forms.Padding(20);
             this.Text = "Cadastro de equipes - Inserção de atletas";

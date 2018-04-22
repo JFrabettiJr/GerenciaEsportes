@@ -27,6 +27,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CadCompeticao));
             this.tlpCadFuncao = new System.Windows.Forms.TableLayoutPanel();
             this.cboModalidades = new System.Windows.Forms.ComboBox();
             this.txtDtInicio = new System.Windows.Forms.MaskedTextBox();
@@ -168,6 +169,7 @@
             this.dgvCompeticoes.AllowUserToAddRows = false;
             this.dgvCompeticoes.AllowUserToDeleteRows = false;
             this.dgvCompeticoes.AllowUserToOrderColumns = true;
+            this.dgvCompeticoes.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.dgvCompeticoes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvCompeticoes.Location = new System.Drawing.Point(10, 102);
             this.dgvCompeticoes.MultiSelect = false;
@@ -200,6 +202,7 @@
             this.Controls.Add(this.btnAdicionar);
             this.Controls.Add(this.btnSalvar);
             this.Controls.Add(this.tlpCadFuncao);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CadCompeticao";
             this.Padding = new System.Windows.Forms.Padding(20);
             this.Text = "Cadastro de competições";

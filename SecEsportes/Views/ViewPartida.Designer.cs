@@ -27,6 +27,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ViewPartida));
             this.lblTime1 = new System.Windows.Forms.Label();
             this.lblCompeticao = new System.Windows.Forms.Label();
             this.tlpPartida = new System.Windows.Forms.TableLayoutPanel();
@@ -203,6 +204,7 @@
             this.dgvEquipe1.AllowUserToAddRows = false;
             this.dgvEquipe1.AllowUserToDeleteRows = false;
             this.dgvEquipe1.AllowUserToOrderColumns = true;
+            this.dgvEquipe1.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.dgvEquipe1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvEquipe1.Location = new System.Drawing.Point(12, 181);
             this.dgvEquipe1.MultiSelect = false;
@@ -218,6 +220,7 @@
             this.dgvEquipe2.AllowUserToAddRows = false;
             this.dgvEquipe2.AllowUserToDeleteRows = false;
             this.dgvEquipe2.AllowUserToOrderColumns = true;
+            this.dgvEquipe2.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.dgvEquipe2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvEquipe2.Location = new System.Drawing.Point(375, 181);
             this.dgvEquipe2.MultiSelect = false;
@@ -271,9 +274,10 @@
             this.Controls.Add(this.dgvEquipe1);
             this.Controls.Add(this.tlpPartida);
             this.Controls.Add(this.lblCompeticao);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ViewPartida";
             this.Padding = new System.Windows.Forms.Padding(20);
-            this.Text = "Cadastro de competições";
+            this.Text = "Partida";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ViewPartida_FormClosing);
             this.Load += new System.EventHandler(this.load);
             this.tlpPartida.ResumeLayout(false);

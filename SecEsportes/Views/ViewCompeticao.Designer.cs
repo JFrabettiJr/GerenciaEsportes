@@ -27,16 +27,17 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ViewCompeticao));
             this.lblCompeticao = new System.Windows.Forms.Label();
             this.tcAbas = new System.Windows.Forms.TabControl();
             this.tpPartidas = new System.Windows.Forms.TabPage();
+            this.lblFase = new System.Windows.Forms.Label();
             this.btnProximaFase = new System.Windows.Forms.Button();
             this.tcPartidas = new System.Windows.Forms.TabControl();
             this.tpClassificacao = new System.Windows.Forms.TabPage();
             this.tcClassificacao = new System.Windows.Forms.TabControl();
             this.tpArtilheiros = new System.Windows.Forms.TabPage();
             this.dgvArtilheiros = new System.Windows.Forms.DataGridView();
-            this.lblFase = new System.Windows.Forms.Label();
             this.tcAbas.SuspendLayout();
             this.tpPartidas.SuspendLayout();
             this.tpClassificacao.SuspendLayout();
@@ -77,6 +78,16 @@
             this.tpPartidas.TabIndex = 0;
             this.tpPartidas.Text = "Partidas";
             this.tpPartidas.UseVisualStyleBackColor = true;
+            // 
+            // lblFase
+            // 
+            this.lblFase.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFase.Location = new System.Drawing.Point(6, 9);
+            this.lblFase.Name = "lblFase";
+            this.lblFase.Size = new System.Drawing.Size(577, 23);
+            this.lblFase.TabIndex = 2;
+            this.lblFase.Text = "Fase atual";
+            this.lblFase.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // btnProximaFase
             // 
@@ -131,25 +142,13 @@
             this.dgvArtilheiros.AllowUserToAddRows = false;
             this.dgvArtilheiros.AllowUserToDeleteRows = false;
             this.dgvArtilheiros.AllowUserToOrderColumns = true;
-            this.dgvArtilheiros.AutoGenerateColumns = false;
-            this.dgvArtilheiros.BackgroundColor = System.Drawing.Color.FromArgb(238, 238, 238);
+            this.dgvArtilheiros.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.dgvArtilheiros.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvArtilheiros.Location = new System.Drawing.Point(6, 6);
-            //this.dgvArtilheiros.MultiSelect = false;
             this.dgvArtilheiros.Name = "dgvArtilheiros";
             this.dgvArtilheiros.ReadOnly = true;
             this.dgvArtilheiros.Size = new System.Drawing.Size(688, 440);
             this.dgvArtilheiros.TabIndex = 6;
-            // 
-            // lblFase
-            // 
-            this.lblFase.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblFase.Location = new System.Drawing.Point(6, 9);
-            this.lblFase.Name = "lblFase";
-            this.lblFase.Size = new System.Drawing.Size(577, 23);
-            this.lblFase.TabIndex = 2;
-            this.lblFase.Text = "Fase atual";
-            this.lblFase.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // ViewCompeticao
             // 
@@ -158,6 +157,7 @@
             this.ClientSize = new System.Drawing.Size(734, 536);
             this.Controls.Add(this.tcAbas);
             this.Controls.Add(this.lblCompeticao);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ViewCompeticao";
             this.Padding = new System.Windows.Forms.Padding(20);
             this.Text = "Visão geral da competição";

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CadFuncao));
             this.tlpCadFuncao = new System.Windows.Forms.TableLayoutPanel();
             this.txtDescFuncao = new System.Windows.Forms.TextBox();
             this.lblDescricao = new System.Windows.Forms.Label();
@@ -147,6 +148,7 @@
             this.dgvFuncoes.AllowUserToAddRows = false;
             this.dgvFuncoes.AllowUserToDeleteRows = false;
             this.dgvFuncoes.AllowUserToOrderColumns = true;
+            this.dgvFuncoes.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.dgvFuncoes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvFuncoes.Location = new System.Drawing.Point(10, 102);
             this.dgvFuncoes.MultiSelect = false;
@@ -179,6 +181,7 @@
             this.Controls.Add(this.btnAdicionar);
             this.Controls.Add(this.btnSalvar);
             this.Controls.Add(this.tlpCadFuncao);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CadFuncao";
             this.Padding = new System.Windows.Forms.Padding(20);
             this.Text = "Cadastro de funções";

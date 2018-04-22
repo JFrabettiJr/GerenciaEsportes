@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InsertEquipe));
             this.btnInserir = new System.Windows.Forms.Button();
             this.dgvEquipes = new System.Windows.Forms.DataGridView();
             this.btnDesmarcarTudo = new System.Windows.Forms.Button();
@@ -50,6 +51,7 @@
             this.dgvEquipes.AllowUserToAddRows = false;
             this.dgvEquipes.AllowUserToDeleteRows = false;
             this.dgvEquipes.AllowUserToOrderColumns = true;
+            this.dgvEquipes.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.dgvEquipes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvEquipes.Location = new System.Drawing.Point(10, 39);
             this.dgvEquipes.MultiSelect = false;
@@ -86,6 +88,7 @@
             this.Controls.Add(this.btnMarcarTudo);
             this.Controls.Add(this.dgvEquipes);
             this.Controls.Add(this.btnInserir);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "InsertEquipe";
             this.Padding = new System.Windows.Forms.Padding(20);
             this.Text = "Inserir equipes na competição";

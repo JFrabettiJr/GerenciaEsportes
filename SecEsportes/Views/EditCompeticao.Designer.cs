@@ -27,6 +27,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditCompeticao));
             this.tlp1 = new System.Windows.Forms.TableLayoutPanel();
             this.lblNumJogadores = new System.Windows.Forms.Label();
             this.txtNumMinJogadores = new System.Windows.Forms.MaskedTextBox();
@@ -526,6 +527,7 @@
             this.Controls.Add(this.btnCancelar);
             this.Controls.Add(this.btnSalvar);
             this.Controls.Add(this.tlp1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "EditCompeticao";
             this.Padding = new System.Windows.Forms.Padding(20);
             this.Text = "Cadastro de competição";
