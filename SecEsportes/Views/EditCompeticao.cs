@@ -154,6 +154,8 @@ namespace SecEsportes.Views {
 
             windowMode = Utilidades.WindowMode.ModoNormal;
             windowModeChanged();
+
+            load(null, null);
         }
 
         private void btnAtualizar_Click(object sender, EventArgs e) {
@@ -666,6 +668,8 @@ namespace SecEsportes.Views {
                     btnSalvar.Enabled = false;
                     dgvEquipes.Enabled = true;
                     btnAtualizar.Enabled = true;
+                    btnAvancar.Enabled = true;
+                    btnVoltar.Enabled = true;
                     break;
                 case Utilidades.WindowMode.ModoDeEdicao:
                     btnCancelar.Enabled = true;
@@ -673,6 +677,7 @@ namespace SecEsportes.Views {
                     dgvEquipes.Enabled = false;
                     btnAtualizar.Enabled = false;
                     btnAvancar.Enabled = false;
+                    btnVoltar.Enabled = false;
                     break;
                 case Utilidades.WindowMode.ModoDeInsercao:
                     btnCancelar.Enabled = true;
@@ -680,6 +685,7 @@ namespace SecEsportes.Views {
                     dgvEquipes.Enabled = false;
                     btnAtualizar.Enabled = false;
                     btnAvancar.Enabled = false;
+                    btnVoltar.Enabled = false;
                     break;
             }
         }
@@ -809,16 +815,26 @@ namespace SecEsportes.Views {
                 case StatusEnum._1_Aberta:
                      break;
                 case StatusEnum._2_Iniciada: // Iniciada >> Em preparação
-                    newCompeticao = competicao;
-                    newCompeticao.status = StatusEnum._3_EmPreparacao;
 
-                    if (CompeticaoRepositorio.Instance.update(newCompeticao, ref errorMessage)) {
-                        competicao = newCompeticao;
+                    if (competicao.partidas.FindAll(x => x.encerrada).Count > 0) {
+                        MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
+                                        "Já existem partidas encerradas nesta competição, não é possível voltar para em preparação.",
+                                        "Não foi possível avançar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     } else {
-                        MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                        newCompeticao = competicao;
+                        newCompeticao.status = StatusEnum._3_EmPreparacao;
 
-                    load(null, null);
+                        if (CompeticaoRepositorio.Instance.update(newCompeticao, ref errorMessage)) {
+                            competicao = newCompeticao;
+
+                            // Deleta as partidas até então criadas
+                            CompeticaoRepositorio.Instance.deletaPartidas(ref competicao);
+                        } else {
+                            MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+
+                        load(null, null);
+                    }
                     break;
 
                 case StatusEnum._3_EmPreparacao: // Em preparação >> Aberta
@@ -864,41 +880,59 @@ namespace SecEsportes.Views {
 
                 int timesASobrarPorRodada = timesNoGrupo % 2;
 
+                // Partidas
+                List<Competicao_Partida> partidas = new List<Competicao_Partida>();
                 for (int numRodada = 0; numRodada < numRodadasUnicas; numRodada++) {
 
-                    List<EquipeCompeticao> timesRodada = new List<EquipeCompeticao>(grupo);
+                    List<EquipeCompeticao> timesRodada = reorganiza(new List<EquipeCompeticao>(grupo));
 
                     // Faz o sorteio das rodadas
                     while (timesRodada.Count > timesASobrarPorRodada) {
 
-                        Competicao_Partida partida;
+                        Competicao_Partida partida = null;
                         EquipeCompeticao equipe1;
                         EquipeCompeticao equipe2;
 
-                        //Verifica se a partida que está sendo criada já existe
+                        Random random = new Random();
+                        bool repeat = false;
                         do {
+                            int index1;
 
-                            int index1 = new Random().Next(timesRodada.Count), index2;
-
-                            do {
-                                index2 = new Random().Next(timesRodada.Count);
-                            } while (index1 == index2);
-
+                            index1 = random.Next(0, timesRodada.Count);
                             equipe1 = timesRodada[index1];
-                            equipe2 = timesRodada[index2];
+                            timesRodada.Remove(equipe1);
 
-                            partida = new Competicao_Partida(equipe1, equipe2, numRodada + 1, numGrupo);
+                            equipe2 = encontraAdversario(equipe1, timesRodada, partidas);
+                            if (equipe2 is null) {
+                                partidas.RemoveAll(x => x.rodada == numRodada + 1);
+                                timesRodada = new List<EquipeCompeticao>(grupo);
+                                repeat = true;
+                            } else {
+                                timesRodada.Remove(equipe2);
 
-                        } while (CompeticaoRepositorio.Instance.partidaJaExiste(competicao, partida));
+                                partida = new Competicao_Partida(equipe1, equipe2, numRodada + 1, numGrupo);
 
-                        timesRodada.Remove(equipe1);
-                        timesRodada.Remove(equipe2);
+                                if (partidaJaExiste(partidas, partida)) {
+                                    timesRodada.Add(equipe1);
+                                    timesRodada.Add(equipe2);
+                                    repeat = true;
+                                } else {
+                                    repeat = false;
+                                }
+                            }
+                        } while (repeat);
 
-                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
+                        Console.WriteLine("Rodada: " + numRodada + ". Partida entre " + equipe1.nome + " x " + equipe2.nome);
+                        partidas.Add(partida);
                     }
+                    Console.WriteLine("Rodada: " + numRodada + " finalizada.");
 
                 }
+
+                foreach (Competicao_Partida partida in partidas) {
+                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                }
+
             }
 
             if (competicao.jogosIdaEVolta) {
@@ -914,6 +948,39 @@ namespace SecEsportes.Views {
                     CompeticaoRepositorio.Instance.insertPartida(ref competicao, partidaDeVolta);
                 }
             }
+        }
+        
+        public EquipeCompeticao encontraAdversario(EquipeCompeticao equipe1, List<EquipeCompeticao> equipesRestantes, List<Competicao_Partida> partidas) {
+            foreach(EquipeCompeticao equipe in equipesRestantes) {
+                if (equipe.id != equipe1.id) {
+                    if (partidas.FindAll(
+                        x => x.equipe1.id == equipe1.id || x.equipe2.id == equipe1.id).FindAll(
+                        y => y.equipe1.id == equipe.id || y.equipe2.id == equipe.id).Count == 0) {
+                        return equipe;
+                    }
+                }
+            }
+            return null;
+        }
+
+        private List<EquipeCompeticao> reorganiza(List<EquipeCompeticao> timesRodada) {
+            List<EquipeCompeticao> equipesReorganizadas = new List<EquipeCompeticao>();
+            for (int iCount = 1; iCount < timesRodada.Count + 1; iCount++) {
+                if (iCount >= timesRodada.Count)
+                    equipesReorganizadas.Add(timesRodada[0]);
+                else
+                    equipesReorganizadas.Add(timesRodada[iCount]);
+            }
+            return equipesReorganizadas;
+        }
+
+        private bool partidaJaExiste(List<Competicao_Partida> partidas, Competicao_Partida partida) {
+
+            if (partidas.FindAll(partida_ =>    (partida_.equipe1.id == partida.equipe1.id && partida_.equipe2.id == partida.equipe2.id) ||
+                                                (partida_.equipe1.id == partida.equipe2.id && partida_.equipe2.id == partida.equipe1.id)).Count > 0)
+                return true;
+            else
+                return false;
         }
 
         private void btnVisaoGeral_Click(object sender, EventArgs e) {

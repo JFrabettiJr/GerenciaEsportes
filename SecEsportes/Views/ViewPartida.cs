@@ -50,6 +50,7 @@ namespace SecEsportes.Views {
             if (partida.encerrada) {
                 btnEncerrarPartida.Enabled = false;
                 btnIniciarPartida.Enabled = false;
+                btnDisputaPenaltis.Enabled = false;
             }
             if(!(partidaIniciada) && !(partida.encerrada)) {
                 btnEncerrarPartida.Enabled = false;
