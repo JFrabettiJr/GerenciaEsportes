@@ -145,10 +145,12 @@
             this.dgvArtilheiros.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.dgvArtilheiros.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvArtilheiros.Location = new System.Drawing.Point(6, 6);
+            this.dgvArtilheiros.MultiSelect = false;
             this.dgvArtilheiros.Name = "dgvArtilheiros";
             this.dgvArtilheiros.ReadOnly = true;
-            this.dgvArtilheiros.Size = new System.Drawing.Size(688, 440);
-            this.dgvArtilheiros.TabIndex = 6;
+            this.dgvArtilheiros.Size = new System.Drawing.Size(693, 440);
+            this.dgvArtilheiros.TabIndex = 7;
+            this.dgvArtilheiros.Tag = "1";
             // 
             // ViewCompeticao
             // 
@@ -180,8 +182,8 @@
         private System.Windows.Forms.TabPage tpArtilheiros;
         private System.Windows.Forms.TabControl tcClassificacao;
         private System.Windows.Forms.TabControl tcPartidas;
-        private System.Windows.Forms.DataGridView dgvArtilheiros;
         private System.Windows.Forms.Button btnProximaFase;
         private System.Windows.Forms.Label lblFase;
+        private System.Windows.Forms.DataGridView dgvArtilheiros;
     }
 }

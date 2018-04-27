@@ -205,6 +205,8 @@ namespace SecEsportes.Views {
         }
 
         private void btnEncerrarPartida_Click(object sender, EventArgs e) {
+            int golsEquipe1 = 0, golsEquipe2 = 0;
+
             //Verifica se terá que ter desempate
             if (partida.rodada < 0) {
                 if (penalidades) {
@@ -217,22 +219,31 @@ namespace SecEsportes.Views {
                     }
 
                 } else {
-                    int golsEquipe1, golsEquipe2;
                     golsEquipe1 = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol) && eventosAEncontrar.equipe.id.Equals(partida.equipe1.id)).Count;
                     golsEquipe2 = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol) && eventosAEncontrar.equipe.id.Equals(partida.equipe2.id)).Count;
 
-                    // Soma os gols da partida de ida
-                    if (competicao.jogosIdaEVolta_MataMata == true) {
-                        Competicao_Partida partidaIda = competicao.partidas.Find(find_P_Ida => find_P_Ida.rodada == partida.rodada && find_P_Ida.numGrupo == partida.numGrupo && find_P_Ida.id_Equipe1 == partida.equipe2.id && find_P_Ida.id_Equipe2 == partida.equipe1.id);
-                        golsEquipe1 += partidaIda.eventos.FindAll(eventos => eventos.tpEvento.Equals(tpEventoEnum.Gol) && eventos.equipe.id == partida.equipe2.id).Count;
-                        golsEquipe2 += partidaIda.eventos.FindAll(eventos => eventos.tpEvento.Equals(tpEventoEnum.Gol) && eventos.equipe.id == partida.equipe1.id).Count;
-                    }
+                    // Se for mata-mata só vai para os penaltis no segundo jogo
+                    if (competicao.jogosIdaEVolta_MataMata) {
+                        // Verifica se é o jogo de volta
+                        Competicao_Partida partidaIda = competicao.partidas.Find(x => x.encerrada && x.rodada == partida.rodada && x.numGrupo == partida.numGrupo && x.equipe1.id == partida.equipe2.id && x.equipe2.id == partida.equipe1.id && x.id != partida.id);
+                        if (!(partidaIda is null)) {
+                            golsEquipe1 += partidaIda.eventos.FindAll(eventos => eventos.tpEvento.Equals(tpEventoEnum.Gol) && eventos.equipe.id == partida.equipe1.id).Count;
+                            golsEquipe2 += partidaIda.eventos.FindAll(eventos => eventos.tpEvento.Equals(tpEventoEnum.Gol) && eventos.equipe.id == partida.equipe2.id).Count;
 
-                    if (golsEquipe1 == golsEquipe2) {
-                        btnDisputaPenaltis.Enabled = true;
-                        btnDisputaPenaltis_Click(null, null);
-                        return;
-                    }
+                            if (golsEquipe1 == golsEquipe2) {
+                                btnDisputaPenaltis.Enabled = true;
+                                btnDisputaPenaltis_Click(null, null);
+                                return;
+                            }
+
+                        }
+                    } else {
+                        if (golsEquipe1 == golsEquipe2) {
+                            btnDisputaPenaltis.Enabled = true;
+                            btnDisputaPenaltis_Click(null, null);
+                            return;
+                        }
+                    }                    
                 }
             }
 

@@ -118,13 +118,13 @@ namespace SecEsportes.Views
                 List<Competicao_Partida> partidas = competicao.partidas.FindAll(partidasAEncontrar => partidasAEncontrar.rodada == numRodada);
 
                 CompeticaoViewUtilidades.refreshDataGridViewRodadas(dgvRodadas, partidas, competicao, numRodada);
-
-                if (competicao.status == StatusEnum._0_Encerrada)
-                    btnProximaFase.Enabled = false;
-                else
-                    btnProximaFase.Enabled = true;
             }
 
+
+            if (competicao.status == StatusEnum._0_Encerrada)
+                btnProximaFase.Enabled = false;
+            else
+                btnProximaFase.Enabled = true;
 
             // Cria a abas dos grupos e a classificação
             tcClassificacao.Controls.Clear();
@@ -229,15 +229,6 @@ namespace SecEsportes.Views
                 }
             }
 
-            //Preenche os campos que vieram sem preenchimento do data set
-            for (int iCount = 0; iCount < dataGridView.Rows.Count; iCount++) {
-                //dataGridView.Rows[iCount].Cells["NomeAtleta"].Value = artilheiros[iCount].atleta.numero + " - " + artilheiros[iCount].atleta.pessoa.nome;
-                //if (artilheiros[iCount].num_Partidas > 0)
-                //    dataGridView.Rows[iCount].Cells["Media"].Value = Convert.ToDouble(artilheiros[iCount].num_Gols / artilheiros[iCount].num_Partidas);
-                //else
-                //    dataGridView.Rows[iCount].Cells["Media"].Value = "";
-            }
-
             dataGridView.Refresh();
         }
 
@@ -266,234 +257,247 @@ namespace SecEsportes.Views
                         case MataMataEnum._2_Final: numProximaFase = -1; numPartidasASeremGeradas = 1; break;
                     }
 
-                    int numTimesPorGrupo, numTimesRestantes;
-                    numTimesPorGrupo = (numPartidasASeremGeradas * 2) / competicao.numGrupos;
-                    numTimesRestantes = (numPartidasASeremGeradas * 2) % numTimesPorGrupo;
+                    // O campeonato é só por pontos corridos
+                    if ( (competicao.mataMata == MataMataEnum._1_Nao) && (competicao.grupos.Count == 1) ) {
+                        competicao.status = StatusEnum._0_Encerrada;
 
-                    // Define os times que vão para a próxima fase
-                    List<List<EquipeCompeticao>> timesProximaFase = new List<List<EquipeCompeticao>>();
-                    for (int numGrupo = 0; numGrupo < competicao.numGrupos; numGrupo++) {
-                        timesProximaFase.Add(new List<EquipeCompeticao>());
+                        EquipeCompeticao campeao = (from proximaFase in competicao.grupos[0]
+                                                    orderby proximaFase.pontos descending, proximaFase.vitorias descending, proximaFase.golsPro - proximaFase.golsContra descending
+                                                    select proximaFase).ToList<EquipeCompeticao>().First();
 
-                        timesProximaFase[numGrupo] = new List<EquipeCompeticao>();
-                        timesProximaFase[numGrupo] = (from proximaFase in competicao.grupos[numGrupo]
-                                                      orderby proximaFase.pontos descending, proximaFase.vitorias descending, proximaFase.golsPro - proximaFase.golsContra descending
-                                                      select proximaFase).ToList<EquipeCompeticao>();
+                        competicao.campeao = campeao;
+                        competicao.id_Campeao = campeao.id;
+                        CompeticaoRepositorio.Instance.update(competicao);
+                    } else {
+                        int numTimesPorGrupo, numTimesRestantes;
+                        numTimesPorGrupo = (numPartidasASeremGeradas * 2) / competicao.numGrupos;
+                        numTimesRestantes = (numPartidasASeremGeradas * 2) % numTimesPorGrupo;
 
-                        timesProximaFase[numGrupo].RemoveRange(numTimesPorGrupo, timesProximaFase[numGrupo].Count - numTimesPorGrupo);
+                        // Define os times que vão para a próxima fase
+                        List<List<EquipeCompeticao>> timesProximaFase = new List<List<EquipeCompeticao>>();
+                        for (int numGrupo = 0; numGrupo < competicao.numGrupos; numGrupo++) {
+                            timesProximaFase.Add(new List<EquipeCompeticao>());
 
-                    }
+                            timesProximaFase[numGrupo] = new List<EquipeCompeticao>();
+                            timesProximaFase[numGrupo] = (from proximaFase in competicao.grupos[numGrupo]
+                                                          orderby proximaFase.pontos descending, proximaFase.vitorias descending, proximaFase.golsPro - proximaFase.golsContra descending
+                                                          select proximaFase).ToList<EquipeCompeticao>();
 
-                    // Faz a criação das partidas da fase final
-                    Competicao_Partida partida;
-                    EquipeCompeticao equipe1, equipe2;
+                            timesProximaFase[numGrupo].RemoveRange(numTimesPorGrupo, timesProximaFase[numGrupo].Count - numTimesPorGrupo);
 
-                    switch (numPartidasASeremGeradas) {
-                        case 2: // Semi final
-                            if (numTimesRestantes == 0) {
-                                if (numTimesPorGrupo == 1) {
-                                    equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[1][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                        }
 
-                                    equipe1 = timesProximaFase[2][0]; equipe2 = timesProximaFase[3][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                        // Faz a criação das partidas da fase final
+                        Competicao_Partida partida;
+                        EquipeCompeticao equipe1, equipe2;
+
+                        switch (numPartidasASeremGeradas) {
+                            case 2: // Semi final
+                                if (numTimesRestantes == 0) {
+                                    if (numTimesPorGrupo == 1) {
+                                        equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[1][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[2][0]; equipe2 = timesProximaFase[3][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                                    }
+                                    if (numTimesPorGrupo == 2) {
+                                        equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[1][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[0][1]; equipe2 = timesProximaFase[1][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                                    }
+                                    if (numTimesPorGrupo == 4) {
+                                        equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[0][3]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[0][1]; equipe2 = timesProximaFase[0][2]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                                    }
                                 }
-                                if (numTimesPorGrupo == 2) {
-                                    equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[1][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                                break;
+                            case 4: // Quartas de final
+                                if (numTimesRestantes == 0) {
+                                    if (numTimesPorGrupo == 1) {
+                                        equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[1][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
 
-                                    equipe1 = timesProximaFase[0][1]; equipe2 = timesProximaFase[1][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-                                }
-                                if (numTimesPorGrupo == 4) {
-                                    equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[0][3]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                                        equipe1 = timesProximaFase[2][0]; equipe2 = timesProximaFase[3][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
 
-                                    equipe1 = timesProximaFase[0][1]; equipe2 = timesProximaFase[0][2]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                                        equipe1 = timesProximaFase[4][0]; equipe2 = timesProximaFase[5][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 3);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[6][0]; equipe2 = timesProximaFase[7][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 4);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                                    }
+                                    if (numTimesPorGrupo == 2) {
+                                        equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[1][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[0][1]; equipe2 = timesProximaFase[1][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[2][0]; equipe2 = timesProximaFase[3][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 3);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[2][1]; equipe2 = timesProximaFase[3][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 4);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                                    }
+                                    if (numTimesPorGrupo == 4) {
+                                        equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[1][3]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[1][0]; equipe2 = timesProximaFase[0][3]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[0][1]; equipe2 = timesProximaFase[1][2]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 3);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[0][2]; equipe2 = timesProximaFase[1][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 4);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                                    }
                                 }
+                                break;
+                            case 8:
+                                if (numTimesRestantes == 0) {
+                                    if (numTimesPorGrupo == 1) {
+                                        equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[1][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[2][0]; equipe2 = timesProximaFase[3][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[4][0]; equipe2 = timesProximaFase[5][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 3);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[6][0]; equipe2 = timesProximaFase[7][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 4);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[8][0]; equipe2 = timesProximaFase[9][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 5);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[10][0]; equipe2 = timesProximaFase[11][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 6);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[12][0]; equipe2 = timesProximaFase[13][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 7);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[14][0]; equipe2 = timesProximaFase[15][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 8);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                                    }
+                                    if (numTimesPorGrupo == 2) {
+                                        equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[1][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[0][1]; equipe2 = timesProximaFase[1][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[2][0]; equipe2 = timesProximaFase[3][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 3);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[2][1]; equipe2 = timesProximaFase[3][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 4);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[4][0]; equipe2 = timesProximaFase[5][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 5);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[4][1]; equipe2 = timesProximaFase[5][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 6);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[6][0]; equipe2 = timesProximaFase[7][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 7);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[6][1]; equipe2 = timesProximaFase[7][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 8);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                                    }
+                                    if (numTimesPorGrupo == 4) {
+                                        equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[1][3]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[0][3]; equipe2 = timesProximaFase[1][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[0][1]; equipe2 = timesProximaFase[1][2]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 3);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[0][2]; equipe2 = timesProximaFase[1][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 4);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[2][0]; equipe2 = timesProximaFase[3][3]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 5);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[2][3]; equipe2 = timesProximaFase[3][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 6);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[2][1]; equipe2 = timesProximaFase[3][2]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 7);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[2][2]; equipe2 = timesProximaFase[3][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 8);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                                    }
+                                    if (numTimesPorGrupo == 8) {
+                                        equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[1][7]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[0][1]; equipe2 = timesProximaFase[1][6]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[0][2]; equipe2 = timesProximaFase[1][5]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 3);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[0][3]; equipe2 = timesProximaFase[1][4]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 4);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[0][4]; equipe2 = timesProximaFase[1][3]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 5);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[0][5]; equipe2 = timesProximaFase[1][2]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 6);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[0][6]; equipe2 = timesProximaFase[1][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 7);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[0][7]; equipe2 = timesProximaFase[1][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 8);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                                    }
+                                    if (numTimesPorGrupo == 16) {
+                                        equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[0][15]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[0][1]; equipe2 = timesProximaFase[0][14]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[0][2]; equipe2 = timesProximaFase[0][13]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 3);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[0][3]; equipe2 = timesProximaFase[0][12]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 4);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[0][4]; equipe2 = timesProximaFase[0][11]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 5);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[0][5]; equipe2 = timesProximaFase[0][10]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 6);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[0][6]; equipe2 = timesProximaFase[0][9]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 7);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                                        equipe1 = timesProximaFase[0][7]; equipe2 = timesProximaFase[0][8]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 8);
+                                        CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                                    }
+                                }
+                                break;
+                        }
+
+                        // Cria as partidas de volta da fase final
+                        if (competicao.jogosIdaEVolta_MataMata) {
+                            List<Competicao_Partida> partidasIda = competicao.partidas.FindAll(partidasIdaAEncontrar => partidasIdaAEncontrar.rodada == numProximaFase);
+                            for (int numPartidaVolta = 0; numPartidaVolta < partidasIda.Count; numPartidaVolta++) {
+                                Competicao_Partida partidaDeVolta = new Competicao_Partida(partidasIda[numPartidaVolta].equipe2, partidasIda[numPartidaVolta].equipe1, numProximaFase, partidasIda[numPartidaVolta].numGrupo);
+                                CompeticaoRepositorio.Instance.insertPartida(ref competicao, partidaDeVolta);
                             }
-                            break;
-                        case 4: // Quartas de final
-                            if (numTimesRestantes == 0) {
-                                if (numTimesPorGrupo == 1) {
-                                    equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[1][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[2][0]; equipe2 = timesProximaFase[3][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[4][0]; equipe2 = timesProximaFase[5][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 3);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[6][0]; equipe2 = timesProximaFase[7][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 4);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-                                }
-                                if (numTimesPorGrupo == 2) {
-                                    equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[1][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[0][1]; equipe2 = timesProximaFase[1][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[2][0]; equipe2 = timesProximaFase[3][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 3);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[2][1]; equipe2 = timesProximaFase[3][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 4);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-                                }
-                                if (numTimesPorGrupo == 4) {
-                                    equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[1][3]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[1][0]; equipe2 = timesProximaFase[0][3]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[0][1]; equipe2 = timesProximaFase[1][2]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 3);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[0][2]; equipe2 = timesProximaFase[1][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 4);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-                                }
-                            }
-                            break;
-                        case 8:
-                            if (numTimesRestantes == 0) {
-                                if (numTimesPorGrupo == 1) {
-                                    equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[1][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[2][0]; equipe2 = timesProximaFase[3][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[4][0]; equipe2 = timesProximaFase[5][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 3);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[6][0]; equipe2 = timesProximaFase[7][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 4);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[8][0]; equipe2 = timesProximaFase[9][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 5);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[10][0]; equipe2 = timesProximaFase[11][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 6);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[12][0]; equipe2 = timesProximaFase[13][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 7);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[14][0]; equipe2 = timesProximaFase[15][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 8);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-                                }
-                                if (numTimesPorGrupo == 2) {
-                                    equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[1][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[0][1]; equipe2 = timesProximaFase[1][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[2][0]; equipe2 = timesProximaFase[3][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 3);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[2][1]; equipe2 = timesProximaFase[3][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 4);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[4][0]; equipe2 = timesProximaFase[5][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 5);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[4][1]; equipe2 = timesProximaFase[5][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 6);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[6][0]; equipe2 = timesProximaFase[7][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 7);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[6][1]; equipe2 = timesProximaFase[7][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 8);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-                                }
-                                if (numTimesPorGrupo == 4) {
-                                    equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[1][3]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[0][3]; equipe2 = timesProximaFase[1][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[0][1]; equipe2 = timesProximaFase[1][2]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 3);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[0][2]; equipe2 = timesProximaFase[1][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 4);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[2][0]; equipe2 = timesProximaFase[3][3]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 5);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[2][3]; equipe2 = timesProximaFase[3][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 6);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[2][1]; equipe2 = timesProximaFase[3][2]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 7);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[2][2]; equipe2 = timesProximaFase[3][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 8);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-                                }
-                                if (numTimesPorGrupo == 8) {
-                                    equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[1][7]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[0][1]; equipe2 = timesProximaFase[1][6]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[0][2]; equipe2 = timesProximaFase[1][5]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 3);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[0][3]; equipe2 = timesProximaFase[1][4]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 4);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[0][4]; equipe2 = timesProximaFase[1][3]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 5);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[0][5]; equipe2 = timesProximaFase[1][2]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 6);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[0][6]; equipe2 = timesProximaFase[1][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 7);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[0][7]; equipe2 = timesProximaFase[1][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 8);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-                                }
-                                if (numTimesPorGrupo == 16) {
-                                    equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[0][15]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[0][1]; equipe2 = timesProximaFase[0][14]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[0][2]; equipe2 = timesProximaFase[0][13]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 3);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[0][3]; equipe2 = timesProximaFase[0][12]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 4);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[0][4]; equipe2 = timesProximaFase[0][11]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 5);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[0][5]; equipe2 = timesProximaFase[0][10]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 6);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[0][6]; equipe2 = timesProximaFase[0][9]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 7);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-
-                                    equipe1 = timesProximaFase[0][7]; equipe2 = timesProximaFase[0][8]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 8);
-                                    CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
-                                }
-                            }
-                            break;
-                    }
-
-                    // Cria as partidas de volta da fase final
-                    if (competicao.jogosIdaEVolta_MataMata) {
-                        List<Competicao_Partida> partidasIda = competicao.partidas.FindAll(partidasIdaAEncontrar => partidasIdaAEncontrar.rodada == numProximaFase);
-                        for (int numPartidaVolta = 0; numPartidaVolta < partidasIda.Count; numPartidaVolta++) {
-                            Competicao_Partida partidaDeVolta = new Competicao_Partida(partidasIda[numPartidaVolta].equipe2, partidasIda[numPartidaVolta].equipe1, numProximaFase, partidasIda[numPartidaVolta].numGrupo);
-                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partidaDeVolta);
                         }
                     }
                 } else {
@@ -510,35 +514,68 @@ namespace SecEsportes.Views
 
                     // Define os classificados
                     for (int iCount = 0; iCount < partidasFaseAnterior.Count; iCount++) {
+                        Competicao_Partida partidaFaseAnterior = partidasFaseAnterior[iCount];
                         EquipeCompeticao equipeVencedora = null;
 
+                        int golsEquipe1, golsEquipe2;
                         if (competicao.jogosIdaEVolta_MataMata) {
+                            if (iCount < partidasFaseAnterior.Count / 2) {
+                                Competicao_Partida partidaDeVoltaFaseAnterior = partidasFaseAnterior.FindAll(x => x.numGrupo == partidaFaseAnterior.numGrupo && x.rodada == partidaFaseAnterior.rodada).Last();
 
+                                golsEquipe1 = partidaFaseAnterior.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol) && eventosAEncontrar.equipe.id == partidaFaseAnterior.equipe1.id).Count;
+                                golsEquipe2 = partidaFaseAnterior.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol) && eventosAEncontrar.equipe.id == partidaFaseAnterior.equipe2.id).Count;
+
+                                golsEquipe1 += partidaDeVoltaFaseAnterior.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol) && eventosAEncontrar.equipe.id == partidaFaseAnterior.equipe1.id).Count;
+                                golsEquipe2 += partidaDeVoltaFaseAnterior.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol) && eventosAEncontrar.equipe.id == partidaFaseAnterior.equipe2.id).Count;
+
+                                // Verifica se a partida empatou e foi para os penaltis
+                                if (golsEquipe1 == golsEquipe2) {
+                                    int golsPenaltiEquipe1, golsPenaltiEquipe2;
+                                    golsPenaltiEquipe1 = partidaDeVoltaFaseAnterior.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol_Penalti) && eventosAEncontrar.equipe.id == partidasFaseAnterior[iCount].equipe1.id).Count;
+                                    golsPenaltiEquipe2 = partidaDeVoltaFaseAnterior.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol_Penalti) && eventosAEncontrar.equipe.id == partidasFaseAnterior[iCount].equipe2.id).Count;
+
+                                    if (golsPenaltiEquipe1 > golsPenaltiEquipe2) {
+                                        equipeVencedora = partidaFaseAnterior.equipe1;
+                                    } else {if (golsPenaltiEquipe2 > golsPenaltiEquipe1) {
+                                            equipeVencedora = partidaFaseAnterior.equipe2;
+                                        }
+                                    }
+                                } else {
+                                    // Não empatou
+                                    if (golsEquipe1 > golsEquipe2) {
+                                        equipeVencedora = partidaFaseAnterior.equipe1;
+                                    } else {if (golsEquipe2 > golsEquipe1) {
+                                            equipeVencedora = partidaFaseAnterior.equipe2;
+                                        }
+                                    }
+                                }
+
+                                timesClassificadosFaseAnterior.Add(equipeVencedora);
+
+                            }
                         } else {
                             // Verifica o vencedor
-                            int golsEquipe1, golsEquipe2;
-                            golsEquipe1 = partidasFaseAnterior[iCount].eventos.FindAll(eventosAEncontrar => eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol) && eventosAEncontrar.equipe.id == partidasFaseAnterior[iCount].equipe1.id).Count;
-                            golsEquipe2 = partidasFaseAnterior[iCount].eventos.FindAll(eventosAEncontrar => eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol) && eventosAEncontrar.equipe.id == partidasFaseAnterior[iCount].equipe2.id).Count;
+                            golsEquipe1 = partidaFaseAnterior.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol) && eventosAEncontrar.equipe.id == partidasFaseAnterior[iCount].equipe1.id).Count;
+                            golsEquipe2 = partidaFaseAnterior.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol) && eventosAEncontrar.equipe.id == partidasFaseAnterior[iCount].equipe2.id).Count;
 
                             // Verifica se a partida empatou e foi para os penaltis
                             if (golsEquipe1 == golsEquipe2) {
                                 int golsPenaltiEquipe1, golsPenaltiEquipe2;
-                                golsPenaltiEquipe1 = partidasFaseAnterior[iCount].eventos.FindAll(eventosAEncontrar => eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol_Penalti) && eventosAEncontrar.equipe.id == partidasFaseAnterior[iCount].equipe1.id).Count;
-                                golsPenaltiEquipe2 = partidasFaseAnterior[iCount].eventos.FindAll(eventosAEncontrar => eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol_Penalti) && eventosAEncontrar.equipe.id == partidasFaseAnterior[iCount].equipe2.id).Count;
+                                golsPenaltiEquipe1 = partidaFaseAnterior.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol_Penalti) && eventosAEncontrar.equipe.id == partidasFaseAnterior[iCount].equipe1.id).Count;
+                                golsPenaltiEquipe2 = partidaFaseAnterior.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol_Penalti) && eventosAEncontrar.equipe.id == partidasFaseAnterior[iCount].equipe2.id).Count;
 
                                 if (golsPenaltiEquipe1 > golsPenaltiEquipe2) {
-                                    equipeVencedora = partidasFaseAnterior[iCount].equipe1;
-                                } else {
-                                    if (golsPenaltiEquipe2 > golsPenaltiEquipe1) {
-                                        equipeVencedora = partidasFaseAnterior[iCount].equipe2;
+                                    equipeVencedora = partidaFaseAnterior.equipe1;
+                                } else {if (golsPenaltiEquipe2 > golsPenaltiEquipe1) {
+                                        equipeVencedora = partidaFaseAnterior.equipe2;
                                     }
                                 }
                             } else {
+                                // Não empatou
                                 if (golsEquipe1 > golsEquipe2) {
-                                    equipeVencedora = partidasFaseAnterior[iCount].equipe1;
-                                } else {
-                                    if (golsEquipe2 > golsEquipe1) {
-                                        equipeVencedora = partidasFaseAnterior[iCount].equipe2;
+                                    equipeVencedora = partidaFaseAnterior.equipe1;
+                                } else {if (golsEquipe2 > golsEquipe1) {
+                                        equipeVencedora = partidaFaseAnterior.equipe2;
                                     }
                                 }
                             }

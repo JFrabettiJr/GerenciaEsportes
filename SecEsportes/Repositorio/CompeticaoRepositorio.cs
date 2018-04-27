@@ -596,9 +596,38 @@ namespace SecEsportes.Repositorio {
                 }
                 
                 // Verifica se é a final e atribui o campeão
-                if ( (competicao.fase_Atual == -1) && (competicao.partidas.FindAll(partidas => partidas.rodada == partida.rodada && partidas.encerrada == false).Count == 0)) {
+                if (competicao.fase_Atual == -1) {
+                    if (competicao.jogosIdaEVolta_MataMata) {
+                        Competicao_Partida partidaIda = competicao.partidas.Find(x => x.encerrada && x.rodada == partida.rodada && x.numGrupo == partida.numGrupo && x.equipe1.id == partida.equipe2.id && x.equipe2.id == partida.equipe1.id && x.id != partida.id);
+                        golsEquipe1 += partidaIda.eventos.FindAll(eventos => eventos.tpEvento.Equals(tpEventoEnum.Gol) && eventos.equipe.id == partida.equipe1.id).Count;
+                        golsEquipe2 += partidaIda.eventos.FindAll(eventos => eventos.tpEvento.Equals(tpEventoEnum.Gol) && eventos.equipe.id == partida.equipe2.id).Count;
+                    }
                     competicao.status = StatusEnum._0_Encerrada;
-                    competicao.campeao = (golsEquipe1 > golsEquipe2 ? partida.equipe1 : (golsEquipe2 > golsEquipe1 ? partida.equipe2 : null));
+
+                    // Verifica aqu se empatou e foi para os penaltis
+                    if (golsEquipe1 == golsEquipe2) {
+                        int golsPenalti1, golsPenalti2;
+                        golsPenalti1 = partida.eventos.FindAll(x => x.equipe.id == partida.equipe1.id && x.tpEvento == tpEventoEnum.Gol_Penalti).Count;
+                        golsPenalti2 = partida.eventos.FindAll(x => x.equipe.id == partida.equipe2.id && x.tpEvento == tpEventoEnum.Gol_Penalti).Count;
+
+                        if (golsPenalti1 > golsPenalti2) {
+                            competicao.campeao = partida.equipe1;
+                        } else {
+                            if (golsPenalti2 > golsPenalti1) {
+                                competicao.campeao = partida.equipe2;
+                            }
+                        }
+                    } else {
+
+                        // Não foi para os penaltis
+                        if (golsEquipe1 > golsEquipe2) {
+                            competicao.campeao = partida.equipe1;
+                        } else {
+                            if (golsEquipe2 > golsEquipe1) {
+                                competicao.campeao = partida.equipe2;
+                            }
+                        }
+                    }
                     competicao.id_Campeao = competicao.campeao.id;
                     update(competicao);
                 }
@@ -654,7 +683,7 @@ namespace SecEsportes.Repositorio {
             }
         }
 
-        public bool deleteGrupos(int id_Competicao) {
+        public bool deleteGrupos(ref Competicao competicao) {
             try {
 
                 string strSQL;
@@ -663,8 +692,11 @@ namespace SecEsportes.Repositorio {
 
                 SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(strSQL,
                     new {
-                        id_Competicao
+                        id_Competicao = competicao.id
                     });
+
+                competicao.grupos = new List<List<EquipeCompeticao>>();
+
                 return true;
             } catch (Exception ex) {
                 return false;

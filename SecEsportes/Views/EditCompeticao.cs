@@ -731,7 +731,7 @@ namespace SecEsportes.Views {
             if (competicao.numGrupos > 0 && competicao.numTimes > 0 && competicao.numTimes == equipes.Count) {
 
                 competicao.grupos = new List<List<EquipeCompeticao>>();
-                CompeticaoRepositorio.Instance.deleteGrupos(competicao.id);
+                CompeticaoRepositorio.Instance.deleteGrupos(ref competicao);
 
                 List<EquipeCompeticao> equipes_Sorteio = new List<EquipeCompeticao>(equipes);
                 int numTimesPorGrupo = competicao.numTimes / competicao.numGrupos;
@@ -829,6 +829,9 @@ namespace SecEsportes.Views {
 
                             // Deleta as partidas até então criadas
                             CompeticaoRepositorio.Instance.deletaPartidas(ref competicao);
+
+                            // Deleta os grupos até então criados
+                            CompeticaoRepositorio.Instance.deleteGrupos(ref competicao);
                         } else {
                             MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
