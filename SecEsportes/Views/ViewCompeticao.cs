@@ -229,6 +229,15 @@ namespace SecEsportes.Views
                 }
             }
 
+            //Preenche os campos que vieram sem preenchimento do data set
+            for (int iCount = 0; iCount < dataGridView.Rows.Count; iCount++) {
+                //dataGridView.Rows[iCount].Cells["NomeAtleta"].Value = artilheiros[iCount].atleta.numero + " - " + artilheiros[iCount].atleta.pessoa.nome;
+                //if (artilheiros[iCount].num_Partidas > 0)
+                //    dataGridView.Rows[iCount].Cells["Media"].Value = Convert.ToDouble(artilheiros[iCount].num_Gols / artilheiros[iCount].num_Partidas);
+                //else
+                //    dataGridView.Rows[iCount].Cells["Media"].Value = "";
+            }
+
             dataGridView.Refresh();
         }
 

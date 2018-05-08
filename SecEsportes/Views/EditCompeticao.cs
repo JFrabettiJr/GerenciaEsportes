@@ -470,8 +470,9 @@ namespace SecEsportes.Views {
                     if (competicao.jogosIdaEVolta)
                         numCorretoPartidas *= 2;
 
-                    if (numCorretoPartidas != competicao.partidas.Count) {
-                        MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
+                    //if (numCorretoPartidas != competicao.partidas.Count) {
+                    if (competicao.partidas.Count == 0) {
+                            MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
                                 "Não foram criadas todas as partidas que tinham que ser criadas. Clique em Gerar partidas e tente novamente.",
                                 "Não foi possível avançar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
@@ -739,16 +740,24 @@ namespace SecEsportes.Views {
 
                 tabs.Controls.Clear();
 
-                for (var numGrupo = 0; numGrupo < competicao.numGrupos; numGrupo++) {
+                for (int numGrupo = 0; numGrupo < competicao.numGrupos; numGrupo++) {
                     DataGridView dataGridView = CompeticaoViewUtilidades.criaAba(CompeticaoViewUtilidades.getNomeGrupo(competicao.nomesGrupos, numGrupo + 1), numGrupo, tabs, dgvGrupoEquipes_CellMouseClick);
 
                     competicao.grupos.Add(new List<EquipeCompeticao>());
 
                     // Faz o sorteio das equipes
-                    for (int jCount = 0; jCount < numTimesPorGrupo; jCount++) {
+                    for (int iCount = 0; iCount < numTimesPorGrupo; iCount++) {
                         int numSorteado = new Random().Next(equipes_Sorteio.Count - 1);
                         enviarParaGrupo(numGrupo, equipes_Sorteio[numSorteado]);
                         equipes_Sorteio.RemoveAt(numSorteado);
+                    }
+
+                    // Insere as equipes restantes
+                    if (numTimesRestantes > 0) {
+                        int numSorteado = new Random().Next(equipes_Sorteio.Count - 1);
+                        enviarParaGrupo(numGrupo, equipes_Sorteio[numSorteado]);
+                        equipes_Sorteio.RemoveAt(numSorteado);
+                        numTimesRestantes--;
                     }
 
                     //Atualiza o DataGridView com as equipes daquele grupo
@@ -846,6 +855,13 @@ namespace SecEsportes.Views {
 
                     if (CompeticaoRepositorio.Instance.update(newCompeticao, ref errorMessage)) {
                         competicao = newCompeticao;
+
+                        // Deleta as partidas até então criadas
+                        CompeticaoRepositorio.Instance.deletaPartidas(ref competicao);
+
+                        // Deleta os grupos até então criados
+                        CompeticaoRepositorio.Instance.deleteGrupos(ref competicao);
+
                     } else {
                         MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
@@ -859,7 +875,7 @@ namespace SecEsportes.Views {
             // Verifica se todas as equipes têm grupo
             int numTotalEquipes = dgvEquipes.Rows.Count, numTotalEquipesEmGrupo = 0;
             for (int iCount = 0; iCount < tabs.Controls.Count; iCount++) {
-                TabPage tabPage = ((TabPage)tabs.Controls[0]);
+                TabPage tabPage = ((TabPage)tabs.Controls[iCount]);
                 numTotalEquipesEmGrupo += ((DataGridView)(tabPage.Controls[0])).Rows.Count;
             }
 
@@ -875,19 +891,23 @@ namespace SecEsportes.Views {
 
             // Faz a criação das partidas pelos grupos
             for (int numGrupo = 0; numGrupo < competicao.grupos.Count; numGrupo++) {
-                List<EquipeCompeticao> grupo = competicao.grupos[numGrupo];
-                int timesNoGrupo = grupo.Count;
+                List<EquipeCompeticao> equipesNoGrupo = competicao.grupos[numGrupo];
+                int timesNoGrupo = equipesNoGrupo.Count;
+
+                // Define o número de equipes que ficarão para o chapéu
+                int timesASobrarPorRodada = timesNoGrupo % 2;
 
                 // Define o número de rodas únicas
-                int numRodadasUnicas = timesNoGrupo - (timesNoGrupo % 2 == 1 ? 0 : 1);
+                int numRodadasUnicas = timesNoGrupo - (timesASobrarPorRodada == 1 ? 0 : 1);
 
-                int timesASobrarPorRodada = timesNoGrupo % 2;
+                // Lista com as equipes que ficaram para o chapéu por rodada
+                List<EquipeCompeticao> equipeQueSobra = new List<EquipeCompeticao>();
 
                 // Partidas
                 List<Competicao_Partida> partidas = new List<Competicao_Partida>();
                 for (int numRodada = 0; numRodada < numRodadasUnicas; numRodada++) {
 
-                    List<EquipeCompeticao> timesRodada = reorganiza(new List<EquipeCompeticao>(grupo));
+                    List<EquipeCompeticao> timesRodada = reorganiza(new List<EquipeCompeticao>(equipesNoGrupo));
 
                     // Faz o sorteio das rodadas
                     while (timesRodada.Count > timesASobrarPorRodada) {
@@ -908,7 +928,7 @@ namespace SecEsportes.Views {
                             equipe2 = encontraAdversario(equipe1, timesRodada, partidas);
                             if (equipe2 is null) {
                                 partidas.RemoveAll(x => x.rodada == numRodada + 1);
-                                timesRodada = new List<EquipeCompeticao>(grupo);
+                                timesRodada = new List<EquipeCompeticao>(equipesNoGrupo);
                                 repeat = true;
                             } else {
                                 timesRodada.Remove(equipe2);
@@ -921,6 +941,18 @@ namespace SecEsportes.Views {
                                     repeat = true;
                                 } else {
                                     repeat = false;
+                                    
+                                    // Quando tiver um número ímpar no grupo verifica se a equipe que está ficando para o chapéu já havia ficado numa rodada anterior
+                                    if (timesRodada.Count == 1 && timesASobrarPorRodada == 1) {
+                                        // Se uma equipe que já havia ficado para o chapéu ficar novamente, refaz a rodada
+                                        if (equipeJaSobrouNoutraRodada(timesRodada[0], equipeQueSobra)){
+                                            partidas.RemoveAll(x => x.rodada == numRodada + 1);
+                                            timesRodada = new List<EquipeCompeticao>(equipesNoGrupo);
+                                            repeat = true;
+                                        } else {
+                                            equipeQueSobra.Add(timesRodada[0]);
+                                        }
+                                    }
                                 }
                             }
                         } while (repeat);
@@ -952,7 +984,16 @@ namespace SecEsportes.Views {
                 }
             }
         }
-        
+
+        private bool equipeJaSobrouNoutraRodada(EquipeCompeticao equipeASobrar, List<EquipeCompeticao> equipeQueSobra) {
+            foreach(EquipeCompeticao equipeJaSobrou in equipeQueSobra) {
+                if (equipeJaSobrou.id == equipeASobrar.id) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public EquipeCompeticao encontraAdversario(EquipeCompeticao equipe1, List<EquipeCompeticao> equipesRestantes, List<Competicao_Partida> partidas) {
             foreach(EquipeCompeticao equipe in equipesRestantes) {
                 if (equipe.id != equipe1.id) {
