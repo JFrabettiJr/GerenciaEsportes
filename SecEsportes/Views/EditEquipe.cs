@@ -15,12 +15,16 @@ namespace SecEsportes.Views {
         private List<Cargo> representantes;
         private List<Cargo> treinadores;
 
+        private Usuario usuarioLogado;
+
         #region Inicialização da classe
-        public EditEquipe(EquipeCompeticao equipe, Competicao competicao) {
+        public EditEquipe(Usuario usuarioLogado, EquipeCompeticao equipe, Competicao competicao) {
             InitializeComponent();
 
             CenterToScreen();
-            
+
+            this.usuarioLogado = usuarioLogado;
+
             this.equipe = equipe;
             this.competicao = competicao;
 
@@ -112,7 +116,7 @@ namespace SecEsportes.Views {
         #endregion
         #region CRUD
         private void btnIncluirAtleta_Click(object sender, EventArgs e) {
-            insertAtletaForm = new InsertAtleta(competicao.id);
+            insertAtletaForm = new InsertAtleta(usuarioLogado, competicao.id);
             insertAtletaForm.FormClosing += insertEquipeForm_FormClosing;
             insertAtletaForm.ShowDialog();
         }

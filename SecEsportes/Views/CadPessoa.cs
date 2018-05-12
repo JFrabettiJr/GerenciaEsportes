@@ -12,10 +12,14 @@ namespace SecEsportes.Views {
         private List<Funcao> funcoes;
         private string errorMessage;
 
+        private Usuario usuarioLogado;
+
         #region Inicialização da classe
-        public CadPessoa() {
+        public CadPessoa(Usuario usuarioLogado) {
             InitializeComponent();
             CenterToScreen();
+
+            this.usuarioLogado = usuarioLogado;
 
             pessoas = PessoaRepositorio.Instance.get(ref errorMessage);
             if (pessoas is null) {

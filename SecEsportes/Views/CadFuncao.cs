@@ -13,11 +13,16 @@ namespace SecEsportes.Views
         private List<Funcao> funcoes;
         private string errorMessage;
 
+        private Usuario usuarioLogado;
+
         #region Inicialização da classe
-        public CadFuncao()
+        public CadFuncao(Usuario usuarioLogado)
         {
             InitializeComponent();
             CenterToScreen();
+
+            this.usuarioLogado = usuarioLogado;
+
             funcoes = FuncaoRepositorio.Instance.get(ref errorMessage);
             if (funcoes is null) {
                 MessageBox.Show("Houve um erro ao tentar listar os registros." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);

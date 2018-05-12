@@ -13,25 +13,32 @@ namespace SecEsportes
         List<Funcao> funcoes;
         List<Modalidade> modalidades;
 
-        public Main(){
+        private Usuario usuarioLogado;
+
+        public Main(Usuario usuarioLogado) {
             InitializeComponent();
             CenterToScreen();
+            this.usuarioLogado = usuarioLogado;
         }
 
         private void btnCadEquipes_Click(object sender, EventArgs e){
-            new Views.CadEquipe().ShowDialog();
+            new Views.CadEquipe(usuarioLogado).ShowDialog();
         }
 
         private void btnCadPessoa_Click(object sender, EventArgs e) {
-            new Views.CadPessoa().ShowDialog();
+            new Views.CadPessoa(usuarioLogado).ShowDialog();
         }
 
         private void btnCadFuncao_Click(object sender, EventArgs e) {
-            new Views.CadFuncao().ShowDialog();
+            new Views.CadFuncao(usuarioLogado).ShowDialog();
         }
 
         private void button1_Click(object sender, EventArgs e) {
-            new Views.CadCompeticao().ShowDialog();
+            new Views.CadCompeticao(usuarioLogado).ShowDialog();
+        }
+
+        private void btnCadUsuario_Click(object sender, EventArgs e) {
+            new Views.CadUsuario(usuarioLogado).ShowDialog();
         }
 
         private void btnIncluirTestes_Click(object sender, EventArgs e) {
@@ -521,6 +528,5 @@ namespace SecEsportes
                 EquipeRepositorio.Instance.insertAtletaEmEquipe(competicao.id, equipe.id, atleta);
             }            
         }
-
     }
 }

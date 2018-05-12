@@ -59,6 +59,7 @@ namespace SecEsportes.Infraestrutura {
             PessoaRepositorio.Instance.CreateTable(connection);
             ModalidadeRepositorio.Instance.CreateTable(connection);
             CompeticaoRepositorio.Instance.CreateTable(connection);
+            UsuarioRepositorio.Instance.CreateTable(connection);
 
             connection.Close();
 

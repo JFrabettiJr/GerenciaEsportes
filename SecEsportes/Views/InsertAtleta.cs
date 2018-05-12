@@ -12,11 +12,15 @@ namespace SecEsportes.Views
         public List<Atleta_Insert> atletasAInserir;
         private string errorMessage;
 
+        private Usuario usuarioLogado;
+        
         #region Inicialização da classe
-        public InsertAtleta(int idCompeticao)
+        public InsertAtleta(Usuario usuarioLogado, int idCompeticao)
         {
             InitializeComponent();
             CenterToScreen();
+
+            this.usuarioLogado = usuarioLogado;
 
             atletas = PessoaRepositorio.Instance.getAtletasForaCompeticao(idCompeticao, ref errorMessage);
             if (atletas is null) {

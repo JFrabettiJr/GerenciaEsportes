@@ -528,8 +528,10 @@
             this.Controls.Add(this.btnSalvar);
             this.Controls.Add(this.tlp1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "EditCompeticao";
             this.Padding = new System.Windows.Forms.Padding(20);
+            this.ShowInTaskbar = false;
             this.Text = "Cadastro de competição";
             this.Load += new System.EventHandler(this.load);
             this.tlp1.ResumeLayout(false);

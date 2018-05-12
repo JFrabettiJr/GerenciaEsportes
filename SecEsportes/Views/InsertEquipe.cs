@@ -11,10 +11,14 @@ namespace SecEsportes.Views {
         public List<Equipe_Insert> equipesAInserir;
         private string errorMessage;
 
+        private Usuario usuarioLogado;
+
         #region Inicialização da classe
-        public InsertEquipe(int idCompeticao) {
+        public InsertEquipe(Usuario usuarioLogado, int idCompeticao) {
             InitializeComponent();
             CenterToScreen();
+
+            this.usuarioLogado = usuarioLogado;
 
             equipes = EquipeRepositorio.Instance.getEquipesForaCompeticao(ref errorMessage, idCompeticao);
             if (equipes is null) {

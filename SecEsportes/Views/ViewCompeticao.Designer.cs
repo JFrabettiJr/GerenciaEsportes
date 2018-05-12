@@ -142,7 +142,6 @@
             this.dgvArtilheiros.AllowUserToAddRows = false;
             this.dgvArtilheiros.AllowUserToDeleteRows = false;
             this.dgvArtilheiros.AllowUserToOrderColumns = true;
-            this.dgvArtilheiros.AutoGenerateColumns = false;
             this.dgvArtilheiros.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.dgvArtilheiros.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvArtilheiros.Location = new System.Drawing.Point(6, 6);
@@ -161,8 +160,10 @@
             this.Controls.Add(this.tcAbas);
             this.Controls.Add(this.lblCompeticao);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "ViewCompeticao";
             this.Padding = new System.Windows.Forms.Padding(20);
+            this.ShowInTaskbar = false;
             this.Text = "Visão geral da competição";
             this.Load += new System.EventHandler(this.load);
             this.tcAbas.ResumeLayout(false);

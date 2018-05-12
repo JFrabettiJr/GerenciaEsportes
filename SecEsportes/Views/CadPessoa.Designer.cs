@@ -251,8 +251,10 @@
             this.Controls.Add(this.btnSalvar);
             this.Controls.Add(this.tlpCadFuncao);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "CadPessoa";
             this.Padding = new System.Windows.Forms.Padding(20);
+            this.ShowInTaskbar = false;
             this.Text = "Cadastro de pessoas";
             this.tlpCadFuncao.ResumeLayout(false);
             this.tlpCadFuncao.PerformLayout();

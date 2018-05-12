@@ -13,11 +13,16 @@ namespace SecEsportes.Views
         private List<Equipe> equipes;
         private string errorMessage;
 
+        private Usuario usuarioLogado;
+
         #region Inicialização da classe
-        public CadEquipe()
+        public CadEquipe(Usuario usuarioLogado)
         {
             InitializeComponent();
             CenterToScreen();
+
+            this.usuarioLogado = usuarioLogado;
+
             equipes = EquipeRepositorio.Instance.get(ref errorMessage);
             if (equipes is null) {
                 MessageBox.Show("Houve um erro ao tentar listar os registros." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);

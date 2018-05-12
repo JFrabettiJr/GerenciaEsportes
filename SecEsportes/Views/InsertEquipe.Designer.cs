@@ -89,8 +89,10 @@
             this.Controls.Add(this.dgvEquipes);
             this.Controls.Add(this.btnInserir);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "InsertEquipe";
             this.Padding = new System.Windows.Forms.Padding(20);
+            this.ShowInTaskbar = false;
             this.Text = "Inserir equipes na competição";
             ((System.ComponentModel.ISupportInitialize)(this.dgvEquipes)).EndInit();
             this.ResumeLayout(false);

@@ -243,8 +243,10 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.tlpCadFuncao);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "EditEquipe";
             this.Padding = new System.Windows.Forms.Padding(20);
+            this.ShowInTaskbar = false;
             this.Text = "Cadastro de equipes - Inserção de atletas";
             this.Load += new System.EventHandler(this.EditEquipe_Load);
             this.tlpCadFuncao.ResumeLayout(false);

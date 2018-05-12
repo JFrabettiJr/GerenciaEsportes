@@ -13,12 +13,16 @@ namespace SecEsportes.Views {
         private string errorMessage = "";
         private bool penalidades = false;
 
+        private Usuario usuarioLogado;
+
         #region Inicialização da classe
-        public ViewPartida(Competicao competicao, Competicao_Partida partida) {
+        public ViewPartida(Usuario usuarioLogado, Competicao competicao, Competicao_Partida partida) {
             InitializeComponent();
 
             // Centraliza o form na tela
             CenterToScreen();
+
+            this.usuarioLogado = usuarioLogado;
 
             this.competicao = competicao;
             this.partida = partida;

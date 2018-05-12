@@ -15,13 +15,17 @@ namespace SecEsportes.Views
         private List<Atleta_List_Artilheiro> artilheiros;
         private string errorMessage = "";
 
+        private Usuario usuarioLogado;
+
         #region Inicialização da classe
-        public ViewCompeticao(Competicao competicao)
+        public ViewCompeticao(Usuario usuarioLogado, Competicao competicao)
         {
             InitializeComponent();
 
             // Centraliza o form na tela
             CenterToScreen();
+
+            this.usuarioLogado = usuarioLogado;
 
             this.competicao = competicao;
             this.Text += " - " + competicao.nome;
@@ -166,7 +170,7 @@ namespace SecEsportes.Views
                 List<Competicao_Partida> partidas = competicao.partidas.FindAll(partidasAEncontrar => partidasAEncontrar.rodada == numRodada);
                 Competicao_Partida partida = partidas[e.RowIndex];
 
-                ViewPartida viewPartida = new ViewPartida(competicao, partida);
+                ViewPartida viewPartida = new ViewPartida(usuarioLogado, competicao, partida);
                 viewPartida.Tag = new List<Object>() { (DataGridView)sender, partidas };
                 viewPartida.FormClosing += viewPartida_FormClosing;
                 viewPartida.ShowDialog();
@@ -202,26 +206,31 @@ namespace SecEsportes.Views
                         dataGridView.Columns[iCount].HeaderText = "Atleta";
                         dataGridView.Columns[iCount].Name = dataGridView.Columns[iCount].DataPropertyName;
                         dataGridView.Columns[iCount].DisplayIndex = 0;
+                        dataGridView.Columns[iCount].Width = 150;
                         break;
                     case nameof(Atleta_List_Artilheiro.nome_Equipe):
                         dataGridView.Columns[iCount].HeaderText = "Equipe";
                         dataGridView.Columns[iCount].Name = dataGridView.Columns[iCount].DataPropertyName;
                         dataGridView.Columns[iCount].DisplayIndex = 1;
+                        dataGridView.Columns[iCount].Width = 100;
                         break;
                     case nameof(Atleta_List_Artilheiro.num_Gols):
                         dataGridView.Columns[iCount].HeaderText = "Gols";
                         dataGridView.Columns[iCount].Name = dataGridView.Columns[iCount].DataPropertyName;
                         dataGridView.Columns[iCount].DisplayIndex = 2;
+                        dataGridView.Columns[iCount].Width = 50;
                         break;
                     case nameof(Atleta_List_Artilheiro.num_Partidas):
                         dataGridView.Columns[iCount].HeaderText = "Jogos";
                         dataGridView.Columns[iCount].Name = dataGridView.Columns[iCount].DataPropertyName;
                         dataGridView.Columns[iCount].DisplayIndex = 3;
+                        dataGridView.Columns[iCount].Width = 40;
                         break;
                     case nameof(Atleta_List_Artilheiro.media):
                         dataGridView.Columns[iCount].HeaderText = "Média";
                         dataGridView.Columns[iCount].Name = dataGridView.Columns[iCount].DataPropertyName;
                         dataGridView.Columns[iCount].DisplayIndex = 4;
+                        dataGridView.Columns[iCount].Width = 50;
                         break;
                     default:
                         dataGridView.Columns[iCount].Visible = false;

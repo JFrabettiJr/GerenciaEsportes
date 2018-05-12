@@ -14,13 +14,17 @@ namespace SecEsportes.Views {
         private string errorMessage;
         private InsertEquipe insertEquipeForm;
 
+        private Usuario usuarioLogado;
+
         #region Inicialização da classe
-        public EditCompeticao(Competicao competicao) {
+        public EditCompeticao(Usuario usuarioLogado, Competicao competicao) {
             windowMode = Utilidades.WindowMode.ModoCriacaoForm;
             InitializeComponent();
 
             // Centraliza a tela
             CenterToScreen();
+
+            this.usuarioLogado = usuarioLogado;
 
             Text += " - " + competicao.nome;
 
@@ -495,7 +499,7 @@ namespace SecEsportes.Views {
         private void btnIncluirEquipes_Click(object sender, EventArgs e) {
             // Função responsável por chamar o form responsável por selecionar as equipes que serão selecionadas
 
-            insertEquipeForm = new InsertEquipe(competicao.id);
+            insertEquipeForm = new InsertEquipe(usuarioLogado, competicao.id);
             insertEquipeForm.FormClosing += insertEquipeForm_FormClosing;
             insertEquipeForm.ShowDialog();
         }
@@ -710,7 +714,7 @@ namespace SecEsportes.Views {
         private void dgvEquipes_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e) {
             if (e.RowIndex > -1) {
                 EquipeCompeticao equipe = equipes[e.RowIndex];
-                EditEquipe formEditEquipe = new EditEquipe(equipe, competicao);
+                EditEquipe formEditEquipe = new EditEquipe(usuarioLogado, equipe, competicao);
                 formEditEquipe.FormClosing += formEditEquipe_FormClosing;
                 formEditEquipe.ShowDialog();
             }
@@ -1028,7 +1032,7 @@ namespace SecEsportes.Views {
         }
 
         private void btnVisaoGeral_Click(object sender, EventArgs e) {
-            new ViewCompeticao(competicao).ShowDialog();
+            new ViewCompeticao(usuarioLogado, competicao).ShowDialog();
         }
     }
 }

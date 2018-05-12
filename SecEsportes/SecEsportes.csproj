@@ -257,10 +257,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Login.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Login.Designer.cs">
+      <DependentUpon>Login.cs</DependentUpon>
+    </Compile>
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
+    <Compile Include="Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
     <Compile Include="Infraestrutura\Configuracoes.cs" />
@@ -278,20 +284,23 @@
     <Compile Include="Modelo\Equipe.cs" />
     <Compile Include="Modelo\EquipeCompeticao.cs" />
     <Compile Include="Modelo\Modalidade.cs" />
-    <Compile Include="Modelo\Eventos\Evento.cs" />
-    <Compile Include="Modelo\Eventos\Evento_Substituicao.cs" />
-    <Compile Include="Modelo\Eventos\Evento_CartaoVermelho.cs" />
-    <Compile Include="Modelo\Eventos\Evento_CartaoAmarelo.cs" />
-    <Compile Include="Modelo\Eventos\Evento_Gol.cs" />
     <Compile Include="Modelo\Funcao.cs" />
     <Compile Include="Modelo\Pessoa.cs" />
+    <Compile Include="Modelo\Usuario.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositorio\ModalidadeRepositorio.cs" />
     <Compile Include="Repositorio\CompeticaoRepositorio.cs" />
     <Compile Include="Repositorio\EquipeRepositorio.cs" />
+    <Compile Include="Repositorio\UsuarioRepositorio.cs" />
     <Compile Include="Repositorio\PessoaRepositorio.cs" />
     <Compile Include="Repositorio\FuncaoRepositorio.cs" />
+    <Compile Include="Views\CadUsuario.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\CadUsuario.Designer.cs">
+      <DependentUpon>CadUsuario.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\ViewPartida.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -352,7 +361,10 @@
     <Compile Include="Views\CadFuncao.Designer.cs">
       <DependentUpon>CadFuncao.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Form1.resx">
+    <EmbeddedResource Include="Login.resx">
+      <DependentUpon>Login.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -365,6 +377,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Views\CadUsuario.resx">
+      <DependentUpon>CadUsuario.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\ViewPartida.resx">
       <DependentUpon>ViewPartida.cs</DependentUpon>
     </EmbeddedResource>
@@ -394,6 +409,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\CadFuncao.resx">
       <DependentUpon>CadFuncao.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -426,6 +442,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Recursos\gramado.jpg" />
     <Content Include="Recursos\trophy.ico" />
     <Content Include="Recursos\trophy.png" />
   </ItemGroup>

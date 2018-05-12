@@ -292,7 +292,7 @@ namespace SecEsportes.Repositorio {
 
                     foreach(Atleta_List_Artilheiro artilheiro in artilheiros){
                         artilheiro.atleta = PessoaRepositorio.Instance.getAtleta(artilheiro.id_Atleta, id_Competicao);
-                        artilheiro.nome_Atleta = artilheiro.atleta.numero + " - " + artilheiro.atleta.pessoa.nome;
+                        artilheiro.nome_Atleta = artilheiro.atleta.pessoa.nome;
                         if (artilheiro.num_Partidas > 0)
                             artilheiro.media = Convert.ToDouble(artilheiro.num_Gols) / Convert.ToDouble(artilheiro.num_Partidas);
                         else

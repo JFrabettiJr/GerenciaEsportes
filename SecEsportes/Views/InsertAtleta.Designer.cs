@@ -89,8 +89,10 @@
             this.Controls.Add(this.dgvAtletas);
             this.Controls.Add(this.btnInserir);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "InsertAtleta";
             this.Padding = new System.Windows.Forms.Padding(20);
+            this.ShowInTaskbar = false;
             this.Text = "Inserir atletas na equipe";
             this.Load += new System.EventHandler(this.InsertAtleta_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvAtletas)).EndInit();

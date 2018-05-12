@@ -14,13 +14,17 @@ namespace SecEsportes.Views
         private List<Modalidade> modalidades;
         private string errorMessage;
 
+        private Usuario usuarioLogado;
+
         #region Inicialização da classe
-        public CadCompeticao()
+        public CadCompeticao(Usuario usuarioLogado)
         {
             InitializeComponent();
 
             // Centraliza o form na tela
             CenterToScreen();
+
+            this.usuarioLogado = usuarioLogado;
 
             // Carrega as competições
             competicoes = CompeticaoRepositorio.Instance.get(ref errorMessage);
@@ -214,7 +218,7 @@ namespace SecEsportes.Views
         private void dgvCompeticoes_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e) {
             if (e.RowIndex > -1) {
                 Competicao competicao = competicoes[e.RowIndex];
-                new EditCompeticao(competicao).ShowDialog();
+                new EditCompeticao(usuarioLogado, competicao).ShowDialog();
             }
         }
         #endregion

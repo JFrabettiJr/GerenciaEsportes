@@ -275,8 +275,10 @@
             this.Controls.Add(this.tlpPartida);
             this.Controls.Add(this.lblCompeticao);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "ViewPartida";
             this.Padding = new System.Windows.Forms.Padding(20);
+            this.ShowInTaskbar = false;
             this.Text = "Partida";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ViewPartida_FormClosing);
             this.Load += new System.EventHandler(this.load);
