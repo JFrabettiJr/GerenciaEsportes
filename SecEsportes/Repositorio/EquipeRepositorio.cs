@@ -157,6 +157,15 @@ namespace SecEsportes.Repositorio {
                 return -1;
             }
         }
+        public bool todosAtletasTemNumero(int id_Competicao, int id_Equipe) {
+            List<Atleta> atletas = PessoaRepositorio.Instance.getAtletasByEquipeCompeticao(id_Competicao, id_Equipe);
+            foreach(Atleta atleta in atletas) {
+                if (atleta.numero is null || atleta.numero < 1) {
+                    return false;
+                }
+            }
+            return true;
+        }
         public bool insert(ref Equipe equipe, ref string messageError) {
             try {
                 equipe.id = SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query<int>("" +
@@ -308,8 +317,6 @@ namespace SecEsportes.Repositorio {
                             id_Competicao
                         }).First();
 
-                    equipe.comissaotecnica = getFuncoesByEquipeCompeticao(id_Competicao, equipe.id);
-                    equipe.atletas = PessoaRepositorio.Instance.getAtletasByEquipeCompeticao(id_Competicao, equipe.id);
                     equipe.representante = PessoaRepositorio.Instance.getCargo(equipe.id_representante);
                     equipe.treinador = PessoaRepositorio.Instance.getCargo(equipe.id_treinador);
 
@@ -335,8 +342,6 @@ namespace SecEsportes.Repositorio {
                         }).ToList();
 
                     for (int iCount = 0; iCount < equipes.Count; iCount++) {
-                        equipes[iCount].comissaotecnica = getFuncoesByEquipeCompeticao(idCompeticao, equipes[iCount].id);
-                        equipes[iCount].atletas = PessoaRepositorio.Instance.getAtletasByEquipeCompeticao(idCompeticao, equipes[iCount].id);
                         equipes[iCount].representante = PessoaRepositorio.Instance.getCargo(equipes[iCount].id_representante);
                         equipes[iCount].treinador = PessoaRepositorio.Instance.getCargo(equipes[iCount].id_treinador);
                     }
@@ -349,7 +354,7 @@ namespace SecEsportes.Repositorio {
                 return null;
             }
         }
-        private List<Cargo> getFuncoesByEquipeCompeticao(int idCompeticao, int idEquipe) {
+        public List<Cargo> getFuncoesByEquipeCompeticao(int idCompeticao, int idEquipe) {
             try {
                 using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
                     connection.Open();
@@ -396,6 +401,5 @@ namespace SecEsportes.Repositorio {
                 return null;
             }
         }
-
     }
 }

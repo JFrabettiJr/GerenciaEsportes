@@ -142,6 +142,7 @@
             this.dgvArtilheiros.AllowUserToAddRows = false;
             this.dgvArtilheiros.AllowUserToDeleteRows = false;
             this.dgvArtilheiros.AllowUserToOrderColumns = true;
+            this.dgvArtilheiros.AutoGenerateColumns = false;
             this.dgvArtilheiros.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.dgvArtilheiros.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvArtilheiros.Location = new System.Drawing.Point(6, 6);

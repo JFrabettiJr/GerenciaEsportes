@@ -40,8 +40,6 @@ namespace SecEsportes.Views {
 
             dgvEquipes.DataSource = equipes;
 
-            dgvEquipes.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "QtdAtletas" });
-
             for (var iCount = 0; iCount < dgvEquipes.Columns.Count; iCount++) {
                 switch (dgvEquipes.Columns[iCount].DataPropertyName) {
                     case nameof(EquipeCompeticao.nome):
@@ -60,20 +58,11 @@ namespace SecEsportes.Views {
                         dgvEquipes.Columns[iCount].HeaderText = "Treinador";
                         dgvEquipes.Columns[iCount].Name = dgvEquipes.Columns[iCount].DataPropertyName;
                         break;
-                    case "QtdAtletas":
-                        dgvEquipes.Columns[iCount].HeaderText = "Atletas";
-                        dgvEquipes.Columns[iCount].Name = dgvEquipes.Columns[iCount].DataPropertyName;
-                        break;
                     default:
                         dgvEquipes.Columns[iCount].Visible = false;
                         dgvEquipes.Columns[iCount].DisplayIndex = 5;
                         break;
                 }
-            }
-
-            //Preenche os campos que vieram sem preenchimento do data set
-            for (var iCount = 0; iCount < dgvEquipes.Rows.Count; iCount++) {
-                dgvEquipes.Rows[iCount].Cells["QtdAtletas"].Value = EquipeRepositorio.Instance.getNumAtletasPorCompeticao(competicao.id, equipes[iCount].id);
             }
 
             dgvEquipes.Refresh();
@@ -171,12 +160,11 @@ namespace SecEsportes.Views {
             posicaoInicial = dgvEquipes.Location.Y;
             if (dgvEquipes.Visible)
                 tamanhoTotal += dgvEquipes.Size.Height;
-            if (tabs.Visible)
-                tamanhoTotal += tabs.Size.Height;
+            if (tcGrupos.Visible)
+                tamanhoTotal += tcGrupos.Size.Height;
 
             // Bloqueia os campos para edição
             bloqueiaCampos(false);
-
 
             btnGerarPartidas.Enabled = false;
             btnVisaoGeral.Enabled = false;
@@ -194,27 +182,40 @@ namespace SecEsportes.Views {
                 btnExcluirEquipe.Enabled = true;
 
                 // Deixa invisível os botões/informações
-                tabs.Visible = false;
+                tcGrupos.Visible = false;
                 btnGerarGrupos.Enabled = false;
             } else {
                 // Competição em preparação, encerrada ou iniciada
 
                 // Deixa visível os botões/informações
-                tabs.Visible = true;
+                tcGrupos.Visible = true;
 
                 // Deixa invisível os botões/informações
                 btnIncluirEquipes.Enabled = false;
                 btnExcluirEquipe.Enabled = false;
 
                 // Cria a abas e os grupos
-                tabs.Controls.Clear();
+                tcGrupos.Controls.Clear();
+
+                // Seleciona os times até então classificados para a próxima fase
+                int numProximaFase = 0;
+                int numPartidasASeremGeradas = 0;
+
+                switch (competicao.mataMata) {
+                    case MataMataEnum._5_OitavasFinal: numProximaFase = -4; numPartidasASeremGeradas = 8; break;
+                    case MataMataEnum._4_QuartasFinal: numProximaFase = -3; numPartidasASeremGeradas = 4; break;
+                    case MataMataEnum._3_SemiFinal: numProximaFase = -2; numPartidasASeremGeradas = 2; break;
+                    case MataMataEnum._2_Final: numProximaFase = -1; numPartidasASeremGeradas = 1; break;
+                }
+                List<List<EquipeCompeticao>> timesProximaFase = Utilidades.listaEquipesClassificadas(competicao, numPartidasASeremGeradas, numProximaFase);
+
                 for (int numGrupo = 0; numGrupo < competicao.numGrupos; numGrupo++) {
-                    DataGridView dataGridView = CompeticaoViewUtilidades.criaAba(CompeticaoViewUtilidades.getNomeGrupo(competicao.nomesGrupos, numGrupo + 1), numGrupo, tabs, dgvGrupoEquipes_CellMouseClick);
+                    DataGridView dataGridView = CompeticaoViewUtilidades.criaAba(CompeticaoViewUtilidades.getNomeGrupo(competicao.nomesGrupos, numGrupo + 1), numGrupo, tcGrupos, dgvGrupoEquipes_CellMouseClick);
 
                     if (numGrupo < competicao.grupos.Count)
-                        CompeticaoViewUtilidades.refreshDataGridViewGrupos(dataGridView, competicao.grupos[numGrupo]);
+                        CompeticaoViewUtilidades.refreshDataGridViewGrupos(competicao, dataGridView, competicao.grupos[numGrupo], timesProximaFase[numGrupo]);
                     else
-                        CompeticaoViewUtilidades.refreshDataGridViewGrupos(dataGridView, null);
+                        CompeticaoViewUtilidades.refreshDataGridViewGrupos(competicao, dataGridView, null, null);
                 }
 
                 if (competicao.status == StatusEnum._3_EmPreparacao) {
@@ -230,8 +231,8 @@ namespace SecEsportes.Views {
                     dgvEquipes.Size = new System.Drawing.Size(dgvEquipes.Size.Width, tamanhoTotal / 2);
 
                     // Reajusta as abas com os grupos
-                    tabs.Location = new System.Drawing.Point(tabs.Location.X, posicaoInicial + dgvEquipes.Size.Height + 5);
-                    tabs.Size = new System.Drawing.Size(tabs.Size.Width, tamanhoTotal / 2);
+                    tcGrupos.Location = new System.Drawing.Point(tcGrupos.Location.X, posicaoInicial + dgvEquipes.Size.Height + 5);
+                    tcGrupos.Size = new System.Drawing.Size(tcGrupos.Size.Width, tamanhoTotal / 2);
 
                     dgvEquipes.CellMouseClick -= dgvEquipes_CellMouseClick;
                     dgvEquipes.CellMouseClick += dgvEquipes_CellMouseClick;
@@ -243,14 +244,14 @@ namespace SecEsportes.Views {
                     bloqueiaCampos(true);
 
                     // Deleta o evento que seria acionado no clique do DataGridView dos grupos
-                    for (int iCount = 0; iCount < tabs.Controls.Count; iCount++) {
-                        TabPage tabPage = (TabPage)tabs.Controls[iCount];
+                    for (int iCount = 0; iCount < tcGrupos.Controls.Count; iCount++) {
+                        TabPage tabPage = (TabPage)tcGrupos.Controls[iCount];
                         ((DataGridView)tabPage.Controls[0]).CellMouseClick -= dgvGrupoEquipes_CellMouseClick;
                     }
                     
                     // Reajusta as abas com os grupos
-                    tabs.Location = new System.Drawing.Point(tabs.Location.X, posicaoInicial);
-                    tabs.Size = new System.Drawing.Size(tabs.Size.Width, tamanhoTotal);
+                    tcGrupos.Location = new System.Drawing.Point(tcGrupos.Location.X, posicaoInicial);
+                    tcGrupos.Size = new System.Drawing.Size(tcGrupos.Size.Width, tamanhoTotal);
 
                     // Deixa invisível os botões/informações
                     dgvEquipes.Visible = false;
@@ -272,8 +273,8 @@ namespace SecEsportes.Views {
 
                     // Cria o menu de contexto e suas respectivas configurações
                     ContextMenu contextMenu = new ContextMenu();
-                    for (var iCount = 0; iCount < tabs.Controls.Count; iCount++) {
-                        MenuItem menuItem = new MenuItem("Enviar " + equipes[e.RowIndex].codigo + " - " + equipes[e.RowIndex].nome + " para o " + tabs.Controls[iCount].Text);
+                    for (var iCount = 0; iCount < tcGrupos.Controls.Count; iCount++) {
+                        MenuItem menuItem = new MenuItem("Enviar " + equipes[e.RowIndex].codigo + " - " + equipes[e.RowIndex].nome + " para o " + tcGrupos.Controls[iCount].Text);
                         menuItem.Click += menuAdicionarGrupo_click;
                         menuItem.Tag = equipes[e.RowIndex].id.ToString() + "|-|" + iCount.ToString();
                         contextMenu.MenuItems.Add(menuItem);
@@ -308,7 +309,7 @@ namespace SecEsportes.Views {
 
             if (insereEmGrupo) {
                 // Verifica se o clube já está em algum grupo
-                for (int numGrupo = 0; numGrupo < tabs.Controls.Count; numGrupo++) {
+                for (int numGrupo = 0; numGrupo < tcGrupos.Controls.Count; numGrupo++) {
                     if (!(competicao.grupos[numGrupo].Find(equipeAEncontrar => equipeAEncontrar.id == idEquipe) is null)) {
                         insereEmGrupo = false;
                         idGrupoInserido = numGrupo;
@@ -322,7 +323,7 @@ namespace SecEsportes.Views {
                 enviarParaGrupo(idGrupo, equipe);
             }
 
-            tabs.SelectedIndex = (idGrupoInserido == null ? idGrupo : idGrupoInserido.Value);
+            tcGrupos.SelectedIndex = (idGrupoInserido == null ? idGrupo : idGrupoInserido.Value);
 
         }
 
@@ -330,9 +331,9 @@ namespace SecEsportes.Views {
             competicao.grupos[idGrupo].Add(equipe);
 
             // Atualiza o DataSource dos grupos
-            DataGridView dgvGrupo = (DataGridView)tabs.Controls[idGrupo].Controls[0];
+            DataGridView dgvGrupo = (DataGridView)tcGrupos.Controls[idGrupo].Controls[0];
 
-            CompeticaoViewUtilidades.refreshDataGridViewGrupos(dgvGrupo, competicao.grupos[idGrupo]);
+            CompeticaoViewUtilidades.refreshDataGridViewGrupos(competicao, dgvGrupo, competicao.grupos[idGrupo], null);
 
             CompeticaoRepositorio.Instance.updateGrupos(competicao.id, idGrupo, equipe.id);
         }        
@@ -378,7 +379,7 @@ namespace SecEsportes.Views {
 
                     foreach (EquipeCompeticao equipe in equipes) {
                         // Verifica se toda equipe tem o numero minimo de jogadores
-                        if (equipe.atletas.Count < competicao.numMinimoJogadores) {
+                        if (EquipeRepositorio.Instance.getNumAtletasPorCompeticao(competicao.id, equipe.id) < competicao.numMinimoJogadores) {
                             MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
                             "Existem equipes que não tem o número mínimo de jogadores para a competição",
                             "Não foi possível avançar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -441,21 +442,19 @@ namespace SecEsportes.Views {
                         }
 
                         // Verifica se todos os jogadores tem número
-                        foreach (Atleta atleta in equipe.atletas) {
-                            if (atleta.numero is null || atleta.numero < 1) {
-                                MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
-                                "Existem equipes que têm atletas sem a numeração definida",
-                                "Não foi possível avançar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                return;
-                            }
+                        if (!(EquipeRepositorio.Instance.todosAtletasTemNumero(competicao.id, equipe.id))) {
+                            MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
+                            "Existem equipes que têm atletas sem a numeração definida",
+                            "Não foi possível avançar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
                         }
 
                     }
 
                     // Verifica se todas as equipes têm grupo
                     int numTotalEquipes = dgvEquipes.Rows.Count, numTotalEquipesEmGrupo = 0;
-                    for (int iCount = 0; iCount < tabs.Controls.Count; iCount++) {
-                        TabPage tabPage = ((TabPage)tabs.Controls[0]);
+                    for (int iCount = 0; iCount < tcGrupos.Controls.Count; iCount++) {
+                        TabPage tabPage = ((TabPage)tcGrupos.Controls[0]);
                         numTotalEquipesEmGrupo += ((DataGridView)(tabPage.Controls[0])).Rows.Count;
                     }
 
@@ -564,6 +563,8 @@ namespace SecEsportes.Views {
             }
 
             competicao = CompeticaoRepositorio.Instance.get(competicao.id);
+            competicao.equipes = EquipeRepositorio.Instance.getEquipesByCompeticao(competicao.id);
+            competicao.grupos = CompeticaoRepositorio.Instance.getGruposPorCompeticao(competicao.id, competicao.equipes);
 
             // Carrega o combobox das opções de mata-mata (conferir o MataMataEnum da classe Competicao)
             cboMataMata.Items.Clear();
@@ -715,13 +716,8 @@ namespace SecEsportes.Views {
             if (e.RowIndex > -1) {
                 EquipeCompeticao equipe = equipes[e.RowIndex];
                 EditEquipe formEditEquipe = new EditEquipe(usuarioLogado, equipe, competicao);
-                formEditEquipe.FormClosing += formEditEquipe_FormClosing;
                 formEditEquipe.ShowDialog();
             }
-        }
-
-        private void formEditEquipe_FormClosing(object sender, FormClosingEventArgs e) {
-            btnAtualizar_Click(null, null);
         }
 
         private void load(object sender, EventArgs e) {
@@ -742,10 +738,10 @@ namespace SecEsportes.Views {
                 int numTimesPorGrupo = competicao.numTimes / competicao.numGrupos;
                 int numTimesRestantes = competicao.numTimes % competicao.numGrupos;
 
-                tabs.Controls.Clear();
+                tcGrupos.Controls.Clear();
 
                 for (int numGrupo = 0; numGrupo < competicao.numGrupos; numGrupo++) {
-                    DataGridView dataGridView = CompeticaoViewUtilidades.criaAba(CompeticaoViewUtilidades.getNomeGrupo(competicao.nomesGrupos, numGrupo + 1), numGrupo, tabs, dgvGrupoEquipes_CellMouseClick);
+                    DataGridView dataGridView = CompeticaoViewUtilidades.criaAba(CompeticaoViewUtilidades.getNomeGrupo(competicao.nomesGrupos, numGrupo + 1), numGrupo, tcGrupos, dgvGrupoEquipes_CellMouseClick);
 
                     competicao.grupos.Add(new List<EquipeCompeticao>());
 
@@ -765,7 +761,19 @@ namespace SecEsportes.Views {
                     }
 
                     //Atualiza o DataGridView com as equipes daquele grupo
-                    CompeticaoViewUtilidades.refreshDataGridViewGrupos(dataGridView, competicao.grupos[numGrupo]);
+                    // Seleciona os times até então classificados para a próxima fase
+                    int numProximaFase = 0;
+                    int numPartidasASeremGeradas = 0;
+
+                    switch (competicao.mataMata) {
+                        case MataMataEnum._5_OitavasFinal: numProximaFase = -4; numPartidasASeremGeradas = 8; break;
+                        case MataMataEnum._4_QuartasFinal: numProximaFase = -3; numPartidasASeremGeradas = 4; break;
+                        case MataMataEnum._3_SemiFinal: numProximaFase = -2; numPartidasASeremGeradas = 2; break;
+                        case MataMataEnum._2_Final: numProximaFase = -1; numPartidasASeremGeradas = 1; break;
+                    }
+                    List<List<EquipeCompeticao>> timesProximaFase = Utilidades.listaEquipesClassificadas(competicao, numPartidasASeremGeradas, numProximaFase);
+
+                    CompeticaoViewUtilidades.refreshDataGridViewGrupos(competicao, dataGridView, competicao.grupos[numGrupo], timesProximaFase[numGrupo]);
                 }
             }
         }
@@ -779,7 +787,7 @@ namespace SecEsportes.Views {
 
                     // Cria o menu de contexto e suas respectivas configurações para cada equipe do grupo
                     ContextMenu contextMenu = new ContextMenu();
-                    MenuItem menuItem = new MenuItem("Excluir " + competicao.grupos[indiceGrupo][e.RowIndex].codigo + " - " + competicao.grupos[indiceGrupo][e.RowIndex].nome + " do " + tabs.Controls[indiceGrupo].Text);
+                    MenuItem menuItem = new MenuItem("Excluir " + competicao.grupos[indiceGrupo][e.RowIndex].codigo + " - " + competicao.grupos[indiceGrupo][e.RowIndex].nome + " do " + tcGrupos.Controls[indiceGrupo].Text);
                     menuItem.Click += excluirDoGrupo;
                     menuItem.Tag = competicao.grupos[indiceGrupo][e.RowIndex].id.ToString() + "|-|" + indiceGrupo.ToString();
                     contextMenu.MenuItems.Add(menuItem);
@@ -803,8 +811,9 @@ namespace SecEsportes.Views {
             CompeticaoRepositorio.Instance.deleteEquipeDoGrupo(competicao.id, idGrupo, equipe.id);
 
             // Atualiza o DataSource dos grupos
-            DataGridView dgvGrupo = (DataGridView)tabs.Controls[idGrupo].Controls[0];
-            CompeticaoViewUtilidades.refreshDataGridViewGrupos(dgvGrupo, competicao.grupos[idGrupo]);
+            DataGridView dgvGrupo = (DataGridView)tcGrupos.Controls[idGrupo].Controls[0];
+
+            CompeticaoViewUtilidades.refreshDataGridViewGrupos(competicao, dgvGrupo, competicao.grupos[idGrupo], null);
 
         }
 
@@ -878,8 +887,8 @@ namespace SecEsportes.Views {
         private void btnGerarPartidas_Click(object sender, EventArgs e) {
             // Verifica se todas as equipes têm grupo
             int numTotalEquipes = dgvEquipes.Rows.Count, numTotalEquipesEmGrupo = 0;
-            for (int iCount = 0; iCount < tabs.Controls.Count; iCount++) {
-                TabPage tabPage = ((TabPage)tabs.Controls[iCount]);
+            for (int iCount = 0; iCount < tcGrupos.Controls.Count; iCount++) {
+                TabPage tabPage = ((TabPage)tcGrupos.Controls[iCount]);
                 numTotalEquipesEmGrupo += ((DataGridView)(tabPage.Controls[0])).Rows.Count;
             }
 

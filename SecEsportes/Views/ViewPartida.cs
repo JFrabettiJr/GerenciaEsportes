@@ -38,6 +38,7 @@ namespace SecEsportes.Views {
             lblRepresentante1.Text = "Representante: " + partida.equipe1.representante.pessoa.nome;
             lblPlacarTime1.Text = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.equipe.id == partida.equipe1.id && eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol)).Count.ToString();
             lblPlacarTime1_Penalti.Text = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.equipe.id == partida.equipe1.id && eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol_Penalti)).Count.ToString();
+            partida.equipe1.atletas = PessoaRepositorio.Instance.getAtletasByEquipeCompeticao(competicao.id, partida.equipe1.id);
             refreshDataGridViewAtletas(dgvEquipe1, partida.equipe1, partida.equipe1.atletas);
 
             lblTime2.Text = partida.equipe2.nome;
@@ -45,6 +46,7 @@ namespace SecEsportes.Views {
             lblRepresentante2.Text = "Representante: " + partida.equipe2.representante.pessoa.nome;
             lblPlacarTime2.Text = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.equipe.id == partida.equipe2.id && eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol)).Count.ToString();
             lblPlacarTime2_Penalti.Text = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.equipe.id == partida.equipe2.id && eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol_Penalti)).Count.ToString();
+            partida.equipe2.atletas = PessoaRepositorio.Instance.getAtletasByEquipeCompeticao(competicao.id, partida.equipe2.id);
             refreshDataGridViewAtletas(dgvEquipe2, partida.equipe2, partida.equipe2.atletas);
 
             if (partidaIniciada) {

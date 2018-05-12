@@ -54,7 +54,7 @@
             this.lblNumTimes = new System.Windows.Forms.Label();
             this.chkIdaEVolta = new System.Windows.Forms.CheckBox();
             this.chkIdaEVoltaMataMata = new System.Windows.Forms.CheckBox();
-            this.tabs = new System.Windows.Forms.TabControl();
+            this.tcGrupos = new System.Windows.Forms.TabControl();
             this.btnAvancar = new System.Windows.Forms.Button();
             this.lblStatus = new System.Windows.Forms.Label();
             this.txtStatus = new System.Windows.Forms.Label();
@@ -409,13 +409,13 @@
             this.chkIdaEVoltaMataMata.UseVisualStyleBackColor = true;
             this.chkIdaEVoltaMataMata.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChange);
             // 
-            // tabs
+            // tcGrupos
             // 
-            this.tabs.Location = new System.Drawing.Point(10, 354);
-            this.tabs.Name = "tabs";
-            this.tabs.SelectedIndex = 0;
-            this.tabs.Size = new System.Drawing.Size(710, 170);
-            this.tabs.TabIndex = 8;
+            this.tcGrupos.Location = new System.Drawing.Point(10, 354);
+            this.tcGrupos.Name = "tcGrupos";
+            this.tcGrupos.SelectedIndex = 0;
+            this.tcGrupos.Size = new System.Drawing.Size(710, 170);
+            this.tcGrupos.TabIndex = 8;
             // 
             // btnAvancar
             // 
@@ -521,7 +521,7 @@
             this.Controls.Add(this.lblStatus);
             this.Controls.Add(this.btnAvancar);
             this.Controls.Add(this.dgvEquipes);
-            this.Controls.Add(this.tabs);
+            this.Controls.Add(this.tcGrupos);
             this.Controls.Add(this.tlp2);
             this.Controls.Add(this.btnAtualizar);
             this.Controls.Add(this.btnCancelar);
@@ -566,7 +566,7 @@
         private System.Windows.Forms.Label lblMataMata;
         private System.Windows.Forms.CheckBox chkIdaEVolta;
         private System.Windows.Forms.CheckBox chkIdaEVoltaMataMata;
-        private System.Windows.Forms.TabControl tabs;
+        private System.Windows.Forms.TabControl tcGrupos;
         private System.Windows.Forms.ComboBox cboNomeacaoGrupos;
         private System.Windows.Forms.Label lblGruposNomeados;
         private System.Windows.Forms.MaskedTextBox txtNumTimes;

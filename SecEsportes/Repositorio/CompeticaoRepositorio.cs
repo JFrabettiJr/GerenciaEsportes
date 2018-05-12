@@ -118,10 +118,7 @@ namespace SecEsportes.Repositorio {
                         "SELECT * FROM Competicao WHERE id = @id", new { id })
                         .FirstOrDefault();
 
-                    competicao.equipes = EquipeRepositorio.Instance.getEquipesByCompeticao(competicao.id);
                     competicao.modalidade = ModalidadeRepositorio.Instance.get(competicao.id_Modalidade);
-                    competicao.grupos = getGruposPorCompeticao(competicao.id);
-                    competicao.partidas = getPartidasPorCompeticao(competicao.id);
                     competicao.campeao = EquipeRepositorio.Instance.getEquipeCompeticao(competicao.id_Campeao, competicao.id);
 
                     return competicao;
@@ -142,10 +139,7 @@ namespace SecEsportes.Repositorio {
 
                     List<Competicao> competicoes = connection.Query<Competicao>("SELECT * FROM Competicao").ToList();
                     for (int iCount = 0; iCount < competicoes.Count; iCount++) {
-                        competicoes[iCount].equipes = EquipeRepositorio.Instance.getEquipesByCompeticao(competicoes[iCount].id);
                         competicoes[iCount].modalidade = ModalidadeRepositorio.Instance.get(competicoes[iCount].id_Modalidade);
-                        competicoes[iCount].grupos = getGruposPorCompeticao(competicoes[iCount].id);
-                        competicoes[iCount].partidas = getPartidasPorCompeticao(competicoes[iCount].id);
                         competicoes[iCount].campeao = EquipeRepositorio.Instance.getEquipeCompeticao(competicoes[iCount].id_Campeao, competicoes[iCount].id);
                     }
 
@@ -156,13 +150,13 @@ namespace SecEsportes.Repositorio {
                 return null;
             }
         }
-        private List<Competicao_Partida> getPartidasPorCompeticao(int id_Competicao) {
+        public List<Competicao_Partida> getPartidasPorCompeticao(int id_Competicao) {
             try {
                 using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
                     connection.Open();
 
                     string strSQL;
-                    strSQL =    "SELECT *" +
+                    strSQL =    "SELECT * " +
                                 "FROM   Competicao_Partida " +
                                 "WHERE  id_Competicao = @id_Competicao ";
 
@@ -208,7 +202,7 @@ namespace SecEsportes.Repositorio {
                 return null;
             }
         }
-        private List<List<EquipeCompeticao>> getGruposPorCompeticao(int id_competicao) {
+        public List<List<EquipeCompeticao>> getGruposPorCompeticao(int id_competicao, List<EquipeCompeticao> equipesNaCompeticao) {
             try {
                 using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
                     connection.Open();
@@ -237,7 +231,9 @@ namespace SecEsportes.Repositorio {
 
                         // Adiciona todas as equipes no grupo
                         for (int numEquipe = 0; numEquipe < idEquipes.Count; numEquipe++) {
-                            grupos[numGrupo].Add(EquipeRepositorio.Instance.getEquipeCompeticao(idEquipes[numEquipe], id_competicao));
+                            EquipeCompeticao equipeNoGrupo = equipesNaCompeticao.Find(find => find.id == idEquipes[numEquipe]);
+                            grupos[numGrupo].Add(equipeNoGrupo);
+                            //grupos[numGrupo].Add(EquipeRepositorio.Instance.getEquipeCompeticao(idEquipes[numEquipe], id_competicao));
                         }
                     }
 

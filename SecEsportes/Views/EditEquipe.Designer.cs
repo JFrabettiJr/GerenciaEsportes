@@ -248,7 +248,7 @@
             this.Padding = new System.Windows.Forms.Padding(20);
             this.ShowInTaskbar = false;
             this.Text = "Cadastro de equipes - Inserção de atletas";
-            this.Load += new System.EventHandler(this.EditEquipe_Load);
+            this.Load += new System.EventHandler(this.load);
             this.tlpCadFuncao.ResumeLayout(false);
             this.tlpCadFuncao.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAtletas)).EndInit();

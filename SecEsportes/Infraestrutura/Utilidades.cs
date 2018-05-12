@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using SecEsportes.Modelo;
+using SecEsportes.Repositorio;
 
 namespace SecEsportes.Infraestrutura
 {
@@ -16,10 +17,246 @@ namespace SecEsportes.Infraestrutura
             ModoNormal,
             ModoCriacaoForm
         }
+
+        public static List<List<EquipeCompeticao>> listaEquipesClassificadas(Competicao competicao, int numPartidasASeremGeradas, int numProximaFase) {
+            int numTimesRestantes = 0, numTimesPorGrupo = 0;
+            return listaEquipesClassificadas(competicao, numPartidasASeremGeradas, numProximaFase, ref numTimesRestantes, ref numTimesPorGrupo);
+        }
+
+        public static List<List<EquipeCompeticao>> listaEquipesClassificadas(Competicao competicao, int numPartidasASeremGeradas, int numProximaFase, ref int numTimesRestantes, ref int numTimesPorGrupo) {
+            numTimesPorGrupo = (numPartidasASeremGeradas * 2) / competicao.numGrupos;
+            numTimesRestantes = (numPartidasASeremGeradas * 2) % numTimesPorGrupo;
+
+            // Define os times que vão para a próxima fase
+            List<List<EquipeCompeticao>> timesProximaFase = new List<List<EquipeCompeticao>>();
+            for (int numGrupo = 0; numGrupo < competicao.grupos.Count; numGrupo++) {
+                timesProximaFase.Add(new List<EquipeCompeticao>());
+
+                timesProximaFase[numGrupo] = new List<EquipeCompeticao>();
+                timesProximaFase[numGrupo] = (from proximaFase in competicao.grupos[numGrupo]
+                                              orderby proximaFase.pontos descending, proximaFase.vitorias descending, proximaFase.golsPro - proximaFase.golsContra descending
+                                              select proximaFase).ToList<EquipeCompeticao>();
+
+                timesProximaFase[numGrupo].RemoveRange(numTimesPorGrupo, timesProximaFase[numGrupo].Count - numTimesPorGrupo);
+
+            }
+
+            return timesProximaFase;
+        }
+
+        public static void criaPartidasProximaFase(ref Competicao competicao, List<List<EquipeCompeticao>> timesProximaFase, int numPartidasASeremGeradas, int numTimesRestantes, int numTimesPorGrupo, int numProximaFase) {
+            // Faz a criação das partidas da fase final
+            Competicao_Partida partida;
+            EquipeCompeticao equipe1, equipe2;
+
+            switch (numPartidasASeremGeradas) {
+                case 2: // Semi final
+                    if (numTimesRestantes == 0) {
+                        if (numTimesPorGrupo == 1) {
+                            equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[1][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[2][0]; equipe2 = timesProximaFase[3][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                        }
+                        if (numTimesPorGrupo == 2) {
+                            equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[1][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[0][1]; equipe2 = timesProximaFase[1][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                        }
+                        if (numTimesPorGrupo == 4) {
+                            equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[0][3]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[0][1]; equipe2 = timesProximaFase[0][2]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                        }
+                    }
+                    break;
+                case 4: // Quartas de final
+                    if (numTimesRestantes == 0) {
+                        if (numTimesPorGrupo == 1) {
+                            equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[1][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[2][0]; equipe2 = timesProximaFase[3][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[4][0]; equipe2 = timesProximaFase[5][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 3);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[6][0]; equipe2 = timesProximaFase[7][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 4);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                        }
+                        if (numTimesPorGrupo == 2) {
+                            equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[1][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[0][1]; equipe2 = timesProximaFase[1][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[2][0]; equipe2 = timesProximaFase[3][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 3);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[2][1]; equipe2 = timesProximaFase[3][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 4);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                        }
+                        if (numTimesPorGrupo == 4) {
+                            equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[1][3]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[1][0]; equipe2 = timesProximaFase[0][3]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[0][1]; equipe2 = timesProximaFase[1][2]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 3);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[0][2]; equipe2 = timesProximaFase[1][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 4);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                        }
+                    }
+                    break;
+                case 8:
+                    if (numTimesRestantes == 0) {
+                        if (numTimesPorGrupo == 1) {
+                            equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[1][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[2][0]; equipe2 = timesProximaFase[3][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[4][0]; equipe2 = timesProximaFase[5][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 3);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[6][0]; equipe2 = timesProximaFase[7][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 4);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[8][0]; equipe2 = timesProximaFase[9][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 5);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[10][0]; equipe2 = timesProximaFase[11][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 6);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[12][0]; equipe2 = timesProximaFase[13][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 7);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[14][0]; equipe2 = timesProximaFase[15][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 8);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                        }
+                        if (numTimesPorGrupo == 2) {
+                            equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[1][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[0][1]; equipe2 = timesProximaFase[1][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[2][0]; equipe2 = timesProximaFase[3][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 3);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[2][1]; equipe2 = timesProximaFase[3][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 4);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[4][0]; equipe2 = timesProximaFase[5][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 5);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[4][1]; equipe2 = timesProximaFase[5][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 6);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[6][0]; equipe2 = timesProximaFase[7][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 7);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[6][1]; equipe2 = timesProximaFase[7][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 8);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                        }
+                        if (numTimesPorGrupo == 4) {
+                            equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[1][3]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[0][3]; equipe2 = timesProximaFase[1][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[0][1]; equipe2 = timesProximaFase[1][2]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 3);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[0][2]; equipe2 = timesProximaFase[1][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 4);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[2][0]; equipe2 = timesProximaFase[3][3]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 5);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[2][3]; equipe2 = timesProximaFase[3][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 6);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[2][1]; equipe2 = timesProximaFase[3][2]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 7);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[2][2]; equipe2 = timesProximaFase[3][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 8);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                        }
+                        if (numTimesPorGrupo == 8) {
+                            equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[1][7]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[0][1]; equipe2 = timesProximaFase[1][6]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[0][2]; equipe2 = timesProximaFase[1][5]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 3);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[0][3]; equipe2 = timesProximaFase[1][4]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 4);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[0][4]; equipe2 = timesProximaFase[1][3]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 5);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[0][5]; equipe2 = timesProximaFase[1][2]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 6);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[0][6]; equipe2 = timesProximaFase[1][1]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 7);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[0][7]; equipe2 = timesProximaFase[1][0]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 8);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                        }
+                        if (numTimesPorGrupo == 16) {
+                            equipe1 = timesProximaFase[0][0]; equipe2 = timesProximaFase[0][15]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 1);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[0][1]; equipe2 = timesProximaFase[0][14]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 2);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[0][2]; equipe2 = timesProximaFase[0][13]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 3);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[0][3]; equipe2 = timesProximaFase[0][12]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 4);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[0][4]; equipe2 = timesProximaFase[0][11]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 5);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[0][5]; equipe2 = timesProximaFase[0][10]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 6);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[0][6]; equipe2 = timesProximaFase[0][9]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 7);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+
+                            equipe1 = timesProximaFase[0][7]; equipe2 = timesProximaFase[0][8]; partida = new Competicao_Partida(equipe1, equipe2, numProximaFase, 8);
+                            CompeticaoRepositorio.Instance.insertPartida(ref competicao, partida);
+                        }
+                    }
+                    break;
+            }
+        }
+
     }
 
     public static class CompeticaoViewUtilidades {
-        public static DataGridView criaAba(string tituloAba, int indice, TabControl tcTabs, DataGridViewCellMouseEventHandler dataGridViewCellMouseEventHandler = null) {
+        public static DataGridView criaAba(string tituloAba, int indice, TabControl tcTabs) {
+            return criaAba(tituloAba, indice, tcTabs, null);
+        }
+        public static DataGridView criaAba(string tituloAba, int indice, TabControl tcTabs, DataGridViewCellMouseEventHandler dataGridViewCellMouseEventHandler) {
             // Cria o TabPage
             TabPage tabPage = new TabPage(tituloAba);
             tabPage.UseVisualStyleBackColor = true;
@@ -221,7 +458,7 @@ namespace SecEsportes.Infraestrutura
             dgvRodada.Refresh();
         }
 
-        public static void refreshDataGridViewGrupos(DataGridView dgvGrupo, List<EquipeCompeticao> dataSource) {
+        public static void refreshDataGridViewGrupos(Competicao competicao, DataGridView dgvGrupo, List<EquipeCompeticao> dataSource, List<EquipeCompeticao> timesProximaFase) {
             dgvGrupo.DataSource = null;
             dgvGrupo.Refresh();
 
@@ -255,11 +492,13 @@ namespace SecEsportes.Infraestrutura
                     case nameof(EquipeCompeticao.codigo):
                         dgvGrupo.Columns[iCount].HeaderText = "Código";
                         dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
+                        dgvGrupo.Columns[iCount].Width = 50;
                         dgvGrupo.Columns[iCount].DisplayIndex = 0;
                         break;
                     case nameof(EquipeCompeticao.nome):
                         dgvGrupo.Columns[iCount].HeaderText = "Nome da equipe";
                         dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
+                        dgvGrupo.Columns[iCount].Width = 150;
                         dgvGrupo.Columns[iCount].DisplayIndex = 1;
                         break;
                     case nameof(EquipeCompeticao.pontos):
@@ -322,6 +561,10 @@ namespace SecEsportes.Infraestrutura
                 }
             }
 
+            // Pinta de negrito as equipes classificadas
+            DataGridViewCellStyle dataGridViewCellStyle = new DataGridViewCellStyle(dgvGrupo.DefaultCellStyle);
+            dataGridViewCellStyle.Font = new Font(dgvGrupo.Font, FontStyle.Bold);
+
             //Preenche os campos que vieram sem preenchimento do data set
             for (int iCount = 0; iCount < dgvGrupo.Rows.Count; iCount++) {
                 dgvGrupo.Rows[iCount].Cells["NumJogos"].Value = dataSource[iCount].vitorias + dataSource[iCount].derrotas + dataSource[iCount].empates;
@@ -332,6 +575,13 @@ namespace SecEsportes.Infraestrutura
                     dgvGrupo.Rows[iCount].Cells["Aproveitamento"].Value = dataSource[iCount].pontos * 100 / ((dataSource[iCount].vitorias + dataSource[iCount].derrotas + dataSource[iCount].empates) * 3);
                 else
                     dgvGrupo.Rows[iCount].Cells["Aproveitamento"].Value = 0;
+
+                // Pinta as equipes que irão se classificar
+                if (!(timesProximaFase is null)) {
+                    if (timesProximaFase.Contains(dataSource[iCount])) {
+                        dgvGrupo.Rows[iCount].DefaultCellStyle = dataGridViewCellStyle;
+                    }
+                }
             }
 
             dgvGrupo.Refresh();

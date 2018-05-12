@@ -45,7 +45,10 @@ namespace SecEsportes.Views {
 
         }
 
-        private void EditEquipe_Load(object sender, EventArgs e) {
+        private void load(object sender, EventArgs e) {
+            equipe.comissaotecnica = EquipeRepositorio.Instance.getFuncoesByEquipeCompeticao(competicao.id, equipe.id);
+            equipe.atletas = PessoaRepositorio.Instance.getAtletasByEquipeCompeticao(competicao.id, equipe.id);
+
             // Carrega os representantes
             representantes = PessoaRepositorio.Instance.getRepresentantesForaCompeticao(competicao.id, equipe.id);
             cboRepresentante.Items.Clear();

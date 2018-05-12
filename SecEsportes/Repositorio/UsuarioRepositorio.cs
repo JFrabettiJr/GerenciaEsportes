@@ -41,7 +41,7 @@ namespace SecEsportes.Repositorio {
                     "nome NVARCHAR(100) NOT NULL, " +
                     "email VARCHAR(100), " +
                     "senha NVARCHAR(20) NOT NULL, " +
-                    "ultimoLogin DATETIME NULL, " +
+                    "ultimoLogin DATETIME NULL " +
                     ") ";
                 command.ExecuteNonQuery();
 
@@ -96,7 +96,7 @@ namespace SecEsportes.Repositorio {
                 SQLiteConnection connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection();
                 usuario.id = connection.Query<int>("" +
                     "INSERT INTO Usuario (username, nome, email, senha) " +
-                    "VALUES (@username, @nome, @email, senha); " +
+                    "VALUES (@username, @nome, @email, @senha); " +
                     "select last_insert_rowid()",
                     usuario).First();
 
