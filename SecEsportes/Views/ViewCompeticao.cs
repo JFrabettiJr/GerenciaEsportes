@@ -590,5 +590,30 @@ namespace SecEsportes.Views
                 load(null, null);
             }
         }
+
+        private void btnGerarHTML_Classificacao_Click(object sender, EventArgs e) {
+            // Seleciona os times até então classificados para a próxima fase
+            int numProximaFase = 0;
+            int numPartidasASeremGeradas = 0;
+
+            switch (competicao.mataMata) {
+                case MataMataEnum._5_OitavasFinal: numProximaFase = -4; numPartidasASeremGeradas = 8; break;
+                case MataMataEnum._4_QuartasFinal: numProximaFase = -3; numPartidasASeremGeradas = 4; break;
+                case MataMataEnum._3_SemiFinal: numProximaFase = -2; numPartidasASeremGeradas = 2; break;
+                case MataMataEnum._2_Final: numProximaFase = -1; numPartidasASeremGeradas = 1; break;
+            }
+
+            competicao.equipes = EquipeRepositorio.Instance.getEquipesByCompeticao(competicao.id);
+            competicao.grupos = CompeticaoRepositorio.Instance.getGruposPorCompeticao(competicao.id, competicao.equipes);
+
+            List<List<EquipeCompeticao>> timesProximaFase = Utilidades.listaEquipesClassificadas(competicao, numPartidasASeremGeradas, numProximaFase);
+
+            RelatorioHTML.relatorioGrupos(competicao, false, timesProximaFase);
+
+        }
+
+        private void btnGerarHTML_Artilheiros_Click(object sender, EventArgs e) {
+            RelatorioHTML.relatorioArtilheiros(competicao, artilheiros, false);
+        }
     }
 }

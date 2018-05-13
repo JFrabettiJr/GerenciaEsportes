@@ -35,9 +35,11 @@
             this.btnProximaFase = new System.Windows.Forms.Button();
             this.tcPartidas = new System.Windows.Forms.TabControl();
             this.tpClassificacao = new System.Windows.Forms.TabPage();
+            this.btnGerarHTML_Classificacao = new System.Windows.Forms.Button();
             this.tcClassificacao = new System.Windows.Forms.TabControl();
             this.tpArtilheiros = new System.Windows.Forms.TabPage();
             this.dgvArtilheiros = new System.Windows.Forms.DataGridView();
+            this.btnGerarHTML_Artilheiros = new System.Windows.Forms.Button();
             this.tcAbas.SuspendLayout();
             this.tpPartidas.SuspendLayout();
             this.tpClassificacao.SuspendLayout();
@@ -109,6 +111,7 @@
             // 
             // tpClassificacao
             // 
+            this.tpClassificacao.Controls.Add(this.btnGerarHTML_Classificacao);
             this.tpClassificacao.Controls.Add(this.tcClassificacao);
             this.tpClassificacao.Location = new System.Drawing.Point(4, 22);
             this.tpClassificacao.Name = "tpClassificacao";
@@ -118,16 +121,27 @@
             this.tpClassificacao.Text = "Classificação";
             this.tpClassificacao.UseVisualStyleBackColor = true;
             // 
+            // btnGerarHTML_Classificacao
+            // 
+            this.btnGerarHTML_Classificacao.Location = new System.Drawing.Point(6, 426);
+            this.btnGerarHTML_Classificacao.Name = "btnGerarHTML_Classificacao";
+            this.btnGerarHTML_Classificacao.Size = new System.Drawing.Size(91, 23);
+            this.btnGerarHTML_Classificacao.TabIndex = 11;
+            this.btnGerarHTML_Classificacao.Text = "Gerar HTML";
+            this.btnGerarHTML_Classificacao.UseVisualStyleBackColor = true;
+            this.btnGerarHTML_Classificacao.Click += new System.EventHandler(this.btnGerarHTML_Classificacao_Click);
+            // 
             // tcClassificacao
             // 
             this.tcClassificacao.Location = new System.Drawing.Point(6, 6);
             this.tcClassificacao.Name = "tcClassificacao";
             this.tcClassificacao.SelectedIndex = 0;
-            this.tcClassificacao.Size = new System.Drawing.Size(693, 440);
+            this.tcClassificacao.Size = new System.Drawing.Size(693, 410);
             this.tcClassificacao.TabIndex = 10;
             // 
             // tpArtilheiros
             // 
+            this.tpArtilheiros.Controls.Add(this.btnGerarHTML_Artilheiros);
             this.tpArtilheiros.Controls.Add(this.dgvArtilheiros);
             this.tpArtilheiros.Location = new System.Drawing.Point(4, 22);
             this.tpArtilheiros.Name = "tpArtilheiros";
@@ -142,16 +156,25 @@
             this.dgvArtilheiros.AllowUserToAddRows = false;
             this.dgvArtilheiros.AllowUserToDeleteRows = false;
             this.dgvArtilheiros.AllowUserToOrderColumns = true;
-            this.dgvArtilheiros.AutoGenerateColumns = false;
             this.dgvArtilheiros.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.dgvArtilheiros.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvArtilheiros.Location = new System.Drawing.Point(6, 6);
             this.dgvArtilheiros.MultiSelect = false;
             this.dgvArtilheiros.Name = "dgvArtilheiros";
             this.dgvArtilheiros.ReadOnly = true;
-            this.dgvArtilheiros.Size = new System.Drawing.Size(693, 440);
+            this.dgvArtilheiros.Size = new System.Drawing.Size(693, 410);
             this.dgvArtilheiros.TabIndex = 7;
             this.dgvArtilheiros.Tag = "1";
+            // 
+            // btnGerarHTML_Artilheiros
+            // 
+            this.btnGerarHTML_Artilheiros.Location = new System.Drawing.Point(6, 426);
+            this.btnGerarHTML_Artilheiros.Name = "btnGerarHTML_Artilheiros";
+            this.btnGerarHTML_Artilheiros.Size = new System.Drawing.Size(91, 23);
+            this.btnGerarHTML_Artilheiros.TabIndex = 12;
+            this.btnGerarHTML_Artilheiros.Text = "Gerar HTML";
+            this.btnGerarHTML_Artilheiros.UseVisualStyleBackColor = true;
+            this.btnGerarHTML_Artilheiros.Click += new System.EventHandler(this.btnGerarHTML_Artilheiros_Click);
             // 
             // ViewCompeticao
             // 
@@ -188,5 +211,7 @@
         private System.Windows.Forms.Button btnProximaFase;
         private System.Windows.Forms.Label lblFase;
         private System.Windows.Forms.DataGridView dgvArtilheiros;
+        private System.Windows.Forms.Button btnGerarHTML_Classificacao;
+        private System.Windows.Forms.Button btnGerarHTML_Artilheiros;
     }
 }

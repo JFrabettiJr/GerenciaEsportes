@@ -257,6 +257,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Infraestrutura\RelatorioHTML.cs" />
     <Compile Include="Login.cs">
       <SubType>Form</SubType>
     </Compile>
