@@ -268,10 +268,14 @@ namespace SecEsportes.Views
         private void busca() {
             string textoBusca = txtBusca.Text.ToUpper();
 
-            switch (cboCamposBusca.SelectedIndex) {
-                case 0: // Nome
-                    competicoes_view = competicoes.FindAll(find => find.nome.ToUpper().Contains(textoBusca));
-                    break;
+            if (textoBusca.Length == 0) {
+                competicoes_view = new List<Competicao>(competicoes);
+            } else {
+                switch (cboCamposBusca.SelectedIndex) {
+                    case 0: // Nome
+                        competicoes_view = competicoes.FindAll(find => find.nome.ToUpper().Contains(textoBusca));
+                        break;
+                }
             }
 
             refreshDataGridView();

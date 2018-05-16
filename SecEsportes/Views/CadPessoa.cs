@@ -8,6 +8,7 @@ using SecEsportes.Repositorio;
 namespace SecEsportes.Views {
     public partial class CadPessoa : Form {
         private Utilidades.WindowMode windowMode;
+        private List<Pessoa> pessoas_view;
         private List<Pessoa> pessoas;
         private List<Funcao> funcoes;
         private string errorMessage;
@@ -25,6 +26,8 @@ namespace SecEsportes.Views {
             if (pessoas is null) {
                 MessageBox.Show("Houve um erro ao tentar listar os registros." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            pessoas_view = new List<Pessoa>(pessoas);
+
             funcoes = FuncaoRepositorio.Instance.get(ref errorMessage);
 
             refreshDataGridView();
@@ -46,24 +49,35 @@ namespace SecEsportes.Views {
             dgvPessoas.DataSource = null;
             dgvPessoas.Refresh();
 
-            dgvPessoas.DataSource = pessoas;
+            dgvPessoas.Columns.Clear();
 
-            for (var iCount = 0; iCount < dgvPessoas.Columns.Count; iCount++) {
+            dgvPessoas.DataSource = pessoas_view;
+
+            dgvPessoas.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Pessoa.cpf) });
+            dgvPessoas.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Pessoa.nome) });
+            dgvPessoas.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Pessoa.dataNascimento) });
+
+            for (int iCount = 0; iCount < dgvPessoas.Columns.Count; iCount++) {
                 switch (dgvPessoas.Columns[iCount].DataPropertyName) {
-                    case nameof(Pessoa.id):
-                        dgvPessoas.Columns[iCount].Visible = false;
-                        break;
                     case nameof(Pessoa.cpf):
                         dgvPessoas.Columns[iCount].HeaderText = "CPF";
+                        dgvPessoas.Columns[iCount].Name = dgvPessoas.Columns[iCount].DataPropertyName;
                         break;
                     case nameof(Pessoa.nome):
                         dgvPessoas.Columns[iCount].HeaderText = "Nome";
+                        dgvPessoas.Columns[iCount].Name = dgvPessoas.Columns[iCount].DataPropertyName;
                         break;
                     case nameof(Pessoa.dataNascimento):
                         dgvPessoas.Columns[iCount].HeaderText = "Data de nascimento";
+                        dgvPessoas.Columns[iCount].Name = dgvPessoas.Columns[iCount].DataPropertyName;
                         break;
                 }
             }
+
+            //Preenche os campos que vieram sem preenchimento do data set
+            //for (int iCount = 0; iCount < dgvPessoas.Rows.Count; iCount++) {
+                
+            //}
 
             dgvPessoas.Refresh();
         }
@@ -94,7 +108,7 @@ namespace SecEsportes.Views {
                     Pessoa = new Pessoa(txtCPF.Text, txtNome.Text, dataAniversario);
                     Pessoa.funcoes = getFuncoesSelecionadas();
                     if (PessoaRepositorio.Instance.insert(ref Pessoa, ref errorMessage)) {
-                        pessoas.Add(Pessoa);
+                        pessoas_view.Add(Pessoa);
                         refreshDataGridView();
                         txtCPF.Text = "";
                         txtNome.Text = "";
@@ -107,19 +121,19 @@ namespace SecEsportes.Views {
                 }
                 else {
                     if (dgvPessoas.SelectedCells.Count > 0) {
-                        Pessoa = pessoas[dgvPessoas.SelectedCells[0].RowIndex];
+                        Pessoa = pessoas_view[dgvPessoas.SelectedCells[0].RowIndex];
                         Pessoa.cpf = txtCPF.Text;
                         Pessoa.nome = txtNome.Text;
                         Pessoa.dataNascimento = dataAniversario;
                         Pessoa.funcoes = getFuncoesSelecionadas();
                         if (PessoaRepositorio.Instance.update(Pessoa, ref errorMessage)) {
-                            pessoas[dgvPessoas.SelectedCells[0].RowIndex] = Pessoa;
+                            pessoas_view[dgvPessoas.SelectedCells[0].RowIndex] = Pessoa;
                             refreshDataGridView();
                         }
                         else {
-                            txtCPF.Text = pessoas[dgvPessoas.SelectedCells[0].RowIndex].cpf;
-                            txtNome.Text = pessoas[dgvPessoas.SelectedCells[0].RowIndex].nome;
-                            txtDtNascimento.Text = pessoas[dgvPessoas.SelectedCells[0].RowIndex].dataNascimento.ToString("dd/MM/yyyy");
+                            txtCPF.Text = pessoas_view[dgvPessoas.SelectedCells[0].RowIndex].cpf;
+                            txtNome.Text = pessoas_view[dgvPessoas.SelectedCells[0].RowIndex].nome;
+                            txtDtNascimento.Text = pessoas_view[dgvPessoas.SelectedCells[0].RowIndex].dataNascimento.ToString("dd/MM/yyyy");
                             MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
@@ -155,12 +169,12 @@ namespace SecEsportes.Views {
         private void btnExcluir_Click(object sender, EventArgs e) {
             if (dgvPessoas.SelectedCells.Count > 0) {
                 Pessoa Pessoa;
-                Pessoa = pessoas[dgvPessoas.SelectedCells[0].RowIndex];
+                Pessoa = pessoas_view[dgvPessoas.SelectedCells[0].RowIndex];
                 if (MessageBox.Show("Confirma a deleção do registro ?" +
                     Environment.NewLine + Environment.NewLine +
                     Pessoa.ToString(), "Confirmação", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
                     if (PessoaRepositorio.Instance.delete(Pessoa, ref errorMessage)) {
-                        pessoas.RemoveAt(dgvPessoas.SelectedCells[0].RowIndex);
+                        pessoas_view.RemoveAt(dgvPessoas.SelectedCells[0].RowIndex);
                         refreshDataGridView();
                         txtCPF.Text = "";
                         txtNome.Text = "";
@@ -214,10 +228,10 @@ namespace SecEsportes.Views {
             if (e.RowIndex > -1) {
                 if (windowMode == Utilidades.WindowMode.ModoNormal)
                     windowMode = Utilidades.WindowMode.ModoCriacaoForm;
-                txtCPF.Text = pessoas[e.RowIndex].cpf;
-                txtNome.Text = pessoas[e.RowIndex].nome;
-                txtDtNascimento.Text = pessoas[e.RowIndex].dataNascimento.ToString("dd/MM/yyyy");
-                setFuncoesSelecionadas(pessoas[e.RowIndex].funcoes);
+                txtCPF.Text = pessoas_view[e.RowIndex].cpf;
+                txtNome.Text = pessoas_view[e.RowIndex].nome;
+                txtDtNascimento.Text = pessoas_view[e.RowIndex].dataNascimento.ToString("dd/MM/yyyy");
+                setFuncoesSelecionadas(pessoas_view[e.RowIndex].funcoes);
                 windowMode = Utilidades.WindowMode.ModoNormal;
             }
         }
@@ -236,5 +250,47 @@ namespace SecEsportes.Views {
             }
         }
         #endregion
+
+        private void CadPessoa_Load(object sender, EventArgs e) {
+            //Preenche o ComboBox da busca
+            cboCamposBusca.Items.Add("Nome");
+            cboCamposBusca.Items.Add("Ano nascimento");
+            cboCamposBusca.Items.Add("Função (Código)");
+
+            cboCamposBusca.SelectedIndex = 0;
+        }
+
+        private void txtBusca_KeyDown(object sender, KeyEventArgs e) {
+            if (e.KeyCode == Keys.Enter) {
+                busca();
+            }
+        }
+
+        private void busca() {
+            string textoBusca = txtBusca.Text.ToUpper();
+
+            if (textoBusca.Length == 0) {
+                pessoas_view = new List<Pessoa>(pessoas);
+            } else {
+                switch (cboCamposBusca.SelectedIndex) {
+                    case 0: // Nome
+                        pessoas_view = pessoas.FindAll(find => find.nome.ToUpper().Contains(textoBusca));
+                        break;
+                    case 1: // Ano Nascimento
+                        int anoNascimento;
+
+                        if (Int32.TryParse(textoBusca, out anoNascimento)) {
+                            pessoas_view = pessoas.FindAll(find => find.dataNascimento.Year == anoNascimento);
+                        }
+                        break;
+                    case 2: // Função
+                        pessoas_view = pessoas.FindAll(findPessoas => findPessoas.funcoes.FindAll(findFuncoes => findFuncoes.codigo.ToUpper() == textoBusca).Count > 0);
+                        break;
+                }
+            }
+
+            refreshDataGridView();
+        }
+
     }
 }

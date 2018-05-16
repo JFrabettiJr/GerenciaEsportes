@@ -178,13 +178,17 @@ namespace SecEsportes.Views
         private void busca() {
             string textoBusca = txtBusca.Text.ToUpper();
 
-            switch (cboCamposBusca.SelectedIndex) {
-                case 0: // Nome
-                    equipes_view = equipes.FindAll(find => find.nome.ToUpper().Contains(textoBusca));
-                    break;
-                case 1: // Código
-                    equipes_view = equipes.FindAll(find => find.codigo.ToUpper().Contains(textoBusca));
-                    break;
+            if (textoBusca.Length == 0) {
+                equipes_view = new List<Equipe>(equipes);
+            } else {
+                switch (cboCamposBusca.SelectedIndex) {
+                    case 0: // Nome
+                        equipes_view = equipes.FindAll(find => find.nome.ToUpper().Contains(textoBusca));
+                        break;
+                    case 1: // Código
+                        equipes_view = equipes.FindAll(find => find.codigo.ToUpper().Contains(textoBusca));
+                        break;
+                }
             }
 
             refreshDataGridView();
