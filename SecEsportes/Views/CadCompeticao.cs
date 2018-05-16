@@ -10,6 +10,7 @@ namespace SecEsportes.Views
     public partial class CadCompeticao : Form
     {
         private Utilidades.WindowMode windowMode;
+        private List<Competicao> competicoes_view;
         private List<Competicao> competicoes;
         private List<Modalidade> modalidades;
         private string errorMessage;
@@ -31,6 +32,7 @@ namespace SecEsportes.Views
             if (competicoes is null) {
                 MessageBox.Show("Houve um erro ao tentar listar os registros." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            competicoes_view = new List<Competicao>(competicoes);
 
             // Carrega o combobox das modalidades
             modalidades = ModalidadeRepositorio.Instance.get();
@@ -46,30 +48,63 @@ namespace SecEsportes.Views
         }
         #endregion
         #region Manipulação do grid
-        private void refreshDataGridView()
-        {
+        private void refreshDataGridView(){
             dgvCompeticoes.DataSource = null;
             dgvCompeticoes.Refresh();
 
-            dgvCompeticoes.DataSource = competicoes;
+            dgvCompeticoes.Columns.Clear();
 
-            for (var iCount = 0; iCount < dgvCompeticoes.Columns.Count; iCount++)
-            {
-                switch (dgvCompeticoes.Columns[iCount].DataPropertyName)
-                {
+            dgvCompeticoes.DataSource = competicoes_view;
+
+            dgvCompeticoes.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Competicao.nome) });
+            dgvCompeticoes.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Competicao.dataInicial) });
+            dgvCompeticoes.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Competicao.modalidade) });
+            dgvCompeticoes.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "StatusCompeticao" });
+
+            for (var iCount = 0; iCount < dgvCompeticoes.Columns.Count; iCount++){
+                switch (dgvCompeticoes.Columns[iCount].DataPropertyName){
                     case nameof(Competicao.nome):
                         dgvCompeticoes.Columns[iCount].HeaderText = "Nome";
+                        dgvCompeticoes.Columns[iCount].Name = dgvCompeticoes.Columns[iCount].DataPropertyName;
+                        dgvCompeticoes.Columns[iCount].Width = 200;
                         break;
                     case nameof(Competicao.dataInicial):
                         dgvCompeticoes.Columns[iCount].HeaderText = "Data de início";
+                        dgvCompeticoes.Columns[iCount].Name = dgvCompeticoes.Columns[iCount].DataPropertyName;
+                        dgvCompeticoes.Columns[iCount].Width = 100;
                         break;
                     case nameof(Competicao.modalidade):
                         dgvCompeticoes.Columns[iCount].HeaderText = "Modalidade";
+                        dgvCompeticoes.Columns[iCount].Name = dgvCompeticoes.Columns[iCount].DataPropertyName;
+                        dgvCompeticoes.Columns[iCount].Width = 100;
+                        break;
+                    case "StatusCompeticao":
+                        dgvCompeticoes.Columns[iCount].HeaderText = "Status";
+                        dgvCompeticoes.Columns[iCount].Name = dgvCompeticoes.Columns[iCount].DataPropertyName;
+                        dgvCompeticoes.Columns[iCount].Width = 100;
                         break;
                     default:
                         dgvCompeticoes.Columns[iCount].Visible = false;
                         break;
 
+                }
+            }
+
+            //Preenche os campos que vieram sem preenchimento do data set
+            for (int iCount = 0; iCount < dgvCompeticoes.Rows.Count; iCount++) {
+                switch (competicoes[iCount].status) {
+                    case StatusEnum._0_Encerrada:
+                        dgvCompeticoes.Rows[iCount].Cells["StatusCompeticao"].Value = "Encerrada";
+                        break;
+                    case StatusEnum._1_Aberta:
+                        dgvCompeticoes.Rows[iCount].Cells["StatusCompeticao"].Value = "Aberta";
+                        break;
+                    case StatusEnum._2_Iniciada:
+                        dgvCompeticoes.Rows[iCount].Cells["StatusCompeticao"].Value = "Iniciada";
+                        break;
+                    case StatusEnum._3_EmPreparacao:
+                        dgvCompeticoes.Rows[iCount].Cells["StatusCompeticao"].Value = "Em preparação";
+                        break;
                 }
             }
 
@@ -109,7 +144,7 @@ namespace SecEsportes.Views
 
                 // Tenta inserir a competição
                 if (CompeticaoRepositorio.Instance.insert(ref competicao, ref errorMessage)){
-                    competicoes.Add(competicao);
+                    competicoes_view.Add(competicao);
                     refreshDataGridView();
                     txtNome.Text = "";
                     txtDtInicio.Text = "";
@@ -119,7 +154,7 @@ namespace SecEsportes.Views
                 }
             }else {
                 if (dgvCompeticoes.SelectedCells.Count > 0) {
-                    competicao = competicoes[dgvCompeticoes.SelectedCells[0].RowIndex];
+                    competicao = competicoes_view[dgvCompeticoes.SelectedCells[0].RowIndex];
                     competicao.nome = txtNome.Text;
                     competicao.dataInicial = dataInicio;
                     competicao.modalidade = modalidade;
@@ -127,11 +162,11 @@ namespace SecEsportes.Views
 
                     // Salva as alterações da competição
                     if (CompeticaoRepositorio.Instance.update(competicao, ref errorMessage)) {
-                        competicoes[dgvCompeticoes.SelectedCells[0].RowIndex] = competicao;
+                        competicoes_view[dgvCompeticoes.SelectedCells[0].RowIndex] = competicao;
                         refreshDataGridView();
                     }else {
-                        txtNome.Text = competicoes[dgvCompeticoes.SelectedCells[0].RowIndex].nome;
-                        txtDtInicio.Text = competicoes[dgvCompeticoes.SelectedCells[0].RowIndex].dataInicial.ToString("dd/MM/yyyy");
+                        txtNome.Text = competicoes_view[dgvCompeticoes.SelectedCells[0].RowIndex].nome;
+                        txtDtInicio.Text = competicoes_view[dgvCompeticoes.SelectedCells[0].RowIndex].dataInicial.ToString("dd/MM/yyyy");
                         cboModalidades.SelectedIndex = -1;
                         MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
@@ -144,12 +179,12 @@ namespace SecEsportes.Views
         private void btnExcluir_Click(object sender, EventArgs e){
             if (dgvCompeticoes.SelectedCells.Count > 0) {
                 Competicao competicao;
-                competicao = competicoes[dgvCompeticoes.SelectedCells[0].RowIndex];
+                competicao = competicoes_view[dgvCompeticoes.SelectedCells[0].RowIndex];
                 if (MessageBox.Show("Confirma a deleção do registro ?" +
                     Environment.NewLine + Environment.NewLine +
                     competicao.ToString(), "Confirmação", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
                     if (CompeticaoRepositorio.Instance.delete(competicao, ref errorMessage)) {
-                        competicoes.RemoveAt(dgvCompeticoes.SelectedCells[0].RowIndex);
+                        competicoes_view.RemoveAt(dgvCompeticoes.SelectedCells[0].RowIndex);
                         refreshDataGridView();
                         txtNome.Text = "";
                         txtNome.Text = "";
@@ -200,9 +235,9 @@ namespace SecEsportes.Views
             if (e.RowIndex > -1) {
                 if (windowMode == Utilidades.WindowMode.ModoNormal)
                     windowMode = Utilidades.WindowMode.ModoCriacaoForm;
-                txtNome.Text = competicoes[e.RowIndex].nome;
-                txtDtInicio.Text = competicoes[e.RowIndex].dataInicial.ToString("dd/MM/yyyy");
-                cboModalidades.SelectedIndex = modalidades.FindIndex(modalidade => modalidade.id == competicoes[e.RowIndex].modalidade.id);
+                txtNome.Text = competicoes_view[e.RowIndex].nome;
+                txtDtInicio.Text = competicoes_view[e.RowIndex].dataInicial.ToString("dd/MM/yyyy");
+                cboModalidades.SelectedIndex = modalidades.FindIndex(modalidade => modalidade.id == competicoes_view[e.RowIndex].modalidade.id);
                 windowMode = Utilidades.WindowMode.ModoNormal;
             }
         }
@@ -217,10 +252,35 @@ namespace SecEsportes.Views
         }
         private void dgvCompeticoes_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e) {
             if (e.RowIndex > -1) {
-                Competicao competicao = competicoes[e.RowIndex];
+                Competicao competicao = competicoes_view[e.RowIndex];
                 new EditCompeticao(usuarioLogado, competicao).ShowDialog();
             }
         }
         #endregion
+
+        private void CadCompeticao_Load(object sender, EventArgs e) {
+            //Preenche o ComboBox da busca
+            cboCamposBusca.Items.Add("Nome");
+
+            cboCamposBusca.SelectedIndex = 0;
+        }
+
+        private void busca() {
+            string textoBusca = txtBusca.Text;
+
+            switch (cboCamposBusca.SelectedIndex) {
+                case 0: // Nome
+                    competicoes_view = competicoes.FindAll(find => find.nome.Contains(textoBusca));
+                    break;
+            }
+
+            refreshDataGridView();
+        }
+
+        private void txtBusca_KeyDown(object sender, KeyEventArgs e) {
+            if (e.KeyCode == Keys.Enter) {
+                busca();
+            }
+        }
     }
 }
