@@ -10,6 +10,7 @@ namespace SecEsportes.Views
     public partial class CadUsuario : Form
     {
         private Utilidades.WindowMode windowMode;
+        private List<Usuario> usuarios_view;
         private List<Usuario> usuarios;
         private string errorMessage;
 
@@ -34,6 +35,7 @@ namespace SecEsportes.Views
             if (usuarios is null) {
                 MessageBox.Show("Houve um erro ao tentar listar os registros." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            usuarios_view = new List<Usuario>(usuarios);
 
             // Recarrega o DataGridView com as competições cadastradas
             refreshDataGridView();
@@ -47,7 +49,7 @@ namespace SecEsportes.Views
             dgvUsuarios.DataSource = null;
             dgvUsuarios.Refresh();
 
-            dgvUsuarios.DataSource = usuarios;
+            dgvUsuarios.DataSource = usuarios_view;
 
             for (int iCount = 0; iCount < dgvUsuarios.Columns.Count; iCount++)
             {
@@ -73,7 +75,7 @@ namespace SecEsportes.Views
             }
 
             for (int iCount = 0; iCount < dgvUsuarios.Rows.Count; iCount++) {
-                dgvUsuarios.Rows[iCount].Cells[nameof(Usuario.ultimoLogin)].Value = usuarios[iCount].ultimoLogin.ToString("dd/MM/yyyy");
+                dgvUsuarios.Rows[iCount].Cells[nameof(Usuario.ultimoLogin)].Value = usuarios_view[iCount].ultimoLogin.ToString("dd/MM/yyyy");
             }
 
             dgvUsuarios.Refresh();
@@ -109,7 +111,7 @@ namespace SecEsportes.Views
 
                 // Tenta inserir a competição
                 if (UsuarioRepositorio.Instance.insert(ref newUsuario, ref errorMessage)){
-                    usuarios.Add(newUsuario);
+                    usuarios_view.Add(newUsuario);
                     refreshDataGridView();
                     clearFields();
                 } else {
@@ -118,7 +120,7 @@ namespace SecEsportes.Views
             }else {
                 if (dgvUsuarios.SelectedCells.Count > 0) {
                     Usuario oldUsuario;
-                    oldUsuario = usuarios[dgvUsuarios.SelectedCells[0].RowIndex];
+                    oldUsuario = usuarios_view[dgvUsuarios.SelectedCells[0].RowIndex];
 
                     newUsuario = new Usuario();
                     newUsuario.id = oldUsuario.id;
@@ -132,10 +134,10 @@ namespace SecEsportes.Views
                     if ( (!(newUsuario.username.Equals(UsuarioRepositorio.Instance.usuarioMaster.username))) || (oldUsuario.username.Equals(newUsuario.username)) ) {
                         // Salva as alterações do usuário
                         if (UsuarioRepositorio.Instance.update(newUsuario, ref errorMessage)) {
-                            usuarios[dgvUsuarios.SelectedCells[0].RowIndex] = newUsuario;
+                            usuarios_view[dgvUsuarios.SelectedCells[0].RowIndex] = newUsuario;
                             refreshDataGridView();
                         } else {
-                            fillFields(usuarios[dgvUsuarios.SelectedCells[0].RowIndex]);
+                            fillFields(usuarios_view[dgvUsuarios.SelectedCells[0].RowIndex]);
                             MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
@@ -148,14 +150,14 @@ namespace SecEsportes.Views
         private void btnExcluir_Click(object sender, EventArgs e){
             if (dgvUsuarios.SelectedCells.Count > 0) {
                 Usuario usuario;
-                usuario = usuarios[dgvUsuarios.SelectedCells[0].RowIndex];
+                usuario = usuarios_view[dgvUsuarios.SelectedCells[0].RowIndex];
 
                 if (!(usuario.username.Equals(UsuarioRepositorio.Instance.usuarioMaster.username))) {
                     if (MessageBox.Show("Confirma a deleção do registro ?" +
                             Environment.NewLine + Environment.NewLine +
                             usuario.ToString(), "Confirmação", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
                         if (UsuarioRepositorio.Instance.delete(usuario, ref errorMessage)) {
-                            usuarios.RemoveAt(dgvUsuarios.SelectedCells[0].RowIndex);
+                            usuarios_view.RemoveAt(dgvUsuarios.SelectedCells[0].RowIndex);
                             refreshDataGridView();
                             clearFields();
                         } else {
@@ -207,7 +209,7 @@ namespace SecEsportes.Views
                 if (windowMode == Utilidades.WindowMode.ModoNormal)
                     windowMode = Utilidades.WindowMode.ModoCriacaoForm;
 
-                fillFields(usuarios[e.RowIndex]);
+                fillFields(usuarios_view[e.RowIndex]);
                 windowMode = Utilidades.WindowMode.ModoNormal;
             }
         }
@@ -231,5 +233,49 @@ namespace SecEsportes.Views
             fields_KeyDown(null, null);
         }
         #endregion
+
+        private void CadUsuario_Load(object sender, EventArgs e) {
+            //Preenche o ComboBox da busca
+            cboCamposBusca.Items.Add("Nome");
+            cboCamposBusca.Items.Add("E-mail");
+            cboCamposBusca.Items.Add("Nome de usuário");
+            cboCamposBusca.Items.Add("Tempo sem login (em dias)");
+
+            cboCamposBusca.SelectedIndex = 0;
+        }
+
+        private void busca() {
+            string textoBusca = txtBusca.Text.ToUpper();
+
+            if (textoBusca.Length == 0) {
+                usuarios_view = new List<Usuario>(usuarios);
+            } else {
+                switch (cboCamposBusca.SelectedIndex) {
+                    case 0: // Nome
+                        usuarios_view = usuarios.FindAll(find => find.nome.ToUpper().Contains(textoBusca));
+                        break;
+                    case 1: // E-mail
+                        usuarios_view = usuarios.FindAll(find => find.email.ToUpper().Contains(textoBusca));
+                        break;
+                    case 2: // Nome de usuário
+                        usuarios_view = usuarios.FindAll(find => find.username.ToUpper().Contains(textoBusca));
+                        break;
+                    case 3: // Tempo sem login
+                        int tempoSemLogin;
+                        if (Int32.TryParse(textoBusca, out tempoSemLogin)) {
+                            usuarios_view = usuarios.FindAll(find => DateTime.Now.Subtract(find.ultimoLogin).Days >= tempoSemLogin);
+                        }
+                        break;
+                }
+            }
+
+            refreshDataGridView();
+        }
+
+        private void txtBusca_KeyDown(object sender, KeyEventArgs e) {
+            if (e.KeyCode == Keys.Enter) {
+                busca();
+            }
+        }
     }
 }

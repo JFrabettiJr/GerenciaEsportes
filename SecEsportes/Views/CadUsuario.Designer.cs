@@ -46,9 +46,15 @@
             this.lblSenha = new System.Windows.Forms.Label();
             this.txtSenha = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.cboCamposBusca = new System.Windows.Forms.ComboBox();
+            this.lblBuscarPor = new System.Windows.Forms.Label();
+            this.lblBusca = new System.Windows.Forms.Label();
+            this.txtBusca = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvUsuarios)).BeginInit();
             this.tlpCadFuncao.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnSalvar
@@ -102,7 +108,7 @@
             this.dgvUsuarios.MultiSelect = false;
             this.dgvUsuarios.Name = "dgvUsuarios";
             this.dgvUsuarios.ReadOnly = true;
-            this.dgvUsuarios.Size = new System.Drawing.Size(560, 260);
+            this.dgvUsuarios.Size = new System.Drawing.Size(560, 220);
             this.dgvUsuarios.TabIndex = 5;
             this.dgvUsuarios.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvEquipes_RowEnter);
             // 
@@ -248,11 +254,69 @@
             this.label3.TabIndex = 0;
             this.label3.Text = "Data do último login";
             // 
+            // tableLayoutPanel2
+            // 
+            this.tableLayoutPanel2.ColumnCount = 2;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 75F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel2.Controls.Add(this.cboCamposBusca, 1, 1);
+            this.tableLayoutPanel2.Controls.Add(this.lblBuscarPor, 1, 0);
+            this.tableLayoutPanel2.Controls.Add(this.lblBusca, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.txtBusca, 0, 1);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(10, 375);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 2;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 14F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(560, 40);
+            this.tableLayoutPanel2.TabIndex = 9;
+            // 
+            // cboCamposBusca
+            // 
+            this.cboCamposBusca.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboCamposBusca.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboCamposBusca.FormattingEnabled = true;
+            this.cboCamposBusca.Location = new System.Drawing.Point(423, 17);
+            this.cboCamposBusca.Name = "cboCamposBusca";
+            this.cboCamposBusca.Size = new System.Drawing.Size(134, 21);
+            this.cboCamposBusca.TabIndex = 10;
+            // 
+            // lblBuscarPor
+            // 
+            this.lblBuscarPor.AutoSize = true;
+            this.lblBuscarPor.Location = new System.Drawing.Point(423, 0);
+            this.lblBuscarPor.Name = "lblBuscarPor";
+            this.lblBuscarPor.Size = new System.Drawing.Size(58, 13);
+            this.lblBuscarPor.TabIndex = 4;
+            this.lblBuscarPor.Text = "Buscar por";
+            // 
+            // lblBusca
+            // 
+            this.lblBusca.AutoSize = true;
+            this.lblBusca.Location = new System.Drawing.Point(3, 0);
+            this.lblBusca.Name = "lblBusca";
+            this.lblBusca.Size = new System.Drawing.Size(40, 13);
+            this.lblBusca.TabIndex = 0;
+            this.lblBusca.Text = "Buscar";
+            // 
+            // txtBusca
+            // 
+            this.txtBusca.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtBusca.Location = new System.Drawing.Point(3, 17);
+            this.txtBusca.Name = "txtBusca";
+            this.txtBusca.Size = new System.Drawing.Size(414, 20);
+            this.txtBusca.TabIndex = 2;
+            this.txtBusca.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtBusca_KeyDown);
+            // 
             // CadUsuario
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 421);
+            this.Controls.Add(this.tableLayoutPanel2);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.btnAtualizar);
             this.Controls.Add(this.dgvUsuarios);
@@ -267,11 +331,14 @@
             this.Padding = new System.Windows.Forms.Padding(20);
             this.ShowInTaskbar = false;
             this.Text = "Cadastro de competições";
+            this.Load += new System.EventHandler(this.CadUsuario_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvUsuarios)).EndInit();
             this.tlpCadFuncao.ResumeLayout(false);
             this.tlpCadFuncao.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
+            this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -295,5 +362,10 @@
         private System.Windows.Forms.TextBox txtSenha;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.MaskedTextBox txtDtUltimoLogin;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.ComboBox cboCamposBusca;
+        private System.Windows.Forms.Label lblBuscarPor;
+        private System.Windows.Forms.Label lblBusca;
+        private System.Windows.Forms.TextBox txtBusca;
     }
 }
