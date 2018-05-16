@@ -220,6 +220,7 @@
             this.dgvPessoas.AllowUserToAddRows = false;
             this.dgvPessoas.AllowUserToDeleteRows = false;
             this.dgvPessoas.AllowUserToOrderColumns = true;
+            this.dgvPessoas.AutoGenerateColumns = false;
             this.dgvPessoas.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));

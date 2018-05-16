@@ -108,6 +108,8 @@ namespace SecEsportes.Views
                 newUsuario = new Usuario(txtUsername.Text, txtEmail.Text, txtNome.Text);
                 if (txtSenha.Visible)
                     newUsuario.senha = txtSenha.Text;
+                else
+                    newUsuario.senha = "senha";
 
                 // Tenta inserir a competição
                 if (UsuarioRepositorio.Instance.insert(ref newUsuario, ref errorMessage)){
@@ -130,6 +132,8 @@ namespace SecEsportes.Views
                     newUsuario.ultimoLogin = oldUsuario.ultimoLogin;
                     if (txtSenha.Visible)
                         newUsuario.senha = txtSenha.Text;
+                    else
+                        newUsuario.senha = oldUsuario.senha;
 
                     if ( (!(newUsuario.username.Equals(UsuarioRepositorio.Instance.usuarioMaster.username))) || (oldUsuario.username.Equals(newUsuario.username)) ) {
                         // Salva as alterações do usuário
@@ -152,7 +156,7 @@ namespace SecEsportes.Views
                 Usuario usuario;
                 usuario = usuarios_view[dgvUsuarios.SelectedCells[0].RowIndex];
 
-                if (!(usuario.username.Equals(UsuarioRepositorio.Instance.usuarioMaster.username))) {
+                if ( (!(usuario.username.Equals(UsuarioRepositorio.Instance.usuarioMaster.username))) && (!(usuario.username.Equals(usuarioLogado.username))) ) {
                     if (MessageBox.Show("Confirma a deleção do registro ?" +
                             Environment.NewLine + Environment.NewLine +
                             usuario.ToString(), "Confirmação", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {

@@ -175,6 +175,7 @@
             this.dgvCompeticoes.AllowUserToAddRows = false;
             this.dgvCompeticoes.AllowUserToDeleteRows = false;
             this.dgvCompeticoes.AllowUserToOrderColumns = true;
+            this.dgvCompeticoes.AutoGenerateColumns = false;
             this.dgvCompeticoes.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.dgvCompeticoes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvCompeticoes.Location = new System.Drawing.Point(10, 102);
