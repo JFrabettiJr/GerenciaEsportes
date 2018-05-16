@@ -10,6 +10,7 @@ namespace SecEsportes.Views
     public partial class CadEquipe : Form
     {
         private Utilidades.WindowMode windowMode;
+        private List<Equipe> equipes_view;
         private List<Equipe> equipes;
         private string errorMessage;
 
@@ -27,23 +28,22 @@ namespace SecEsportes.Views
             if (equipes is null) {
                 MessageBox.Show("Houve um erro ao tentar listar os registros." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            equipes_view = new List<Equipe>(equipes);
+
             refreshDataGridView();
             windowMode = Utilidades.WindowMode.ModoNormal;
             windowModeChanged();
         }
         #endregion
         #region Manipulação do grid
-        private void refreshDataGridView()
-        {
+        private void refreshDataGridView(){
             dgvEquipes.DataSource = null;
             dgvEquipes.Refresh();
 
-            dgvEquipes.DataSource = equipes;
+            dgvEquipes.DataSource = equipes_view;
 
-            for (var iCount = 0; iCount < dgvEquipes.Columns.Count; iCount++)
-            {
-                switch (dgvEquipes.Columns[iCount].DataPropertyName)
-                {
+            for (int iCount = 0; iCount < dgvEquipes.Columns.Count; iCount++){
+                switch (dgvEquipes.Columns[iCount].DataPropertyName){
                     case nameof(Equipe.id):
                         dgvEquipes.Columns[iCount].Visible = false;
                         break;
@@ -79,7 +79,7 @@ namespace SecEsportes.Views
             if (windowMode == Utilidades.WindowMode.ModoDeInsercao){
                 equipe = new Equipe(txtCodigo.Text, txtNome.Text);
                 if (EquipeRepositorio.Instance.insert(ref equipe, ref errorMessage)){
-                    equipes.Add(equipe);
+                    equipes_view.Add(equipe);
                     refreshDataGridView();
                     txtCodigo.Text = "";
                     txtNome.Text = "";
@@ -88,15 +88,15 @@ namespace SecEsportes.Views
                 }
             }else {
                 if (dgvEquipes.SelectedCells.Count > 0) {
-                    equipe = equipes[dgvEquipes.SelectedCells[0].RowIndex];
+                    equipe = equipes_view[dgvEquipes.SelectedCells[0].RowIndex];
                     equipe.codigo = txtCodigo.Text;
                     equipe.nome = txtNome.Text;
                     if (EquipeRepositorio.Instance.update(equipe, ref errorMessage)) {
-                        equipes[dgvEquipes.SelectedCells[0].RowIndex] = equipe;
+                        equipes_view[dgvEquipes.SelectedCells[0].RowIndex] = equipe;
                         refreshDataGridView();
                     }else {
-                        txtCodigo.Text = equipes[dgvEquipes.SelectedCells[0].RowIndex].codigo;
-                        txtNome.Text = equipes[dgvEquipes.SelectedCells[0].RowIndex].nome;
+                        txtCodigo.Text = equipes_view[dgvEquipes.SelectedCells[0].RowIndex].codigo;
+                        txtNome.Text = equipes_view[dgvEquipes.SelectedCells[0].RowIndex].nome;
                         MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
@@ -109,12 +109,12 @@ namespace SecEsportes.Views
         {
             if (dgvEquipes.SelectedCells.Count > 0) {
                 Equipe equipe;
-                equipe = equipes[dgvEquipes.SelectedCells[0].RowIndex];
+                equipe = equipes_view[dgvEquipes.SelectedCells[0].RowIndex];
                 if (MessageBox.Show("Confirma a deleção do registro ?" +
                     Environment.NewLine + Environment.NewLine +
                     equipe.ToString(), "Confirmação", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
                     if (EquipeRepositorio.Instance.delete(equipe, ref errorMessage)) {
-                        equipes.RemoveAt(dgvEquipes.SelectedCells[0].RowIndex);
+                        equipes_view.RemoveAt(dgvEquipes.SelectedCells[0].RowIndex);
                         refreshDataGridView();
                         txtCodigo.Text = "";
                         txtNome.Text = "";
@@ -163,8 +163,8 @@ namespace SecEsportes.Views
         }
         private void dgvEquipes_RowEnter(object sender, DataGridViewCellEventArgs e) {
             if (e.RowIndex > -1) {
-                txtCodigo.Text = equipes[e.RowIndex].codigo;
-                txtNome.Text = equipes[e.RowIndex].nome;
+                txtCodigo.Text = equipes_view[e.RowIndex].codigo;
+                txtNome.Text = equipes_view[e.RowIndex].nome;
             }
         }
         private void fields_KeyDown(object sender, KeyEventArgs e) {
@@ -174,5 +174,34 @@ namespace SecEsportes.Views
             }
         }
         #endregion
+
+        private void busca() {
+            string textoBusca = txtBusca.Text.ToUpper();
+
+            switch (cboCamposBusca.SelectedIndex) {
+                case 0: // Nome
+                    equipes_view = equipes.FindAll(find => find.nome.ToUpper().Contains(textoBusca));
+                    break;
+                case 1: // Código
+                    equipes_view = equipes.FindAll(find => find.codigo.ToUpper().Contains(textoBusca));
+                    break;
+            }
+
+            refreshDataGridView();
+        }
+
+        private void txtBusca_KeyDown(object sender, KeyEventArgs e) {
+            if (e.KeyCode == Keys.Enter) {
+                busca();
+            }
+        }
+
+        private void CadEquipe_Load(object sender, EventArgs e) {
+            //Preenche o ComboBox da busca
+            cboCamposBusca.Items.Add("Nome");
+            cboCamposBusca.Items.Add("Código");
+
+            cboCamposBusca.SelectedIndex = 0;
+        }
     }
 }

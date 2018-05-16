@@ -175,7 +175,6 @@
             this.dgvCompeticoes.AllowUserToAddRows = false;
             this.dgvCompeticoes.AllowUserToDeleteRows = false;
             this.dgvCompeticoes.AllowUserToOrderColumns = true;
-            this.dgvCompeticoes.AutoGenerateColumns = false;
             this.dgvCompeticoes.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.dgvCompeticoes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvCompeticoes.Location = new System.Drawing.Point(10, 102);
@@ -207,7 +206,7 @@
             this.tableLayoutPanel1.Controls.Add(this.lblBuscarPor, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.lblBusca, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.txtBusca, 0, 1);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(10, 380);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(10, 375);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 14F));
