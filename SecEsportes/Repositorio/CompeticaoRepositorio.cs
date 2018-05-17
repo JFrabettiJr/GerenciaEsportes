@@ -525,7 +525,7 @@ namespace SecEsportes.Repositorio {
                     new {   id_Partida = partida.id,
                             id_Equipe = evento.equipe.id,
                             id_Atleta = evento.atleta.pessoa.id,
-                            tpEvento = tpEventoEnum.Gol
+                            evento.tpEvento
                     });
                 return true;
             } catch (Exception ex) {

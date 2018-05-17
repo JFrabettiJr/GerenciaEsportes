@@ -390,9 +390,9 @@ namespace SecEsportes.Infraestrutura
 
             //Preenche os campos que vieram sem preenchimento do data set
             for (var iCount = 0; iCount < dgvRodada.Rows.Count; iCount++) {
-                if (numRodada < 0) {
+                if (numRodada < 0)
                     dgvRodada.Rows[iCount].Cells["Nome_Grupo_Jogo"].Value = "Jogo " + dataSource[iCount].numGrupo.ToString();
-                } else
+                else
                     dgvRodada.Rows[iCount].Cells["Nome_Grupo_Jogo"].Value = getNomeGrupo(competicao.nomesGrupos, dataSource[iCount].numGrupo + 1); 
 
                 dgvRodada.Rows[iCount].Cells["PtsEquipe1"].Value = (dataSource[iCount].encerrada == false ? "" : dataSource[iCount].eventos.Count(eventos => eventos.equipe.id.Equals(dataSource[iCount].equipe1.id) && eventos.tpEvento.Equals(tpEventoEnum.Gol)).ToString());
