@@ -326,6 +326,87 @@ namespace SecEsportes.Repositorio {
                 return true;
             }
         }
+        public int getnumPartidas(Competicao competicao) {
+            int numPartidas;
+            try {
+                SQLiteConnection connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection();
+                connection.Open();
+
+                string strSQL;
+                strSQL = "SELECT COUNT(1) as NumPartidas " +
+                            "FROM   Competicao_Partida " +
+                            "WHERE  id_Competicao = @id_Competicao";
+
+                numPartidas = connection.Query<int>(strSQL,
+                    new {
+                        id_Competicao = competicao.id
+                    }).First();
+
+            } catch (Exception ex) {
+                return -1;
+            }
+
+            return numPartidas;
+        }
+        public int getNumPartidasEncerradas(Competicao competicao) {
+            int numPartidasEncerradas;
+
+            try {
+                SQLiteConnection connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection();
+                connection.Open();
+
+                string strSQL;
+                strSQL = "SELECT COUNT(1) as PartidasEncerradas " +
+                            "FROM   Competicao_Partida " +
+                            "WHERE  id_Competicao = @id_Competicao" +
+                            "       AND encerrada = 1 ";
+
+                numPartidasEncerradas = connection.Query<int>(strSQL,
+                    new {
+                        id_Competicao = competicao.id
+                    }).First();
+
+
+            } catch (Exception ex) {
+                return -1;
+            }
+
+            return numPartidasEncerradas;
+        }
+        public int getNumPartidasRestantes(Competicao competicao) {
+            int numPartidasRestantes;
+
+            try {
+                SQLiteConnection connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection();
+                connection.Open();
+
+                string strSQL;
+                if (competicao.fase_Atual == 0)
+                    strSQL = "SELECT COUNT(1) as NumPartida " +
+                                "FROM   Competicao_Partida " +
+                                "WHERE  id_Competicao = @id_Competicao" +
+                                "       AND encerrada = 0 " +
+                                "       AND rodada > @faseAtual ";
+                else
+                    strSQL = "SELECT COUNT(1) AS NumPartida " +
+                                "FROM   Competicao_Partida " +
+                                "WHERE  id_Competicao = @id_Competicao" +
+                                "       AND encerrada = 0 " +
+                                "       AND rodada = @faseAtual ";
+
+                numPartidasRestantes = connection.Query<int>(strSQL,
+                    new {
+                        id_Competicao = competicao.id,
+                        faseAtual = competicao.fase_Atual
+                    }).First();
+
+
+            } catch (Exception ex) {
+                return -1;
+            }
+
+            return numPartidasRestantes;
+        }
         public bool insert(ref Competicao competicao, ref string messageError) {
             try {
                 competicao.id = SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query<int>("" +

@@ -406,12 +406,8 @@ namespace SecEsportes.Views {
                     break;
                 case StatusEnum._2_Iniciada:    // Iniciada >> Encerrada
                     int numPartidasRestantes;
-                    if (competicao.fase_Atual == 0) {
-                        numPartidasRestantes = competicao.partidas.FindAll(partidas => partidas.encerrada == false && partidas.rodada > competicao.fase_Atual).Count;
-                    } else {
-                        numPartidasRestantes = competicao.partidas.FindAll(partidas => partidas.encerrada == false && partidas.rodada == competicao.fase_Atual).Count;
-                    }
-                    
+                    numPartidasRestantes = CompeticaoRepositorio.Instance.getNumPartidasRestantes(competicao);
+
                     if (numPartidasRestantes > 0) {
                         MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
                             "Existem ainda " + numPartidasRestantes + " que não foram encerradas nesta fase.",
@@ -473,8 +469,8 @@ namespace SecEsportes.Views {
                     if (competicao.jogosIdaEVolta)
                         numCorretoPartidas *= 2;
 
-                    //if (numCorretoPartidas != competicao.partidas.Count) {
-                    if (competicao.partidas.Count == 0) {
+                    //if (numCorretoPartidas != CompeticaoRepositorio.Instance.getnumPartidas(competicao)) {
+                    if (CompeticaoRepositorio.Instance.getnumPartidas(competicao) == 0) {
                             MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
                                 "Não foram criadas todas as partidas que tinham que ser criadas. Clique em Gerar partidas e tente novamente.",
                                 "Não foi possível avançar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -838,7 +834,7 @@ namespace SecEsportes.Views {
                      break;
                 case StatusEnum._2_Iniciada: // Iniciada >> Em preparação
 
-                    if (competicao.partidas.FindAll(x => x.encerrada).Count > 0) {
+                    if (CompeticaoRepositorio.Instance.getNumPartidasEncerradas(competicao) > 0) {
                         MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
                                         "Já existem partidas encerradas nesta competição, não é possível voltar para em preparação.",
                                         "Não foi possível avançar", MessageBoxButtons.OK, MessageBoxIcon.Warning);

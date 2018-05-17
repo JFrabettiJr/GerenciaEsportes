@@ -204,6 +204,7 @@
             this.dgvEquipe1.AllowUserToAddRows = false;
             this.dgvEquipe1.AllowUserToDeleteRows = false;
             this.dgvEquipe1.AllowUserToOrderColumns = true;
+			this.dgvEquipe1.AutoGenerateColumns = true;
             this.dgvEquipe1.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.dgvEquipe1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvEquipe1.Location = new System.Drawing.Point(12, 181);
@@ -220,6 +221,7 @@
             this.dgvEquipe2.AllowUserToAddRows = false;
             this.dgvEquipe2.AllowUserToDeleteRows = false;
             this.dgvEquipe2.AllowUserToOrderColumns = true;
+			this.dgvEquipe2.AutoGenerateColumns = true;
             this.dgvEquipe2.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.dgvEquipe2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvEquipe2.Location = new System.Drawing.Point(375, 181);
