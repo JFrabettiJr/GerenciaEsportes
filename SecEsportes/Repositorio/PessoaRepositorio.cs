@@ -166,26 +166,30 @@ namespace SecEsportes.Repositorio {
                 return null;
             }
         }
-        public Atleta getAtleta(int id_Atleta, int id_Competicao) {
+
+        public Atleta getAtletaByCompeticao(int id_Atleta, int id_Competicao) {
             string myString = "";
-            return getAtleta(id_Atleta, id_Competicao, ref myString);
+            return getAtletaByCompeticao(id_Atleta, id_Competicao, ref myString);
         }
-        public Atleta getAtleta(int id_Atleta, int id_Competicao, ref string errorMessage) {
+
+        public Atleta getAtletaByCompeticao(int id_Atleta, int id_Competicao, ref string errorMessage) {
             Atleta atleta = getAtleta(id_Atleta, ref errorMessage);
             atleta.numero = getNumeroAtleta(atleta.id_pessoa, id_Competicao);
             return atleta;
         }
+
         public Atleta getAtleta(int id_Atleta) {
             string myString = "";
             return getAtleta(id_Atleta, ref myString);
         }
+
         public Atleta getAtleta(int id_Atleta, ref string errorMessage) {
             try {
                 using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
                     connection.Open();
 
                     string strSQL;
-                    strSQL = "SELECT 0 As Selected, pessoa.id as id_pessoa, Pessoa_Funcoes.id_funcao " +
+                    strSQL =    "SELECT 0 As Selected, pessoa.id as id_pessoa, Pessoa_Funcoes.id_funcao " +
                                 "FROM   Pessoa " +
                                 "       INNER JOIN Pessoa_Funcoes ON Pessoa.id = Pessoa_Funcoes.id_Pessoa " +
                                 "WHERE  1 = 1 " +

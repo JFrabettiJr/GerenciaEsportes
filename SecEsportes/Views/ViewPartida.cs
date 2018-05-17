@@ -16,7 +16,7 @@ namespace SecEsportes.Views {
         private Usuario usuarioLogado;
 
         #region Inicialização da classe
-        public ViewPartida(Usuario usuarioLogado, Competicao competicao, Competicao_Partida partida) {
+        public ViewPartida(Usuario usuarioLogado, Competicao competicao, Competicao_Partida partida, bool partidaIniciada = false) {
             InitializeComponent();
 
             // Centraliza o form na tela
@@ -26,7 +26,7 @@ namespace SecEsportes.Views {
 
             this.competicao = competicao;
             this.partida = partida;
-            partidaIniciada = false;
+            this.partidaIniciada = partidaIniciada;
         }
         #endregion
 

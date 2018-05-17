@@ -6,6 +6,7 @@ using SecEsportes.Modelo;
 using System.Linq;
 using SecEsportes.Repositorio;
 using System.Drawing;
+using System.Text;
 
 namespace SecEsportes.Views
 {
@@ -44,7 +45,7 @@ namespace SecEsportes.Views
 
             int numRodadas = CompeticaoRepositorio.Instance.getNumRodadas(competicao);
             for (int numRodada = 0; numRodada < numRodadas; numRodada++) {
-                DataGridView dgvRodadas = CompeticaoViewUtilidades.criaAba("Rodada " + (numRodada + 1).ToString(), numRodada, tcPartidas);
+                DataGridView dgvRodadas = CompeticaoViewUtilidades.criaAba("Rodada " + (numRodada + 1).ToString(), numRodada, tcPartidas, dgvPartidas_CellMouseClick);
                 dgvRodadas.Tag = numRodada + 1;
                 dgvRodadas.CellMouseDoubleClick += dgvRodadas_CellMouseDoubleClick;
 
@@ -189,6 +190,71 @@ namespace SecEsportes.Views
 
         }
 
+        private void dgvPartidas_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
+            if (e.RowIndex > -1 && e.ColumnIndex > -1) {
+                if (e.Button == MouseButtons.Right) {
+
+                    DataGridView dataGridView = (DataGridView)sender;
+
+                    // Recupera a partida que foi selecionada
+                    List<Competicao_Partida> partidas = competicao.partidas.FindAll(find => find.rodada == Convert.ToInt32(dataGridView.Tag));
+                    Competicao_Partida partida = partidas[e.RowIndex];
+
+                    // Cria o menu de contexto e suas respectivas configurações para cada equipe do grupo
+                    ContextMenu contextMenu = new ContextMenu(); ;
+                    MenuItem menuItem;
+
+                    menuItem = new MenuItem("Importar planilha da partida");
+                    menuItem.Click += importarPlanilha;
+                    menuItem.Tag = new List<Object>() { competicao, partida, dataGridView, partidas};
+                    menuItem.Enabled = !partida.encerrada;
+                    contextMenu.MenuItems.Add(menuItem);
+
+                    menuItem = new MenuItem("Exportar layout da planilha para a partida");
+                    menuItem.Click += exportarPlanilha;
+                    menuItem.Tag = new List<Object>() { competicao, partida, dataGridView, partidas};
+                    menuItem.Enabled = !partida.encerrada;
+                    contextMenu.MenuItems.Add(menuItem);
+
+                    // Define onde será aberto o menu de contexto
+                    contextMenu.Show(dataGridView, new Point(dataGridView.RowHeadersWidth, dataGridView.ColumnHeadersHeight));
+                }
+            }
+        }
+
+        private void importarPlanilha(object sender, EventArgs e) {
+            Competicao competicao = (Competicao)(((List<Object>)((MenuItem)sender).Tag)[0]);
+            Competicao_Partida partida = (Competicao_Partida)(((List<Object>)((MenuItem)sender).Tag)[1]);
+            DataGridView dataGridView = (DataGridView)(((List<Object>)((MenuItem)sender).Tag)[2]);
+            List<Competicao_Partida> partidas = (List<Competicao_Partida>)(((List<Object>)((MenuItem)sender).Tag)[3]);
+
+            if (partida.equipe1.atletas is null)
+                partida.equipe1.atletas = PessoaRepositorio.Instance.getAtletasByEquipeCompeticao(competicao.id, partida.equipe1.id);
+
+            if (partida.equipe2.atletas is null)
+                partida.equipe2.atletas = PessoaRepositorio.Instance.getAtletasByEquipeCompeticao(competicao.id, partida.equipe2.id);
+
+            partida = GerenciadorCSV.importarPlanilha(competicao, partida);
+
+            if (!(partida is null)) {
+                abrePartida(partida, dataGridView, partidas, true);
+            }
+
+        }
+
+        private void exportarPlanilha(object sender, EventArgs e) {
+            Competicao competicao = (Competicao)(((List<Object>)((MenuItem)sender).Tag)[0]);
+            Competicao_Partida partida = (Competicao_Partida)(((List<Object>)((MenuItem)sender).Tag)[1]);
+
+            if (partida.equipe1.atletas is null)
+                partida.equipe1.atletas = PessoaRepositorio.Instance.getAtletasByEquipeCompeticao(competicao.id, partida.equipe1.id);
+
+            if (partida.equipe2.atletas is null)
+                partida.equipe2.atletas = PessoaRepositorio.Instance.getAtletasByEquipeCompeticao(competicao.id, partida.equipe2.id);
+
+            GerenciadorCSV.exportarPlanilha(competicao, partida);
+        }
+
         private void dgvRodadas_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e) {
             if (e.RowIndex > -1) {
                 int numRodada;
@@ -196,11 +262,16 @@ namespace SecEsportes.Views
                 List<Competicao_Partida> partidas = competicao.partidas.FindAll(partidasAEncontrar => partidasAEncontrar.rodada == numRodada);
                 Competicao_Partida partida = partidas[e.RowIndex];
 
-                ViewPartida viewPartida = new ViewPartida(usuarioLogado, competicao, partida);
-                viewPartida.Tag = new List<Object>() { (DataGridView)sender, partidas };
-                viewPartida.FormClosing += viewPartida_FormClosing;
-                viewPartida.ShowDialog();
+                abrePartida(partida, (DataGridView) sender, partidas, false);
+
             }
+        }
+
+        private void abrePartida(Competicao_Partida partida, DataGridView sender, List<Competicao_Partida> partidas, bool partidaIniciada) {
+            ViewPartida viewPartida = new ViewPartida(usuarioLogado, competicao, partida, partidaIniciada);
+            viewPartida.Tag = new List<Object>() {sender, partidas};
+            viewPartida.FormClosing += viewPartida_FormClosing;
+            viewPartida.ShowDialog();
         }
 
         private void viewPartida_FormClosing(object sender, FormClosingEventArgs e) {
