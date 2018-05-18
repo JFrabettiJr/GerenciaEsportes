@@ -44,9 +44,11 @@
             this.lblBuscarPor = new System.Windows.Forms.Label();
             this.lblBusca = new System.Windows.Forms.Label();
             this.txtBusca = new System.Windows.Forms.TextBox();
+            this.pctLogoEquipe = new System.Windows.Forms.PictureBox();
             this.tlpCadFuncao.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvEquipes)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pctLogoEquipe)).BeginInit();
             this.SuspendLayout();
             // 
             // tlpCadFuncao
@@ -151,7 +153,7 @@
             this.dgvEquipes.AllowUserToOrderColumns = true;
             this.dgvEquipes.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.dgvEquipes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvEquipes.Location = new System.Drawing.Point(10, 102);
+            this.dgvEquipes.Location = new System.Drawing.Point(10, 222);
             this.dgvEquipes.MultiSelect = false;
             this.dgvEquipes.Name = "dgvEquipes";
             this.dgvEquipes.ReadOnly = true;
@@ -179,7 +181,7 @@
             this.tableLayoutPanel1.Controls.Add(this.lblBuscarPor, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.lblBusca, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.txtBusca, 0, 1);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(10, 375);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(10, 495);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 14F));
@@ -226,11 +228,26 @@
             this.txtBusca.TabIndex = 2;
             this.txtBusca.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtBusca_KeyDown);
             // 
+            // pctLogoEquipe
+            // 
+            this.pctLogoEquipe.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pctLogoEquipe.Image = global::SecEsportes.Properties.Resources.ImagemErro;
+            this.pctLogoEquipe.Location = new System.Drawing.Point(10, 93);
+            this.pctLogoEquipe.Name = "pctLogoEquipe";
+            this.pctLogoEquipe.Size = new System.Drawing.Size(115, 115);
+            this.pctLogoEquipe.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pctLogoEquipe.TabIndex = 9;
+            this.pctLogoEquipe.TabStop = false;
+            this.pctLogoEquipe.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pctLogoEquipe_MouseClick);
+            this.pctLogoEquipe.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.pctLogoEquipe_MouseDoubleClick);
+            // 
             // CadEquipe
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(584, 421);
+            this.ClientSize = new System.Drawing.Size(584, 541);
+            this.Controls.Add(this.pctLogoEquipe);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.btnAtualizar);
             this.Controls.Add(this.dgvEquipes);
@@ -246,11 +263,13 @@
             this.ShowInTaskbar = false;
             this.Text = "Cadastro de equipes";
             this.Load += new System.EventHandler(this.CadEquipe_Load);
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.CadEquipe_DragDrop);
             this.tlpCadFuncao.ResumeLayout(false);
             this.tlpCadFuncao.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvEquipes)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pctLogoEquipe)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -273,5 +292,6 @@
         private System.Windows.Forms.Label lblBuscarPor;
         private System.Windows.Forms.Label lblBusca;
         private System.Windows.Forms.TextBox txtBusca;
+        private System.Windows.Forms.PictureBox pctLogoEquipe;
     }
 }

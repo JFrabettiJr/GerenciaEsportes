@@ -80,23 +80,26 @@ namespace SecEsportes.Views {
             //}
 
             dgvPessoas.Refresh();
+
+            clearFields();
+        }
+
+        private void clearFields() {
+            txtCPF.Text = "";
+            txtNome.Text = "";
+            txtDtNascimento.Text = "";
+            clearSelected(chkLstFuncoes);
         }
         #endregion
         #region CRUD
         private void btnAdicionar_Click(object sender, EventArgs e) {
             txtCPF.Focus();
-            txtCPF.Text = "";
-            txtNome.Text = "";
-            txtDtNascimento.Text = "";
-            clearSelected(chkLstFuncoes);
+            clearFields();
             windowMode = Utilidades.WindowMode.ModoDeInsercao;
             windowModeChanged();
         }
         private void btnCancelar_Click(object sender, EventArgs e) {
-            txtCPF.Text = "";
-            txtNome.Text = "";
-            txtDtNascimento.Text = "";
-            clearSelected(chkLstFuncoes);
+            clearFields();
             windowMode = Utilidades.WindowMode.ModoNormal;
             windowModeChanged();
         }
@@ -110,10 +113,7 @@ namespace SecEsportes.Views {
                     if (PessoaRepositorio.Instance.insert(ref Pessoa, ref errorMessage)) {
                         pessoas_view.Add(Pessoa);
                         refreshDataGridView();
-                        txtCPF.Text = "";
-                        txtNome.Text = "";
-                        txtDtNascimento.Text = "";
-                        clearSelected(chkLstFuncoes);
+                        clearFields();
                     }
                     else {
                         MessageBox.Show("Houve um erro ao tentar inserir o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -176,10 +176,7 @@ namespace SecEsportes.Views {
                     if (PessoaRepositorio.Instance.delete(Pessoa, ref errorMessage)) {
                         pessoas_view.RemoveAt(dgvPessoas.SelectedCells[0].RowIndex);
                         refreshDataGridView();
-                        txtCPF.Text = "";
-                        txtNome.Text = "";
-                        txtDtNascimento.Text = "";
-                        clearSelected(chkLstFuncoes);
+                        clearFields();
                     }
                     else {
                         MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);

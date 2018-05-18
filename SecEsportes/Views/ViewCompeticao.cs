@@ -62,6 +62,7 @@ namespace SecEsportes.Views
                 case MataMataEnum._4_QuartasFinal: numAbasAdicionais = 3; break;
                 case MataMataEnum._5_OitavasFinal: numAbasAdicionais = 4; break;
             }
+
             // Define o nome da aba e o número da rodada (fase final)
             for (int numAbaAdicional = 0; numAbaAdicional < numAbasAdicionais; numAbaAdicional++) {
                 string nomeAba = "";
@@ -552,7 +553,9 @@ namespace SecEsportes.Views
 
             List<List<EquipeCompeticao>> timesProximaFase = Utilidades.listaEquipesClassificadas(competicao, numPartidasASeremGeradas, numProximaFase);
 
-            RelatorioHTML.relatorioGrupos(competicao, false, timesProximaFase);
+            RelatorioHTML.relatorioGrupos(competicao, 
+                MessageBox.Show("Gostaria de exibir o logo das equipes no relatório de classificação?", String.Format("{0} - Relatório de classificação", competicao.nome), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes, 
+                timesProximaFase);
 
         }
 

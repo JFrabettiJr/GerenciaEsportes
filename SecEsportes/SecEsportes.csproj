@@ -445,6 +445,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Recursos\gramado.jpg" />
+    <Content Include="Recursos\ImagemErro.png" />
     <Content Include="Recursos\trophy.ico" />
     <Content Include="Recursos\trophy.png" />
   </ItemGroup>

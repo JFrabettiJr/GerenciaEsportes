@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using SecEsportes.Infraestrutura;
 using SecEsportes.Modelo;
@@ -40,13 +42,14 @@ namespace SecEsportes.Views
             dgvEquipes.DataSource = null;
             dgvEquipes.Refresh();
 
+            dgvEquipes.Columns.Clear();
             dgvEquipes.DataSource = equipes_view;
+
+            dgvEquipes.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Equipe.codigo) });
+            dgvEquipes.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Equipe.nome) });
 
             for (int iCount = 0; iCount < dgvEquipes.Columns.Count; iCount++){
                 switch (dgvEquipes.Columns[iCount].DataPropertyName){
-                    case nameof(Equipe.id):
-                        dgvEquipes.Columns[iCount].Visible = false;
-                        break;
                     case nameof(Equipe.codigo):
                         dgvEquipes.Columns[iCount].HeaderText = "Código";
                         break;
@@ -57,46 +60,52 @@ namespace SecEsportes.Views
             }
 
             dgvEquipes.Refresh();
+
+            clearFields();
         }
         #endregion
         #region CRUD
         private void btnAdicionar_Click(object sender, EventArgs e){
             txtCodigo.Focus();
-            txtCodigo.Text = "";
-            txtNome.Text = "";
+            clearFields();
             windowMode = Utilidades.WindowMode.ModoDeInsercao;
             windowModeChanged();
         }
         private void btnCancelar_Click(object sender, EventArgs e){
-            txtCodigo.Text = "";
-            txtNome.Text = "";
+            clearFields();
             windowMode = Utilidades.WindowMode.ModoNormal;
             windowModeChanged();
         }
-        private void btnSalvar_Click(object sender, EventArgs e)
-        {
-            Equipe equipe;
+        private void btnSalvar_Click(object sender, EventArgs e){
+            Equipe newEquipe;
+
             if (windowMode == Utilidades.WindowMode.ModoDeInsercao){
-                equipe = new Equipe(txtCodigo.Text, txtNome.Text);
-                if (EquipeRepositorio.Instance.insert(ref equipe, ref errorMessage)){
-                    equipes_view.Add(equipe);
+                newEquipe = new Equipe(txtCodigo.Text, txtNome.Text);
+                newEquipe.urlLogo = pctLogoEquipe.ImageLocation;
+
+                if (EquipeRepositorio.Instance.insert(ref newEquipe, ref errorMessage)){
+                    equipes_view.Add(newEquipe);
                     refreshDataGridView();
-                    txtCodigo.Text = "";
-                    txtNome.Text = "";
+                    clearFields();
                 }else {
                     MessageBox.Show("Houve um erro ao tentar inserir o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }else {
                 if (dgvEquipes.SelectedCells.Count > 0) {
-                    equipe = equipes_view[dgvEquipes.SelectedCells[0].RowIndex];
-                    equipe.codigo = txtCodigo.Text;
-                    equipe.nome = txtNome.Text;
-                    if (EquipeRepositorio.Instance.update(equipe, ref errorMessage)) {
-                        equipes_view[dgvEquipes.SelectedCells[0].RowIndex] = equipe;
+
+                    Equipe oldEquipe;
+                    oldEquipe = equipes_view[dgvEquipes.SelectedCells[0].RowIndex];
+
+                    newEquipe = equipes_view[dgvEquipes.SelectedCells[0].RowIndex];
+                    newEquipe.codigo = txtCodigo.Text;
+                    newEquipe.nome = txtNome.Text;
+                    newEquipe.urlLogo = pctLogoEquipe.ImageLocation;
+
+                    if (EquipeRepositorio.Instance.update(newEquipe, ref errorMessage)) {
+                        equipes_view[dgvEquipes.SelectedCells[0].RowIndex] = newEquipe;
                         refreshDataGridView();
                     }else {
-                        txtCodigo.Text = equipes_view[dgvEquipes.SelectedCells[0].RowIndex].codigo;
-                        txtNome.Text = equipes_view[dgvEquipes.SelectedCells[0].RowIndex].nome;
+                        fillFields(oldEquipe);
                         MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
@@ -105,8 +114,40 @@ namespace SecEsportes.Views
             windowMode = Utilidades.WindowMode.ModoNormal;
             windowModeChanged();
         }
-        private void btnExcluir_Click(object sender, EventArgs e)
-        {
+
+        private void clearFields() {
+            txtCodigo.Text = "";
+            txtNome.Text = "";
+            clearImage();
+        }
+
+        private void clearImage() {
+            pctLogoEquipe.Image = null;
+            pctLogoEquipe.ImageLocation = null;
+        }
+
+        private void fillFields(Equipe equipe) {
+            txtCodigo.Text = equipe.codigo;
+            txtNome.Text = equipe.nome;
+            try {
+                if (!(equipe.urlLogo is null)) {
+                    if (File.Exists(equipe.urlLogo)) {
+                        pctLogoEquipe.Image = Image.FromFile(equipe.urlLogo);
+                        pctLogoEquipe.ImageLocation = equipe.urlLogo;
+                    } else {
+                        clearImage();
+                        pctLogoEquipe.Image = Properties.Resources.ImagemErro;
+
+                    }
+                } else {
+                    clearImage();
+                }
+            } catch (Exception ex) {
+
+            }
+        }
+
+        private void btnExcluir_Click(object sender, EventArgs e){
             if (dgvEquipes.SelectedCells.Count > 0) {
                 Equipe equipe;
                 equipe = equipes_view[dgvEquipes.SelectedCells[0].RowIndex];
@@ -116,8 +157,7 @@ namespace SecEsportes.Views
                     if (EquipeRepositorio.Instance.delete(equipe, ref errorMessage)) {
                         equipes_view.RemoveAt(dgvEquipes.SelectedCells[0].RowIndex);
                         refreshDataGridView();
-                        txtCodigo.Text = "";
-                        txtNome.Text = "";
+                        clearFields();
                     }else{
                         MessageBox.Show("Houve um erro ao tentar deletar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
@@ -163,8 +203,7 @@ namespace SecEsportes.Views
         }
         private void dgvEquipes_RowEnter(object sender, DataGridViewCellEventArgs e) {
             if (e.RowIndex > -1) {
-                txtCodigo.Text = equipes_view[e.RowIndex].codigo;
-                txtNome.Text = equipes_view[e.RowIndex].nome;
+                fillFields(equipes_view[e.RowIndex]);
             }
         }
         private void fields_KeyDown(object sender, KeyEventArgs e) {
@@ -206,6 +245,64 @@ namespace SecEsportes.Views
             cboCamposBusca.Items.Add("Código");
 
             cboCamposBusca.SelectedIndex = 0;
+        }
+
+        private void CadEquipe_DragDrop(object sender, DragEventArgs e) {
+            int x = this.PointToClient(new Point(e.X, e.Y)).X;
+            int y = this.PointToClient(new Point(e.X, e.Y)).Y;
+
+            if ( (x >= pctLogoEquipe.Location.X) && (x <= pctLogoEquipe.Location.X + pctLogoEquipe.Width) && (y >= pctLogoEquipe.Location.Y) && (y <= pctLogoEquipe.Location.Y + pctLogoEquipe.Height) ) {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                //pictureBox1.Image = Image.FromFile(files[0]);
+            }
+        }
+
+        private void pctLogoEquipe_MouseDoubleClick(object sender, MouseEventArgs e) {
+            try {
+                if (dgvEquipes.SelectedCells.Count == 1) {
+                    Equipe equipe = equipes_view[dgvEquipes.SelectedCells[0].RowIndex];
+
+                    OpenFileDialog openFileDialog = new OpenFileDialog();
+                    openFileDialog.Filter = "Images (*.BMP;*.JPG;*.GIF,*.PNG,*.TIFF)|*.BMP;*.JPG;*.GIF;*.PNG;*.TIFF";
+                    openFileDialog.Title = String.Format("Escolha o logo da equipe {0}.", "");
+                    if (openFileDialog.ShowDialog() == DialogResult.OK) {
+
+                        //Lê o arquivo
+                        pctLogoEquipe.Image = Image.FromFile(openFileDialog.FileName);
+                        pctLogoEquipe.ImageLocation = openFileDialog.FileName;
+                        fields_KeyDown(null, null);
+                    }
+
+                }
+            }catch(Exception ex) {
+
+            }
+        }
+
+        private void pctLogoEquipe_MouseClick(object sender, MouseEventArgs e) {
+            if (e.Button == MouseButtons.Right) {
+
+                if (dgvEquipes.SelectedCells.Count == 1) {
+                    Equipe equipe = equipes_view[dgvEquipes.SelectedCells[0].RowIndex];
+
+                    // Cria o menu de contexto e suas respectivas configurações para cada equipe do grupo
+                    ContextMenu contextMenu = new ContextMenu(); ;
+                    MenuItem menuItem;
+
+                    menuItem = new MenuItem("Remover logo");
+
+                    menuItem.Click += (_sender, _e) => {
+                        clearImage();
+                        fields_KeyDown(null, null);
+                    };
+
+                    menuItem.Enabled = (!(equipe.urlLogo is null)) && equipe.urlLogo.Length > 0;
+                    contextMenu.MenuItems.Add(menuItem);
+
+                    // Define onde será aberto o menu de contexto
+                    contextMenu.Show(pctLogoEquipe, new Point(e.X, e.Y));
+                }
+            }
         }
     }
 }

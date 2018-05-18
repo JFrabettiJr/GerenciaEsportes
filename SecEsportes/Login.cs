@@ -31,5 +31,11 @@ namespace SecEsportes
                 }
             }
         }
+
+        private void keyDown(object sender, KeyEventArgs e) {
+            if (e.KeyCode == Keys.Enter) {
+                btnEntrar_Click(null, null);
+            }
+        }
     }
 }
