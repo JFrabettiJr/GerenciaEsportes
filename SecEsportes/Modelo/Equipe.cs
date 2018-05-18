@@ -9,6 +9,7 @@ namespace SecEsportes.Modelo{
 
         public string codigo { get; set; }
         public string nome { get; set; }
+        public string urlLogo { get; set; }
 
         public Equipe(string codigo, string nome){
             this.codigo = codigo;

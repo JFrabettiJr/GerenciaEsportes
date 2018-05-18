@@ -109,20 +109,25 @@ namespace SecEsportes.Views
             }
 
             dgvCompeticoes.Refresh();
+
+            clearFields();
         }
+        private void clearFields() {
+            txtNome.Text = "";
+            txtDtInicio.Text = "";
+        }
+
         #endregion
         #region CRUD
         private void btnAdicionar_Click(object sender, EventArgs e){
             txtNome.Focus();
-            txtNome.Text = "";
-            txtDtInicio.Text = "";
+            clearFields();
             cboModalidades.SelectedIndex = -1;
             windowMode = Utilidades.WindowMode.ModoDeInsercao;
             windowModeChanged();
         }
         private void btnCancelar_Click(object sender, EventArgs e){
-            txtNome.Text = "";
-            txtDtInicio.Text = "";
+            clearFields();
             cboModalidades.SelectedIndex = -1;
             windowMode = Utilidades.WindowMode.ModoNormal;
             windowModeChanged();
@@ -146,8 +151,7 @@ namespace SecEsportes.Views
                 if (CompeticaoRepositorio.Instance.insert(ref competicao, ref errorMessage)){
                     competicoes_view.Add(competicao);
                     refreshDataGridView();
-                    txtNome.Text = "";
-                    txtDtInicio.Text = "";
+                    clearFields();
                     cboModalidades.SelectedIndex = -1;
                 }else {
                     MessageBox.Show("Houve um erro ao tentar inserir o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -186,8 +190,7 @@ namespace SecEsportes.Views
                     if (CompeticaoRepositorio.Instance.delete(competicao, ref errorMessage)) {
                         competicoes_view.RemoveAt(dgvCompeticoes.SelectedCells[0].RowIndex);
                         refreshDataGridView();
-                        txtNome.Text = "";
-                        txtNome.Text = "";
+                        clearFields();
                     }else{
                         MessageBox.Show("Houve um erro ao tentar deletar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }

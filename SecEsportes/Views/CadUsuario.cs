@@ -79,6 +79,8 @@ namespace SecEsportes.Views
             }
 
             dgvUsuarios.Refresh();
+
+            clearFields();
         }
         #endregion
         #region CRUD

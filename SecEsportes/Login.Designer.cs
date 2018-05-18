@@ -43,6 +43,7 @@
             this.txtUsuario.Name = "txtUsuario";
             this.txtUsuario.Size = new System.Drawing.Size(208, 29);
             this.txtUsuario.TabIndex = 0;
+            this.txtUsuario.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keyDown);
             // 
             // txtSenha
             // 
@@ -52,6 +53,7 @@
             this.txtSenha.PasswordChar = '*';
             this.txtSenha.Size = new System.Drawing.Size(208, 29);
             this.txtSenha.TabIndex = 1;
+            this.txtSenha.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keyDown);
             // 
             // lblUsuario
             // 
@@ -99,6 +101,7 @@
             this.MaximizeBox = false;
             this.Name = "Login";
             this.Text = "Menu Principal";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keyDown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

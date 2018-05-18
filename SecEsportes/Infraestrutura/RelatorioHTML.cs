@@ -122,6 +122,12 @@ namespace SecEsportes.Infraestrutura {
 
             //Cabeçalho Relatório - Por Grupo
             for (int iGrupo = 0; iGrupo < competicao.grupos.Count; iGrupo++) {
+
+                // Ordena as equipes
+                competicao.grupos[iGrupo] = (from customDS in competicao.grupos[iGrupo]
+                                             orderby customDS.pontos descending, customDS.vitorias descending, customDS.golsPro - customDS.golsContra descending
+                                             select customDS).ToList<EquipeCompeticao>();
+
                 cabecalhoRelatorio = new StringBuilder();
                 cabecalhoRelatorio.AppendLine("		<div class=\"card\">");
                 cabecalhoRelatorio.AppendFormat("            <div class=\"card-header bg-primary mb-3\"><strong>{0}</strong></div>", CompeticaoViewUtilidades.getNomeGrupo(competicao.nomesGrupos, iGrupo+1)).AppendLine();
@@ -152,15 +158,11 @@ namespace SecEsportes.Infraestrutura {
 
                 //Equipes
                 for (int iEquipe = 0; iEquipe < competicao.grupos[iGrupo].Count; iEquipe++) {
-
-                    // Ordena as equipes
-                    competicao.grupos[iGrupo] = (from customDS in competicao.grupos[iGrupo]
-                                                 orderby customDS.pontos descending, customDS.vitorias descending, customDS.golsPro - customDS.golsContra descending
-                                                select customDS).ToList<EquipeCompeticao>();
+                    EquipeCompeticao equipe = competicao.grupos[iGrupo][iEquipe];
 
                     //Verifica se a equipe até então está se classificando
                     bool classificada = false;
-                    if (timesProximaFase[iGrupo].Contains(competicao.grupos[iGrupo][iEquipe])){
+                    if (timesProximaFase[iGrupo].Contains(equipe)){
                         classificada = true;
                     }
 
@@ -169,19 +171,19 @@ namespace SecEsportes.Infraestrutura {
                     equipesRelatorio.AppendFormat("							<td>{0}º</td>", iEquipe+1).AppendLine();
 
                     if (fotoEquipe)
-                        equipesRelatorio.AppendLine("							<td><div class=\"text-center\">	<img height=\"75\" src=\"http://img.fifa.com/images/fwc/2014/players/sqr-5/269058.png\" class=\"rounded\" alt=\"...\"></div></td>  ");
+                        equipesRelatorio.AppendFormat("							<td><div class=\"text-center\">	<img height=\"75\" src=\"file:///{0}\" class=\"rounded\"></div></td>  ", (equipe.urlLogo is null ? "" : equipe.urlLogo)).AppendLine();
 
-                    equipesRelatorio.AppendFormat("							<td>{0}</td>", competicao.grupos[iGrupo][iEquipe].nome).AppendLine();
-                    equipesRelatorio.AppendFormat("							<td>{0}</td>", competicao.grupos[iGrupo][iEquipe].pontos).AppendLine();
-                    equipesRelatorio.AppendFormat("							<td>{0}</td>", competicao.grupos[iGrupo][iEquipe].vitorias + competicao.grupos[iGrupo][iEquipe].derrotas + competicao.grupos[iGrupo][iEquipe].empates).AppendLine();
-                    equipesRelatorio.AppendFormat("							<td>{0}</td>", competicao.grupos[iGrupo][iEquipe].vitorias).AppendLine();
-                    equipesRelatorio.AppendFormat("							<td>{0}</td>", competicao.grupos[iGrupo][iEquipe].empates).AppendLine();
-                    equipesRelatorio.AppendFormat("							<td>{0}</td>", competicao.grupos[iGrupo][iEquipe].derrotas).AppendLine();
-                    equipesRelatorio.AppendFormat("							<td>{0}</td>", competicao.grupos[iGrupo][iEquipe].golsPro).AppendLine();
-                    equipesRelatorio.AppendFormat("							<td>{0}</td>", competicao.grupos[iGrupo][iEquipe].golsContra).AppendLine();
-                    equipesRelatorio.AppendFormat("							<td>{0}</td>", competicao.grupos[iGrupo][iEquipe].golsPro - competicao.grupos[iGrupo][iEquipe].golsContra).AppendLine();
-                    if (competicao.grupos[iGrupo][iEquipe].vitorias + competicao.grupos[iGrupo][iEquipe].derrotas + competicao.grupos[iGrupo][iEquipe].empates > 0)
-                        equipesRelatorio.AppendFormat("							<td>{0}</td>", competicao.grupos[iGrupo][iEquipe].pontos * 100 / ((competicao.grupos[iGrupo][iEquipe].vitorias + competicao.grupos[iGrupo][iEquipe].derrotas + competicao.grupos[iGrupo][iEquipe].empates) * 3)).AppendLine();
+                    equipesRelatorio.AppendFormat("							<td>{0}</td>", equipe.nome).AppendLine();
+                    equipesRelatorio.AppendFormat("							<td>{0}</td>", equipe.pontos).AppendLine();
+                    equipesRelatorio.AppendFormat("							<td>{0}</td>", equipe.vitorias + equipe.derrotas + equipe.empates).AppendLine();
+                    equipesRelatorio.AppendFormat("							<td>{0}</td>", equipe.vitorias).AppendLine();
+                    equipesRelatorio.AppendFormat("							<td>{0}</td>", equipe.empates).AppendLine();
+                    equipesRelatorio.AppendFormat("							<td>{0}</td>", equipe.derrotas).AppendLine();
+                    equipesRelatorio.AppendFormat("							<td>{0}</td>", equipe.golsPro).AppendLine();
+                    equipesRelatorio.AppendFormat("							<td>{0}</td>", equipe.golsContra).AppendLine();
+                    equipesRelatorio.AppendFormat("							<td>{0}</td>", equipe.golsPro - equipe.golsContra).AppendLine();
+                    if (equipe.vitorias + equipe.derrotas + equipe.empates > 0)
+                        equipesRelatorio.AppendFormat("							<td>{0}</td>", equipe.pontos * 100 / ((equipe.vitorias + equipe.derrotas + equipe.empates) * 3)).AppendLine();
                     else
                         equipesRelatorio.AppendFormat("							<td>{0}</td>", 0).AppendLine();
                     equipesRelatorio.AppendLine("						</tr> ");
@@ -210,15 +212,20 @@ namespace SecEsportes.Infraestrutura {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "HTML Files|*.html";
             saveFileDialog.Title = "Escolha um diretório para salvar o relatório de classificação";
-            saveFileDialog.ShowDialog();
+            saveFileDialog.FileName = String.Format("{0} - Relatório de classificação", competicao.nome);
 
-            if (saveFileDialog.FileName.Length > 0 && saveFileDialog.CheckPathExists) {
+            if (saveFileDialog.ShowDialog() == DialogResult.OK) {
                 // Salva o arquivo
                 StreamWriter salvar = new StreamWriter(saveFileDialog.FileName);
                 salvar.WriteLine(fullHTML.ToString());
                 salvar.Close();
 
-                System.Diagnostics.Process.Start(saveFileDialog.FileName);
+                if (MessageBox.Show("Gostaria de abrir o relatório?",
+                    "Relatório de classificação",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question) == DialogResult.Yes)
+                    System.Diagnostics.Process.Start(saveFileDialog.FileName);
+
             }
         }
     }

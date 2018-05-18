@@ -96,6 +96,7 @@ namespace SecEsportes.Infraestrutura {
             try {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
                 openFileDialog.Filter = "CSV|*.csv";
+                openFileDialog.Title = String.Format("{0} - {1} x {2} - Importe a planilha para a partida", competicao.nome, partida.equipe1.nome, partida.equipe2.nome);
                 openFileDialog.FileName = String.Format("{0} - {1} x {2}", competicao.nome, partida.equipe1.nome, partida.equipe2.nome);
                 if (openFileDialog.ShowDialog() == DialogResult.OK) {
 

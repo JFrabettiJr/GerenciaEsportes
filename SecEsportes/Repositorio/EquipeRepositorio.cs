@@ -32,7 +32,8 @@ namespace SecEsportes.Repositorio {
                 command.CommandText = "CREATE Table Equipe (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "codigo NVARCHAR(10) NOT NULL UNIQUE, " +
-                    "nome NVARCHAR(100) NOT NULL) ";
+                    "nome NVARCHAR(100) NOT NULL, " +
+                    "urlLogo NVARCHAR(300) ) ";
                 command.ExecuteNonQuery();
             }
 
@@ -169,7 +170,7 @@ namespace SecEsportes.Repositorio {
         public bool insert(ref Equipe equipe, ref string messageError) {
             try {
                 equipe.id = SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query<int>("" +
-                    "INSERT INTO Equipe (Codigo, Nome) VALUES (@Codigo, @Nome); select last_insert_rowid()",
+                    "INSERT INTO Equipe (Codigo, Nome, urlLogo) VALUES (@Codigo, @Nome, @urlLogo); select last_insert_rowid()",
                     equipe).First();
                 return true;
             }
@@ -203,7 +204,7 @@ namespace SecEsportes.Repositorio {
         public bool update(Equipe equipe, ref string messageError) {
             try {
                 SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(
-                    "UPDATE Equipe SET Codigo = @Codigo, Nome = @Nome WHERE id = @id", equipe);
+                    "UPDATE Equipe SET Codigo = @Codigo, Nome = @Nome, urlLogo = @urlLogo WHERE id = @id", equipe);
                 return true;
             }
             catch (Exception ex) {
