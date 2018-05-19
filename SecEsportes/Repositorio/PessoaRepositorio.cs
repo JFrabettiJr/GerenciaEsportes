@@ -35,7 +35,8 @@ namespace SecEsportes.Repositorio {
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "cpf NVARCHAR(11) NOT NULL UNIQUE, " +
                     "nome NVARCHAR(100) NOT NULL," +
-                    "dataNascimento DateTime " +
+                    "dataNascimento DateTime, " +
+                    "urlFoto NVARCHAR(300) " +
                     ") ";
                 command.ExecuteNonQuery();
             }
@@ -373,7 +374,7 @@ namespace SecEsportes.Repositorio {
             try {
                 SQLiteConnection connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection();
                 pessoa.id = connection.Query<int>("" +
-                    "INSERT INTO pessoa (CPF, Nome, DataNascimento) VALUES (@CPF, @Nome, @DataNascimento); select last_insert_rowid()",
+                    "INSERT INTO pessoa (CPF, Nome, DataNascimento, urlFoto) VALUES (@CPF, @Nome, @DataNascimento, @urlFoto); select last_insert_rowid()",
                     pessoa).First();
 
                 // Insere as funções
@@ -392,7 +393,7 @@ namespace SecEsportes.Repositorio {
             try {
                 SQLiteConnection connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection();
                 connection.Query(
-                    "UPDATE pessoa SET CPF = @CPF, Nome = @Nome, DataNascimento = @DataNascimento WHERE id = @id", pessoa);
+                    "UPDATE pessoa SET CPF = @CPF, Nome = @Nome, DataNascimento = @DataNascimento, urlFoto = @urlFoto WHERE id = @id", pessoa);
 
                 // Atualiza as funções
                 string funcoesStr = "";

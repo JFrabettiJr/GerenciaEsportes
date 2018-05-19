@@ -53,7 +53,7 @@ namespace SecEsportes.Infraestrutura {
                 artilheirosRelatorio.AppendFormat("							<td>{0}º</td> ", iCount + 1).AppendLine();
 
                 if (fotoAtleta)
-                    artilheirosRelatorio.AppendFormat("							<td>	<div class=\"text-center\">	<img height=\"75\" src=\"http://img.fifa.com/images/fwc/2014/players/sqr-5/269058.png\" class=\"rounded\" alt=\"...\"></div></td> ").AppendLine();
+                    artilheirosRelatorio.AppendFormat("							<td><div class=\"text-center\">	<img height=\"75\" src=\"file:///{0}\" class=\"rounded\"></div></td>  ", (artilheiro.atleta.pessoa.urlFoto is null ? "" : artilheiro.atleta.pessoa.urlFoto)).AppendLine();
 
                 artilheirosRelatorio.AppendFormat("							<td>{0}</td> ", artilheiro.nome_Atleta).AppendLine();
                 artilheirosRelatorio.AppendFormat("							<td>{0}</td> ", artilheiro.nome_Equipe).AppendLine();
@@ -87,15 +87,19 @@ namespace SecEsportes.Infraestrutura {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "HTML Files|*.html";
             saveFileDialog.Title = "Escolha um diretório para salvar o relatório de artilheiros";
-            saveFileDialog.ShowDialog();
+            saveFileDialog.FileName = String.Format("{0} - Relatório de artilharia", competicao.nome);
 
-            if (saveFileDialog.FileName.Length > 0 && saveFileDialog.CheckPathExists) {
+            if (saveFileDialog.ShowDialog() == DialogResult.OK) {
                 // Salva o arquivo
                 StreamWriter salvar = new StreamWriter(saveFileDialog.FileName);
                 salvar.WriteLine(fullHTML.ToString());
                 salvar.Close();
 
-                System.Diagnostics.Process.Start(saveFileDialog.FileName);
+                if (MessageBox.Show("Gostaria de abrir o relatório?",
+                    "Relatório de artilharia",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question) == DialogResult.Yes)
+                    System.Diagnostics.Process.Start(saveFileDialog.FileName);
             }
         }
         public static void relatorioGrupos(Competicao competicao, bool fotoEquipe, List<List<EquipeCompeticao>> timesProximaFase) {

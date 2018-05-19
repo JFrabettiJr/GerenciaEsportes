@@ -560,7 +560,8 @@ namespace SecEsportes.Views
         }
 
         private void btnGerarHTML_Artilheiros_Click(object sender, EventArgs e) {
-            RelatorioHTML.relatorioArtilheiros(competicao, artilheiros, false);
+            RelatorioHTML.relatorioArtilheiros(competicao, artilheiros,
+                MessageBox.Show("Gostaria de exibir a foto dos artilheiros no relatório de artilharia?", String.Format("{0} - Relatório de artilharia", competicao.nome), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using SecEsportes.Infraestrutura;
 using SecEsportes.Modelo;
@@ -84,11 +86,37 @@ namespace SecEsportes.Views {
             clearFields();
         }
 
+        private void fillFields(Pessoa pessoa) {
+            txtCPF.Text = pessoa.cpf;
+            txtNome.Text = pessoa.nome;
+            txtDtNascimento.Text = pessoa.dataNascimento.ToString("dd/MM/yyyy");
+            setFuncoesSelecionadas(pessoa.funcoes);
+
+            try {
+                if (!(pessoa.urlFoto is null)) {
+                    if (File.Exists(pessoa.urlFoto)) {
+                        pctFotoAtleta.Image = Image.FromFile(pessoa.urlFoto);
+                        pctFotoAtleta.ImageLocation = pessoa.urlFoto;
+                    } else {
+                        clearImage();
+                        pctFotoAtleta.Image = Properties.Resources.ImagemErro;
+
+                    }
+                } else {
+                    clearImage();
+                }
+            } catch (Exception ex) {
+
+            }
+
+        }
+
         private void clearFields() {
             txtCPF.Text = "";
             txtNome.Text = "";
             txtDtNascimento.Text = "";
             clearSelected(chkLstFuncoes);
+            clearImage();
         }
         #endregion
         #region CRUD
@@ -110,6 +138,7 @@ namespace SecEsportes.Views {
                 if (windowMode == Utilidades.WindowMode.ModoDeInsercao) {
                     Pessoa = new Pessoa(txtCPF.Text, txtNome.Text, dataAniversario);
                     Pessoa.funcoes = getFuncoesSelecionadas();
+                    Pessoa.urlFoto = pctFotoAtleta.ImageLocation;
                     if (PessoaRepositorio.Instance.insert(ref Pessoa, ref errorMessage)) {
                         pessoas_view.Add(Pessoa);
                         refreshDataGridView();
@@ -126,14 +155,13 @@ namespace SecEsportes.Views {
                         Pessoa.nome = txtNome.Text;
                         Pessoa.dataNascimento = dataAniversario;
                         Pessoa.funcoes = getFuncoesSelecionadas();
+                        Pessoa.urlFoto = pctFotoAtleta.ImageLocation;
                         if (PessoaRepositorio.Instance.update(Pessoa, ref errorMessage)) {
                             pessoas_view[dgvPessoas.SelectedCells[0].RowIndex] = Pessoa;
                             refreshDataGridView();
                         }
                         else {
-                            txtCPF.Text = pessoas_view[dgvPessoas.SelectedCells[0].RowIndex].cpf;
-                            txtNome.Text = pessoas_view[dgvPessoas.SelectedCells[0].RowIndex].nome;
-                            txtDtNascimento.Text = pessoas_view[dgvPessoas.SelectedCells[0].RowIndex].dataNascimento.ToString("dd/MM/yyyy");
+                            fillFields(pessoas_view[dgvPessoas.SelectedCells[0].RowIndex]);
                             MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
@@ -225,10 +253,7 @@ namespace SecEsportes.Views {
             if (e.RowIndex > -1) {
                 if (windowMode == Utilidades.WindowMode.ModoNormal)
                     windowMode = Utilidades.WindowMode.ModoCriacaoForm;
-                txtCPF.Text = pessoas_view[e.RowIndex].cpf;
-                txtNome.Text = pessoas_view[e.RowIndex].nome;
-                txtDtNascimento.Text = pessoas_view[e.RowIndex].dataNascimento.ToString("dd/MM/yyyy");
-                setFuncoesSelecionadas(pessoas_view[e.RowIndex].funcoes);
+                fillFields(pessoas_view[e.RowIndex]);
                 windowMode = Utilidades.WindowMode.ModoNormal;
             }
         }
@@ -289,5 +314,57 @@ namespace SecEsportes.Views {
             refreshDataGridView();
         }
 
+        private void pctFotoAtleta_MouseDoubleClick(object sender, MouseEventArgs e) {
+            try {
+                if (dgvPessoas.SelectedCells.Count == 1) {
+                    Pessoa pessoa = pessoas_view[dgvPessoas.SelectedCells[0].RowIndex];
+
+                    OpenFileDialog openFileDialog = new OpenFileDialog();
+                    openFileDialog.Filter = "Images (*.BMP;*.JPG;*.GIF,*.PNG,*.TIFF)|*.BMP;*.JPG;*.GIF;*.PNG;*.TIFF";
+                    openFileDialog.Title = String.Format("Escolha a foto da pessoa {0}.", "");
+                    if (openFileDialog.ShowDialog() == DialogResult.OK) {
+
+                        //Lê o arquivo
+                        pctFotoAtleta.Image = Image.FromFile(openFileDialog.FileName);
+                        pctFotoAtleta.ImageLocation = openFileDialog.FileName;
+                        fields_KeyDown(null, null);
+                    }
+
+                }
+            } catch (Exception ex) {
+
+            }
+        }
+
+        private void clearImage() {
+            pctFotoAtleta.Image = null;
+            pctFotoAtleta.ImageLocation = null;
+        }
+
+        private void pctFotoAtleta_MouseClick(object sender, MouseEventArgs e) {
+            if (e.Button == MouseButtons.Right) {
+
+                if (dgvPessoas.SelectedCells.Count == 1) {
+                    Pessoa pessoa = pessoas_view[dgvPessoas.SelectedCells[0].RowIndex];
+
+                    // Cria o menu de contexto e suas respectivas configurações para cada equipe do grupo
+                    ContextMenu contextMenu = new ContextMenu(); ;
+                    MenuItem menuItem;
+
+                    menuItem = new MenuItem("Remover foto");
+
+                    menuItem.Click += (_sender, _e) => {
+                        clearImage();
+                        fields_KeyDown(null, null);
+                    };
+
+                    menuItem.Enabled = (!(pessoa.urlFoto is null)) && pessoa.urlFoto.Length > 0;
+                    contextMenu.MenuItems.Add(menuItem);
+
+                    // Define onde será aberto o menu de contexto
+                    contextMenu.Show(pctFotoAtleta, new Point(e.X, e.Y));
+                }
+            }
+        }
     }
 }

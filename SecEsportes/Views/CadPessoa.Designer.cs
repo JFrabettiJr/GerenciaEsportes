@@ -48,21 +48,21 @@
             this.lblBuscarPor = new System.Windows.Forms.Label();
             this.lblBusca = new System.Windows.Forms.Label();
             this.txtBusca = new System.Windows.Forms.TextBox();
+            this.pctFotoAtleta = new System.Windows.Forms.PictureBox();
             this.tlpCadFuncao.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPessoas)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pctFotoAtleta)).BeginInit();
             this.SuspendLayout();
             // 
             // tlpCadFuncao
             // 
-            this.tlpCadFuncao.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.tlpCadFuncao.ColumnCount = 4;
-            this.tlpCadFuncao.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15F));
-            this.tlpCadFuncao.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
-            this.tlpCadFuncao.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 17.5F));
-            this.tlpCadFuncao.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 32.5F));
+            this.tlpCadFuncao.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 121F));
+            this.tlpCadFuncao.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 41.17647F));
+            this.tlpCadFuncao.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20.58824F));
+            this.tlpCadFuncao.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 38.23529F));
+            this.tlpCadFuncao.Controls.Add(this.pctFotoAtleta, 0, 2);
             this.tlpCadFuncao.Controls.Add(this.lblFuncoes, 3, 0);
             this.tlpCadFuncao.Controls.Add(this.txtCPF, 0, 1);
             this.tlpCadFuncao.Controls.Add(this.lblDtNascimento, 2, 0);
@@ -73,11 +73,12 @@
             this.tlpCadFuncao.Controls.Add(this.chkLstFuncoes, 3, 1);
             this.tlpCadFuncao.Location = new System.Drawing.Point(10, 47);
             this.tlpCadFuncao.Name = "tlpCadFuncao";
-            this.tlpCadFuncao.RowCount = 3;
+            this.tlpCadFuncao.RowCount = 4;
             this.tlpCadFuncao.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 14F));
             this.tlpCadFuncao.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
-            this.tlpCadFuncao.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 65F));
-            this.tlpCadFuncao.Size = new System.Drawing.Size(710, 105);
+            this.tlpCadFuncao.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 121F));
+            this.tlpCadFuncao.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 10F));
+            this.tlpCadFuncao.Size = new System.Drawing.Size(710, 165);
             this.tlpCadFuncao.TabIndex = 0;
             // 
             // lblFuncoes
@@ -86,9 +87,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblFuncoes.AutoSize = true;
-            this.lblFuncoes.Location = new System.Drawing.Point(481, 0);
+            this.lblFuncoes.Location = new System.Drawing.Point(487, 0);
             this.lblFuncoes.Name = "lblFuncoes";
-            this.lblFuncoes.Size = new System.Drawing.Size(226, 14);
+            this.lblFuncoes.Size = new System.Drawing.Size(220, 14);
             this.lblFuncoes.TabIndex = 7;
             this.lblFuncoes.Text = "Funções";
             // 
@@ -100,7 +101,7 @@
             this.txtCPF.Location = new System.Drawing.Point(3, 17);
             this.txtCPF.Mask = "000.000.000-00";
             this.txtCPF.Name = "txtCPF";
-            this.txtCPF.Size = new System.Drawing.Size(100, 20);
+            this.txtCPF.Size = new System.Drawing.Size(115, 20);
             this.txtCPF.TabIndex = 6;
             // 
             // lblDtNascimento
@@ -109,9 +110,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDtNascimento.AutoSize = true;
-            this.lblDtNascimento.Location = new System.Drawing.Point(357, 0);
+            this.lblDtNascimento.Location = new System.Drawing.Point(366, 0);
             this.lblDtNascimento.Name = "lblDtNascimento";
-            this.lblDtNascimento.Size = new System.Drawing.Size(118, 14);
+            this.lblDtNascimento.Size = new System.Drawing.Size(115, 14);
             this.lblDtNascimento.TabIndex = 4;
             this.lblDtNascimento.Text = "Data de nascimento";
             // 
@@ -120,9 +121,9 @@
             this.txtNome.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtNome.Location = new System.Drawing.Point(109, 17);
+            this.txtNome.Location = new System.Drawing.Point(124, 17);
             this.txtNome.Name = "txtNome";
-            this.txtNome.Size = new System.Drawing.Size(242, 20);
+            this.txtNome.Size = new System.Drawing.Size(236, 20);
             this.txtNome.TabIndex = 3;
             this.txtNome.KeyDown += new System.Windows.Forms.KeyEventHandler(this.fields_KeyDown);
             // 
@@ -132,9 +133,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblNome.AutoSize = true;
-            this.lblNome.Location = new System.Drawing.Point(109, 0);
+            this.lblNome.Location = new System.Drawing.Point(124, 0);
             this.lblNome.Name = "lblNome";
-            this.lblNome.Size = new System.Drawing.Size(242, 14);
+            this.lblNome.Size = new System.Drawing.Size(236, 14);
             this.lblNome.TabIndex = 1;
             this.lblNome.Text = "Nome";
             // 
@@ -146,7 +147,7 @@
             this.lblCPF.AutoSize = true;
             this.lblCPF.Location = new System.Drawing.Point(3, 0);
             this.lblCPF.Name = "lblCPF";
-            this.lblCPF.Size = new System.Drawing.Size(100, 14);
+            this.lblCPF.Size = new System.Drawing.Size(115, 14);
             this.lblCPF.TabIndex = 0;
             this.lblCPF.Text = "CPF";
             // 
@@ -155,10 +156,10 @@
             this.txtDtNascimento.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtDtNascimento.Location = new System.Drawing.Point(357, 17);
+            this.txtDtNascimento.Location = new System.Drawing.Point(366, 17);
             this.txtDtNascimento.Mask = "00/00/0000";
             this.txtDtNascimento.Name = "txtDtNascimento";
-            this.txtDtNascimento.Size = new System.Drawing.Size(118, 20);
+            this.txtDtNascimento.Size = new System.Drawing.Size(115, 20);
             this.txtDtNascimento.TabIndex = 5;
             this.txtDtNascimento.KeyDown += new System.Windows.Forms.KeyEventHandler(this.fields_KeyDown);
             // 
@@ -168,10 +169,10 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chkLstFuncoes.FormattingEnabled = true;
-            this.chkLstFuncoes.Location = new System.Drawing.Point(481, 17);
+            this.chkLstFuncoes.Location = new System.Drawing.Point(487, 17);
             this.chkLstFuncoes.Name = "chkLstFuncoes";
             this.tlpCadFuncao.SetRowSpan(this.chkLstFuncoes, 2);
-            this.chkLstFuncoes.Size = new System.Drawing.Size(226, 79);
+            this.chkLstFuncoes.Size = new System.Drawing.Size(220, 139);
             this.chkLstFuncoes.TabIndex = 8;
             this.chkLstFuncoes.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.chkLstFuncoes_ItemCheck);
             // 
@@ -221,12 +222,9 @@
             this.dgvPessoas.AllowUserToDeleteRows = false;
             this.dgvPessoas.AllowUserToOrderColumns = true;
             this.dgvPessoas.AutoGenerateColumns = false;
-            this.dgvPessoas.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvPessoas.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.dgvPessoas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvPessoas.Location = new System.Drawing.Point(10, 167);
+            this.dgvPessoas.Location = new System.Drawing.Point(10, 227);
             this.dgvPessoas.MultiSelect = false;
             this.dgvPessoas.Name = "dgvPessoas";
             this.dgvPessoas.ReadOnly = true;
@@ -255,7 +253,7 @@
             this.tableLayoutPanel1.Controls.Add(this.lblBuscarPor, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.lblBusca, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.txtBusca, 0, 1);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(10, 490);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(10, 550);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 14F));
@@ -302,11 +300,23 @@
             this.txtBusca.TabIndex = 2;
             this.txtBusca.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtBusca_KeyDown);
             // 
+            // pctFotoAtleta
+            // 
+            this.pctFotoAtleta.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pctFotoAtleta.Location = new System.Drawing.Point(3, 43);
+            this.pctFotoAtleta.Name = "pctFotoAtleta";
+            this.pctFotoAtleta.Size = new System.Drawing.Size(115, 115);
+            this.pctFotoAtleta.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pctFotoAtleta.TabIndex = 10;
+            this.pctFotoAtleta.TabStop = false;
+            this.pctFotoAtleta.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pctFotoAtleta_MouseClick);
+            this.pctFotoAtleta.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.pctFotoAtleta_MouseDoubleClick);
+            // 
             // CadPessoa
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(734, 536);
+            this.ClientSize = new System.Drawing.Size(734, 596);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.btnAtualizar);
             this.Controls.Add(this.dgvPessoas);
@@ -327,6 +337,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvPessoas)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pctFotoAtleta)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -353,5 +364,6 @@
         private System.Windows.Forms.Label lblBuscarPor;
         private System.Windows.Forms.Label lblBusca;
         private System.Windows.Forms.TextBox txtBusca;
+        private System.Windows.Forms.PictureBox pctFotoAtleta;
     }
 }

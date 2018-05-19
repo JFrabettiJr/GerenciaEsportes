@@ -14,6 +14,7 @@ namespace SecEsportes.Modelo{
         public string nome { get; set; }
         public DateTime dataNascimento { get; set; }
         public List<Funcao> funcoes { get; set; }
+        public string urlFoto { get; set; }
 
         public Pessoa() { }
 
