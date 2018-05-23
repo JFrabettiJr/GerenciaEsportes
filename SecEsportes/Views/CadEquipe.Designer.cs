@@ -151,6 +151,7 @@
             this.dgvEquipes.AllowUserToAddRows = false;
             this.dgvEquipes.AllowUserToDeleteRows = false;
             this.dgvEquipes.AllowUserToOrderColumns = true;
+            this.dgvEquipes.AutoGenerateColumns = false;
             this.dgvEquipes.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.dgvEquipes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvEquipes.Location = new System.Drawing.Point(10, 222);
