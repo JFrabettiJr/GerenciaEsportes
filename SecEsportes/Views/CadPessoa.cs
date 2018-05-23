@@ -58,6 +58,7 @@ namespace SecEsportes.Views {
             dgvPessoas.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Pessoa.cpf) });
             dgvPessoas.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Pessoa.nome) });
             dgvPessoas.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Pessoa.dataNascimento) });
+            dgvPessoas.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Pessoa.email) });
 
             for (int iCount = 0; iCount < dgvPessoas.Columns.Count; iCount++) {
                 switch (dgvPessoas.Columns[iCount].DataPropertyName) {
@@ -71,6 +72,10 @@ namespace SecEsportes.Views {
                         break;
                     case nameof(Pessoa.dataNascimento):
                         dgvPessoas.Columns[iCount].HeaderText = "Data de nascimento";
+                        dgvPessoas.Columns[iCount].Name = dgvPessoas.Columns[iCount].DataPropertyName;
+                        break;
+                    case nameof(Pessoa.email):
+                        dgvPessoas.Columns[iCount].HeaderText = "E-mail";
                         dgvPessoas.Columns[iCount].Name = dgvPessoas.Columns[iCount].DataPropertyName;
                         break;
                 }
@@ -90,6 +95,7 @@ namespace SecEsportes.Views {
             txtCPF.Text = pessoa.cpf;
             txtNome.Text = pessoa.nome;
             txtDtNascimento.Text = pessoa.dataNascimento.ToString("dd/MM/yyyy");
+            txtEmail.Text = pessoa.email;
             setFuncoesSelecionadas(pessoa.funcoes);
 
             try {
@@ -115,6 +121,7 @@ namespace SecEsportes.Views {
             txtCPF.Text = "";
             txtNome.Text = "";
             txtDtNascimento.Text = "";
+            txtEmail.Text = "";
             clearSelected(chkLstFuncoes);
             clearImage();
         }
@@ -139,6 +146,7 @@ namespace SecEsportes.Views {
                     Pessoa = new Pessoa(txtCPF.Text, txtNome.Text, dataAniversario);
                     Pessoa.funcoes = getFuncoesSelecionadas();
                     Pessoa.urlFoto = pctFotoAtleta.ImageLocation;
+                    Pessoa.email = txtEmail.Text;
                     if (PessoaRepositorio.Instance.insert(ref Pessoa, ref errorMessage)) {
                         pessoas_view.Add(Pessoa);
                         refreshDataGridView();
@@ -156,6 +164,7 @@ namespace SecEsportes.Views {
                         Pessoa.dataNascimento = dataAniversario;
                         Pessoa.funcoes = getFuncoesSelecionadas();
                         Pessoa.urlFoto = pctFotoAtleta.ImageLocation;
+                        Pessoa.email = txtEmail.Text;
                         if (PessoaRepositorio.Instance.update(Pessoa, ref errorMessage)) {
                             pessoas_view[dgvPessoas.SelectedCells[0].RowIndex] = Pessoa;
                             refreshDataGridView();
@@ -276,6 +285,7 @@ namespace SecEsportes.Views {
         private void CadPessoa_Load(object sender, EventArgs e) {
             //Preenche o ComboBox da busca
             cboCamposBusca.Items.Add("Nome");
+            cboCamposBusca.Items.Add("E-mail");
             cboCamposBusca.Items.Add("Ano nascimento");
             cboCamposBusca.Items.Add("Função (Código)");
 
@@ -298,14 +308,17 @@ namespace SecEsportes.Views {
                     case 0: // Nome
                         pessoas_view = pessoas.FindAll(find => find.nome.ToUpper().Contains(textoBusca));
                         break;
-                    case 1: // Ano Nascimento
+                    case 1: // E-mail
+                        pessoas_view = pessoas.FindAll(find => find.email.ToUpper().Contains(textoBusca));
+                        break;
+                    case 2: // Ano Nascimento
                         int anoNascimento;
 
                         if (Int32.TryParse(textoBusca, out anoNascimento)) {
                             pessoas_view = pessoas.FindAll(find => find.dataNascimento.Year == anoNascimento);
                         }
                         break;
-                    case 2: // Função
+                    case 3: // Função
                         pessoas_view = pessoas.FindAll(findPessoas => findPessoas.funcoes.FindAll(findFuncoes => findFuncoes.codigo.ToUpper() == textoBusca).Count > 0);
                         break;
                 }

@@ -29,6 +29,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CadPessoa));
             this.tlpCadFuncao = new System.Windows.Forms.TableLayoutPanel();
+            this.pctFotoAtleta = new System.Windows.Forms.PictureBox();
             this.lblFuncoes = new System.Windows.Forms.Label();
             this.txtCPF = new System.Windows.Forms.MaskedTextBox();
             this.lblDtNascimento = new System.Windows.Forms.Label();
@@ -48,11 +49,12 @@
             this.lblBuscarPor = new System.Windows.Forms.Label();
             this.lblBusca = new System.Windows.Forms.Label();
             this.txtBusca = new System.Windows.Forms.TextBox();
-            this.pctFotoAtleta = new System.Windows.Forms.PictureBox();
+            this.lblEmail = new System.Windows.Forms.Label();
+            this.txtEmail = new System.Windows.Forms.TextBox();
             this.tlpCadFuncao.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pctFotoAtleta)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPessoas)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pctFotoAtleta)).BeginInit();
             this.SuspendLayout();
             // 
             // tlpCadFuncao
@@ -62,6 +64,8 @@
             this.tlpCadFuncao.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 41.17647F));
             this.tlpCadFuncao.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20.58824F));
             this.tlpCadFuncao.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 38.23529F));
+            this.tlpCadFuncao.Controls.Add(this.txtEmail, 1, 4);
+            this.tlpCadFuncao.Controls.Add(this.lblEmail, 1, 3);
             this.tlpCadFuncao.Controls.Add(this.pctFotoAtleta, 0, 2);
             this.tlpCadFuncao.Controls.Add(this.lblFuncoes, 3, 0);
             this.tlpCadFuncao.Controls.Add(this.txtCPF, 0, 1);
@@ -73,13 +77,29 @@
             this.tlpCadFuncao.Controls.Add(this.chkLstFuncoes, 3, 1);
             this.tlpCadFuncao.Location = new System.Drawing.Point(10, 47);
             this.tlpCadFuncao.Name = "tlpCadFuncao";
-            this.tlpCadFuncao.RowCount = 4;
+            this.tlpCadFuncao.RowCount = 7;
             this.tlpCadFuncao.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 14F));
             this.tlpCadFuncao.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
-            this.tlpCadFuncao.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 121F));
+            this.tlpCadFuncao.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 10F));
+            this.tlpCadFuncao.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 14F));
+            this.tlpCadFuncao.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
+            this.tlpCadFuncao.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 71F));
             this.tlpCadFuncao.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 10F));
             this.tlpCadFuncao.Size = new System.Drawing.Size(710, 165);
             this.tlpCadFuncao.TabIndex = 0;
+            // 
+            // pctFotoAtleta
+            // 
+            this.pctFotoAtleta.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pctFotoAtleta.Location = new System.Drawing.Point(3, 43);
+            this.pctFotoAtleta.Name = "pctFotoAtleta";
+            this.tlpCadFuncao.SetRowSpan(this.pctFotoAtleta, 4);
+            this.pctFotoAtleta.Size = new System.Drawing.Size(115, 115);
+            this.pctFotoAtleta.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pctFotoAtleta.TabIndex = 10;
+            this.pctFotoAtleta.TabStop = false;
+            this.pctFotoAtleta.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pctFotoAtleta_MouseClick);
+            this.pctFotoAtleta.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.pctFotoAtleta_MouseDoubleClick);
             // 
             // lblFuncoes
             // 
@@ -171,7 +191,7 @@
             this.chkLstFuncoes.FormattingEnabled = true;
             this.chkLstFuncoes.Location = new System.Drawing.Point(487, 17);
             this.chkLstFuncoes.Name = "chkLstFuncoes";
-            this.tlpCadFuncao.SetRowSpan(this.chkLstFuncoes, 2);
+            this.tlpCadFuncao.SetRowSpan(this.chkLstFuncoes, 5);
             this.chkLstFuncoes.Size = new System.Drawing.Size(220, 139);
             this.chkLstFuncoes.TabIndex = 8;
             this.chkLstFuncoes.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.chkLstFuncoes_ItemCheck);
@@ -300,17 +320,28 @@
             this.txtBusca.TabIndex = 2;
             this.txtBusca.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtBusca_KeyDown);
             // 
-            // pctFotoAtleta
+            // lblEmail
             // 
-            this.pctFotoAtleta.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pctFotoAtleta.Location = new System.Drawing.Point(3, 43);
-            this.pctFotoAtleta.Name = "pctFotoAtleta";
-            this.pctFotoAtleta.Size = new System.Drawing.Size(115, 115);
-            this.pctFotoAtleta.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pctFotoAtleta.TabIndex = 10;
-            this.pctFotoAtleta.TabStop = false;
-            this.pctFotoAtleta.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pctFotoAtleta_MouseClick);
-            this.pctFotoAtleta.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.pctFotoAtleta_MouseDoubleClick);
+            this.lblEmail.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblEmail.AutoSize = true;
+            this.lblEmail.Location = new System.Drawing.Point(124, 50);
+            this.lblEmail.Name = "lblEmail";
+            this.lblEmail.Size = new System.Drawing.Size(236, 14);
+            this.lblEmail.TabIndex = 11;
+            this.lblEmail.Text = "E-mail";
+            // 
+            // txtEmail
+            // 
+            this.txtEmail.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtEmail.Location = new System.Drawing.Point(124, 67);
+            this.txtEmail.Name = "txtEmail";
+            this.txtEmail.Size = new System.Drawing.Size(236, 20);
+            this.txtEmail.TabIndex = 12;
+            this.txtEmail.KeyDown += new System.Windows.Forms.KeyEventHandler(this.fields_KeyDown);
             // 
             // CadPessoa
             // 
@@ -334,10 +365,10 @@
             this.Load += new System.EventHandler(this.CadPessoa_Load);
             this.tlpCadFuncao.ResumeLayout(false);
             this.tlpCadFuncao.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pctFotoAtleta)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPessoas)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pctFotoAtleta)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -365,5 +396,7 @@
         private System.Windows.Forms.Label lblBusca;
         private System.Windows.Forms.TextBox txtBusca;
         private System.Windows.Forms.PictureBox pctFotoAtleta;
+        private System.Windows.Forms.Label lblEmail;
+        private System.Windows.Forms.TextBox txtEmail;
     }
 }

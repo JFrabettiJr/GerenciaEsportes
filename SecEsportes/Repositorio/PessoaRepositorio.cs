@@ -36,7 +36,8 @@ namespace SecEsportes.Repositorio {
                     "cpf NVARCHAR(11) NOT NULL UNIQUE, " +
                     "nome NVARCHAR(100) NOT NULL," +
                     "dataNascimento DateTime, " +
-                    "urlFoto NVARCHAR(300) " +
+                    "urlFoto NVARCHAR(300)," +
+                    "email NVARCHAR(100) " +
                     ") ";
                 command.ExecuteNonQuery();
             }
@@ -374,7 +375,7 @@ namespace SecEsportes.Repositorio {
             try {
                 SQLiteConnection connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection();
                 pessoa.id = connection.Query<int>("" +
-                    "INSERT INTO pessoa (CPF, Nome, DataNascimento, urlFoto) VALUES (@CPF, @Nome, @DataNascimento, @urlFoto); select last_insert_rowid()",
+                    "INSERT INTO pessoa (CPF, Nome, DataNascimento, urlFoto, email) VALUES (@CPF, @Nome, @DataNascimento, @urlFoto, @email); select last_insert_rowid()",
                     pessoa).First();
 
                 // Insere as funções
@@ -393,7 +394,7 @@ namespace SecEsportes.Repositorio {
             try {
                 SQLiteConnection connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection();
                 connection.Query(
-                    "UPDATE pessoa SET CPF = @CPF, Nome = @Nome, DataNascimento = @DataNascimento, urlFoto = @urlFoto WHERE id = @id", pessoa);
+                    "UPDATE pessoa SET CPF = @CPF, Nome = @Nome, DataNascimento = @DataNascimento, urlFoto = @urlFoto, email = @email WHERE id = @id", pessoa);
 
                 // Atualiza as funções
                 string funcoesStr = "";

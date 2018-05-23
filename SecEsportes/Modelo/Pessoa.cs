@@ -15,13 +15,21 @@ namespace SecEsportes.Modelo{
         public DateTime dataNascimento { get; set; }
         public List<Funcao> funcoes { get; set; }
         public string urlFoto { get; set; }
+        public string email { get; set; }
 
-        public Pessoa() { }
+        public Pessoa() {
+            urlFoto = "";
+            email = "";
+            funcoes = new List<Funcao>();
+        }
 
         public Pessoa(string cpf, string nome, DateTime dataNascimento){
             this.cpf = cpf;
             this.nome = nome;
             this.dataNascimento = dataNascimento;
+            urlFoto = "";
+            email = "";
+            funcoes = new List<Funcao>();
         }
 
         public override string ToString() {
