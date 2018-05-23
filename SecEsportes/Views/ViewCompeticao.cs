@@ -16,6 +16,9 @@ namespace SecEsportes.Views
         private Competicao competicao;
         private List<Atleta_List_Artilheiro> artilheiros;
         private string errorMessage = "";
+        private List<List<Competicao_Partida>> partidasPorRodada;
+        private List<List<Competicao_Partida>> partidasPorRodada_view;
+        private List<DataGridView> dgvRodadas;
 
         private Usuario usuarioLogado;
 
@@ -43,14 +46,20 @@ namespace SecEsportes.Views
             tcPartidas.Controls.Clear();
             tcAbas.SelectedTab = tpPartidas;
 
+            dgvRodadas = new List<DataGridView>();
+            partidasPorRodada = new List<List<Competicao_Partida>>();
             int numRodadas = CompeticaoRepositorio.Instance.getNumRodadas(competicao);
             for (int numRodada = 0; numRodada < numRodadas; numRodada++) {
-                DataGridView dgvRodadas = CompeticaoViewUtilidades.criaAba("Rodada " + (numRodada + 1).ToString(), numRodada, tcPartidas, dgvPartidas_CellMouseClick);
-                dgvRodadas.Tag = numRodada + 1;
-                dgvRodadas.CellMouseDoubleClick += dgvRodadas_CellMouseDoubleClick;
+                DataGridView dgvRodada = CompeticaoViewUtilidades.criaAba("Rodada " + (numRodada + 1).ToString(), numRodada, tcPartidas, dgvPartidas_CellMouseClick);
+                dgvRodada.Tag = numRodada + 1;
+                dgvRodada.CellMouseDoubleClick += dgvRodadas_CellMouseDoubleClick;
+
+                dgvRodadas.Add(dgvRodada);
 
                 List<Competicao_Partida> partidas = competicao.partidas.FindAll(partidasAEncontrar => partidasAEncontrar.rodada == numRodada + 1);
-                CompeticaoViewUtilidades.refreshDataGridViewRodadas(dgvRodadas, partidas, competicao, numRodada);
+                CompeticaoViewUtilidades.refreshDataGridViewRodadas(dgvRodada, partidas, competicao, numRodada);
+
+                partidasPorRodada.Add(partidas);
             }
 
             // Cria as abas das partidas da fase final
@@ -121,15 +130,18 @@ namespace SecEsportes.Views
                         }
                         break;
                 }
-                DataGridView dgvRodadas = CompeticaoViewUtilidades.criaAba(nomeAba, numRodada, tcPartidas);
-                dgvRodadas.Tag = numRodada;
-                dgvRodadas.CellMouseDoubleClick += dgvRodadas_CellMouseDoubleClick;
+                DataGridView dgvRodada = CompeticaoViewUtilidades.criaAba(nomeAba, numRodada, tcPartidas);
+                dgvRodada.Tag = numRodada;
+                dgvRodada.CellMouseDoubleClick += dgvRodadas_CellMouseDoubleClick;
+                dgvRodadas.Add(dgvRodada);
 
                 List<Competicao_Partida> partidas = competicao.partidas.FindAll(partidasAEncontrar => partidasAEncontrar.rodada == numRodada);
+                partidasPorRodada.Add(partidas);
 
-                CompeticaoViewUtilidades.refreshDataGridViewRodadas(dgvRodadas, partidas, competicao, numRodada);
+                CompeticaoViewUtilidades.refreshDataGridViewRodadas(dgvRodada, partidas, competicao, numRodada);
             }
 
+            partidasPorRodada_view = new List<List<Competicao_Partida>>(partidasPorRodada);
 
             if (competicao.status == StatusEnum._0_Encerrada)
                 btnProximaFase.Enabled = false;
@@ -188,6 +200,12 @@ namespace SecEsportes.Views
             }
 
             tcAbas.SelectedIndex = 0;
+
+            //Preenche o ComboBox da busca
+            cboCamposBusca.Items.Clear();
+            cboCamposBusca.Items.Add("Equipe");
+
+            cboCamposBusca.SelectedIndex = 0;
 
         }
 
@@ -562,6 +580,37 @@ namespace SecEsportes.Views
         private void btnGerarHTML_Artilheiros_Click(object sender, EventArgs e) {
             RelatorioHTML.relatorioArtilheiros(competicao, artilheiros,
                 MessageBox.Show("Gostaria de exibir a foto dos artilheiros no relatório de artilharia?", String.Format("{0} - Relatório de artilharia", competicao.nome), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
+        }
+
+        private void busca() {
+            string textoBusca = txtBusca.Text.ToUpper();
+
+            if (textoBusca.Length == 0) {
+                partidasPorRodada_view = new List<List<Competicao_Partida>>(partidasPorRodada);
+            } else {
+                switch (cboCamposBusca.SelectedIndex) {
+                    case 0: // Equipe
+                        // Percorre todas as rodadas
+                        for (int iCount = 0; iCount < partidasPorRodada.Count; iCount++) {
+                            partidasPorRodada_view[iCount] = partidasPorRodada[iCount].FindAll(find => find.equipe1.nome.ToUpper().Contains(textoBusca) || find.equipe2.nome.ToUpper().Contains(textoBusca));
+                        }
+                        break;
+                }
+            }
+
+            for (int iCount = 0; iCount < partidasPorRodada.Count; iCount++) {
+                int numRodada = Convert.ToInt32(dgvRodadas[iCount].Tag);
+                if (numRodada >= 0)
+                    numRodada--;
+
+                CompeticaoViewUtilidades.refreshDataGridViewRodadas(dgvRodadas[iCount], partidasPorRodada_view[iCount], competicao, numRodada);
+            }
+        }
+
+        private void txtBusca_KeyDown(object sender, KeyEventArgs e) {
+            if (e.KeyCode == Keys.Enter) {
+                busca();
+            }
         }
     }
 }
