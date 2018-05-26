@@ -64,6 +64,7 @@
             this.btnVoltar = new System.Windows.Forms.Button();
             this.btnGerarPartidas = new System.Windows.Forms.Button();
             this.btnVisaoGeral = new System.Windows.Forms.Button();
+            this.btnArbitros = new System.Windows.Forms.Button();
             this.tlp1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvEquipes)).BeginInit();
             this.tlp2.SuspendLayout();
@@ -450,7 +451,7 @@
             // 
             this.btnIncluirEquipes.Location = new System.Drawing.Point(10, 141);
             this.btnIncluirEquipes.Name = "btnIncluirEquipes";
-            this.btnIncluirEquipes.Size = new System.Drawing.Size(122, 23);
+            this.btnIncluirEquipes.Size = new System.Drawing.Size(90, 23);
             this.btnIncluirEquipes.TabIndex = 12;
             this.btnIncluirEquipes.Text = "Incluir equipes";
             this.btnIncluirEquipes.UseVisualStyleBackColor = true;
@@ -458,9 +459,9 @@
             // 
             // btnExcluirEquipe
             // 
-            this.btnExcluirEquipe.Location = new System.Drawing.Point(138, 141);
+            this.btnExcluirEquipe.Location = new System.Drawing.Point(105, 141);
             this.btnExcluirEquipe.Name = "btnExcluirEquipe";
-            this.btnExcluirEquipe.Size = new System.Drawing.Size(122, 23);
+            this.btnExcluirEquipe.Size = new System.Drawing.Size(90, 23);
             this.btnExcluirEquipe.TabIndex = 13;
             this.btnExcluirEquipe.Text = "Excluir equipe";
             this.btnExcluirEquipe.UseVisualStyleBackColor = true;
@@ -468,9 +469,9 @@
             // 
             // btnGerarGrupos
             // 
-            this.btnGerarGrupos.Location = new System.Drawing.Point(598, 141);
+            this.btnGerarGrupos.Location = new System.Drawing.Point(430, 141);
             this.btnGerarGrupos.Name = "btnGerarGrupos";
-            this.btnGerarGrupos.Size = new System.Drawing.Size(122, 23);
+            this.btnGerarGrupos.Size = new System.Drawing.Size(90, 23);
             this.btnGerarGrupos.TabIndex = 14;
             this.btnGerarGrupos.Text = "Gerar grupos";
             this.btnGerarGrupos.UseVisualStyleBackColor = true;
@@ -488,9 +489,9 @@
             // 
             // btnGerarPartidas
             // 
-            this.btnGerarPartidas.Location = new System.Drawing.Point(470, 141);
+            this.btnGerarPartidas.Location = new System.Drawing.Point(335, 141);
             this.btnGerarPartidas.Name = "btnGerarPartidas";
-            this.btnGerarPartidas.Size = new System.Drawing.Size(122, 23);
+            this.btnGerarPartidas.Size = new System.Drawing.Size(90, 23);
             this.btnGerarPartidas.TabIndex = 16;
             this.btnGerarPartidas.Text = "Gerar partidas";
             this.btnGerarPartidas.UseVisualStyleBackColor = true;
@@ -498,19 +499,30 @@
             // 
             // btnVisaoGeral
             // 
-            this.btnVisaoGeral.Location = new System.Drawing.Point(266, 141);
+            this.btnVisaoGeral.Location = new System.Drawing.Point(545, 141);
             this.btnVisaoGeral.Name = "btnVisaoGeral";
-            this.btnVisaoGeral.Size = new System.Drawing.Size(198, 23);
+            this.btnVisaoGeral.Size = new System.Drawing.Size(175, 23);
             this.btnVisaoGeral.TabIndex = 17;
             this.btnVisaoGeral.Text = "Visão geral do campeonato";
             this.btnVisaoGeral.UseVisualStyleBackColor = true;
             this.btnVisaoGeral.Click += new System.EventHandler(this.btnVisaoGeral_Click);
+            // 
+            // btnArbitros
+            // 
+            this.btnArbitros.Location = new System.Drawing.Point(220, 141);
+            this.btnArbitros.Name = "btnArbitros";
+            this.btnArbitros.Size = new System.Drawing.Size(90, 23);
+            this.btnArbitros.TabIndex = 18;
+            this.btnArbitros.Text = "Árbitros";
+            this.btnArbitros.UseVisualStyleBackColor = true;
+            this.btnArbitros.Click += new System.EventHandler(this.btnArbitros_Click);
             // 
             // EditCompeticao
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(734, 536);
+            this.Controls.Add(this.btnArbitros);
             this.Controls.Add(this.btnVisaoGeral);
             this.Controls.Add(this.btnGerarPartidas);
             this.Controls.Add(this.btnVoltar);
@@ -582,5 +594,6 @@
         private System.Windows.Forms.Button btnVoltar;
         private System.Windows.Forms.Button btnGerarPartidas;
         private System.Windows.Forms.Button btnVisaoGeral;
+        private System.Windows.Forms.Button btnArbitros;
     }
 }

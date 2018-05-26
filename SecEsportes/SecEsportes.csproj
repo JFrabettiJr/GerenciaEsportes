@@ -275,6 +275,7 @@
     <Compile Include="Infraestrutura\FileManagement.cs" />
     <Compile Include="Infraestrutura\SQLiteDatabase.cs" />
     <Compile Include="Infraestrutura\Utilidades.cs" />
+    <Compile Include="Modelo\Pessoa_Insert.cs" />
     <Compile Include="Modelo\Atleta_List_Artilheiro.cs" />
     <Compile Include="Modelo\Atleta_Insert.cs" />
     <Compile Include="Modelo\Atleta.cs" />
@@ -302,6 +303,24 @@
     </Compile>
     <Compile Include="Views\CadUsuario.Designer.cs">
       <DependentUpon>CadUsuario.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SetArbitro.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\SetArbitro.Designer.cs">
+      <DependentUpon>SetArbitro.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditArbitros.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\EditArbitros.Designer.cs">
+      <DependentUpon>EditArbitros.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\InsertArbitro.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\InsertArbitro.Designer.cs">
+      <DependentUpon>InsertArbitro.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\ViewPartida.cs">
       <SubType>Form</SubType>
@@ -381,6 +400,15 @@
     </Compile>
     <EmbeddedResource Include="Views\CadUsuario.resx">
       <DependentUpon>CadUsuario.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\SetArbitro.resx">
+      <DependentUpon>SetArbitro.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\EditArbitros.resx">
+      <DependentUpon>EditArbitros.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\InsertArbitro.resx">
+      <DependentUpon>InsertArbitro.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ViewPartida.resx">
       <DependentUpon>ViewPartida.cs</DependentUpon>

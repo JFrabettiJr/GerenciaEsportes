@@ -328,12 +328,13 @@ namespace SecEsportes.Infraestrutura
             dgvRodada.DataSource = dataSource;
 
             if (!(dataSource is null)) {
-                dgvRodada.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Competicao_Partida.data) });
+                dgvRodada.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "Data_view" });
 
                 dgvRodada.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "Nome_Grupo_Jogo" });
                 dgvRodada.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "Jogo" });
                 dgvRodada.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "NomeEquipe1" });
                 dgvRodada.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "NomeEquipe2" });
+                dgvRodada.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "Arbitro_Partida" });
                 dgvRodada.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()  { Style = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleRight } }) { DataPropertyName = "PtsEquipe1" });
                 dgvRodada.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()  { Style = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleLeft } }) { DataPropertyName = "PtsEquipe2" });
                 dgvRodada.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()  { Style = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleCenter } }) { DataPropertyName = "Vs" });
@@ -347,43 +348,57 @@ namespace SecEsportes.Infraestrutura
                         else
                             dgvRodada.Columns[iCount].HeaderText = "Grupo"; 
                         dgvRodada.Columns[iCount].Name = dgvRodada.Columns[iCount].DataPropertyName;
+                        dgvRodada.Columns[iCount].ReadOnly = true;
                         dgvRodada.Columns[iCount].DisplayIndex = 0;
                         break;
-                    case nameof(Competicao_Partida.data):
+                    case "Data_view":
                         dgvRodada.Columns[iCount].HeaderText = "Data";
                         dgvRodada.Columns[iCount].Name = dgvRodada.Columns[iCount].DataPropertyName;
                         dgvRodada.Columns[iCount].DisplayIndex = 1;
+                        dgvRodada.Columns[iCount].ValueType = Type.GetType("System.String");
                         break;
                     case "NomeEquipe1":
                         dgvRodada.Columns[iCount].HeaderText = "Casa";
                         dgvRodada.Columns[iCount].Name = dgvRodada.Columns[iCount].DataPropertyName;
                         dgvRodada.Columns[iCount].DisplayIndex = 2;
+                        dgvRodada.Columns[iCount].ReadOnly = true;
                         break;
                     case "PtsEquipe1":
                         dgvRodada.Columns[iCount].HeaderText = " ";
                         dgvRodada.Columns[iCount].Name = dgvRodada.Columns[iCount].DataPropertyName;
                         dgvRodada.Columns[iCount].Width = 30;
                         dgvRodada.Columns[iCount].DisplayIndex = 3;
+                        dgvRodada.Columns[iCount].ReadOnly = true;
                         break;
                     case "Vs":
                         dgvRodada.Columns[iCount].HeaderText = "X";
                         dgvRodada.Columns[iCount].Name = dgvRodada.Columns[iCount].DataPropertyName;
                         dgvRodada.Columns[iCount].Width = 20;
                         dgvRodada.Columns[iCount].DisplayIndex = 4;
+                        dgvRodada.Columns[iCount].ReadOnly = true;
                         break;
                     case "PtsEquipe2":
                         dgvRodada.Columns[iCount].HeaderText = " ";
                         dgvRodada.Columns[iCount].Name = dgvRodada.Columns[iCount].DataPropertyName;
                         dgvRodada.Columns[iCount].Width = 30;
                         dgvRodada.Columns[iCount].DisplayIndex = 5;
+                        dgvRodada.Columns[iCount].ReadOnly = true;
                         break;
                     case "NomeEquipe2":
                         dgvRodada.Columns[iCount].HeaderText = "Visitante";
                         dgvRodada.Columns[iCount].Name = dgvRodada.Columns[iCount].DataPropertyName;
                         dgvRodada.Columns[iCount].DisplayIndex = 6;
+                        dgvRodada.Columns[iCount].ReadOnly = true;
+                        break;
+                    case "Arbitro_Partida":
+                        dgvRodada.Columns[iCount].HeaderText = "Árbitro";
+                        dgvRodada.Columns[iCount].Name = dgvRodada.Columns[iCount].DataPropertyName;
+                        dgvRodada.Columns[iCount].DisplayIndex = 7;
+                        dgvRodada.Columns[iCount].ReadOnly = true;
                         break;
                     default:
                         dgvRodada.Columns[iCount].Visible = false;
+                        dgvRodada.Columns[iCount].ReadOnly = true;
                         break;
                 }
             }
@@ -400,7 +415,10 @@ namespace SecEsportes.Infraestrutura
                 dgvRodada.Rows[iCount].Cells["Vs"].Value = "X";
                 dgvRodada.Rows[iCount].Cells["NomeEquipe1"].Value = dataSource[iCount].equipe1.nome;
                 dgvRodada.Rows[iCount].Cells["NomeEquipe2"].Value = dataSource[iCount].equipe2.nome;
-                dgvRodada.Rows[iCount].Cells[nameof(Competicao_Partida.data)].Value = dataSource[iCount].data.ToString("dd/MM/yyyy");
+                if (dataSource[iCount].data is null)
+                    dgvRodada.Rows[iCount].Cells["Data_view"].Value = ""; 
+                else
+                    dgvRodada.Rows[iCount].Cells["Data_view"].Value = ((DateTime)dataSource[iCount].data).ToString("dd/MM/yyyy");
 
                 // Pinta de negrito a equipe vencedora
                 DataGridViewCellStyle dataGridViewCellStyle = new DataGridViewCellStyle(dgvRodada.Rows[iCount].DefaultCellStyle);
@@ -453,6 +471,11 @@ namespace SecEsportes.Infraestrutura
                     }
                 }
 
+                // Árbitro
+                if (dataSource[iCount].arbitro is null)
+                    dgvRodada.Rows[iCount].Cells["Arbitro_Partida"].Value = "";
+                else
+                    dgvRodada.Rows[iCount].Cells["Arbitro_Partida"].Value = dataSource[iCount].arbitro.pessoa.nome;
             }
 
             dgvRodada.Refresh();

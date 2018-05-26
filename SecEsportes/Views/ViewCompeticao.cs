@@ -19,6 +19,7 @@ namespace SecEsportes.Views
         private List<List<Competicao_Partida>> partidasPorRodada;
         private List<List<Competicao_Partida>> partidasPorRodada_view;
         private List<DataGridView> dgvRodadas;
+        private SetArbitro setArbitroForm;
 
         private Usuario usuarioLogado;
 
@@ -52,6 +53,8 @@ namespace SecEsportes.Views
             for (int numRodada = 0; numRodada < numRodadas; numRodada++) {
                 DataGridView dgvRodada = CompeticaoViewUtilidades.criaAba("Rodada " + (numRodada + 1).ToString(), numRodada, tcPartidas, dgvPartidas_CellMouseClick);
                 dgvRodada.Tag = numRodada + 1;
+                dgvRodada.ReadOnly = false;
+                dgvRodada.CellEndEdit += dgvRodada_CellEndEdit;
                 dgvRodada.CellMouseDoubleClick += dgvRodadas_CellMouseDoubleClick;
 
                 dgvRodadas.Add(dgvRodada);
@@ -133,6 +136,8 @@ namespace SecEsportes.Views
                 DataGridView dgvRodada = CompeticaoViewUtilidades.criaAba(nomeAba, numRodada, tcPartidas);
                 dgvRodada.Tag = numRodada;
                 dgvRodada.CellMouseDoubleClick += dgvRodadas_CellMouseDoubleClick;
+                dgvRodada.ReadOnly = false;
+                dgvRodada.CellEndEdit += dgvRodada_CellEndEdit;
                 dgvRodadas.Add(dgvRodada);
 
                 List<Competicao_Partida> partidas = competicao.partidas.FindAll(partidasAEncontrar => partidasAEncontrar.rodada == numRodada);
@@ -209,6 +214,30 @@ namespace SecEsportes.Views
 
         }
 
+        private void dgvRodada_CellEndEdit(object sender, DataGridViewCellEventArgs e) {
+            if (e.RowIndex > -1) {
+                DataGridView dataGridView = (DataGridView)sender;
+                Competicao_Partida partida = partidasPorRodada_view[tcPartidas.SelectedIndex][e.RowIndex];
+
+                string strData = dataGridView.Rows[e.RowIndex].Cells["Data_view"].Value.ToString();
+                DateTime dataPartida = new DateTime();
+                if (DateTime.TryParseExact(strData, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dataPartida)) {
+                    if (dataPartida.Date >= DateTime.Now.Date) {
+                        partida.data = dataPartida;
+                        partidasPorRodada_view[tcPartidas.SelectedIndex][e.RowIndex].data = dataPartida;
+                        partidasPorRodada[tcPartidas.SelectedIndex].Find(find => find.id == partida.id).data = dataPartida;
+
+                        CompeticaoRepositorio.Instance.updatePartida(ref competicao, partida);
+
+                        return;
+                    }
+                }
+
+                dataGridView.Rows[e.RowIndex].Cells["Data_view"].Value = "";
+
+            }
+        }
+
         private void dgvPartidas_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
             if (e.RowIndex > -1 && e.ColumnIndex > -1) {
                 if (e.Button == MouseButtons.Right) {
@@ -235,6 +264,30 @@ namespace SecEsportes.Views
                     menuItem.Enabled = !partida.encerrada;
                     contextMenu.MenuItems.Add(menuItem);
 
+                    menuItem = new MenuItem("Definir árbitro da partida");
+                    menuItem.Click += (_sender, _e) => {
+                        setArbitroForm = new SetArbitro(usuarioLogado, competicao, partida);
+
+                        setArbitroForm.FormClosing += (__sender, __e) => {
+                            if (!(setArbitroForm.arbitroSelecionado is null)) {
+                                partida.arbitro = setArbitroForm.arbitroSelecionado;
+                                partida.id_Arbitro = setArbitroForm.arbitroSelecionado.pessoa.id;
+
+                                CompeticaoRepositorio.Instance.updatePartida(ref competicao, partida);
+
+                                int numRodada = Convert.ToInt32(Convert.ToInt32(dataGridView.Tag));
+                                if (numRodada >= 0)
+                                    numRodada--;
+                                CompeticaoViewUtilidades.refreshDataGridViewRodadas(dataGridView, partidas, competicao, numRodada);
+                            }
+                        };
+
+                        setArbitroForm.ShowDialog();
+                    };
+                    menuItem.Tag = new List<Object>() { competicao, partida, dataGridView, partidas };
+                    menuItem.Enabled = !partida.encerrada;
+                    contextMenu.MenuItems.Add(menuItem);
+
                     // Define onde será aberto o menu de contexto
                     contextMenu.Show(dataGridView, new Point(dataGridView.RowHeadersWidth, dataGridView.ColumnHeadersHeight));
                 }
@@ -247,16 +300,26 @@ namespace SecEsportes.Views
             DataGridView dataGridView = (DataGridView)(((List<Object>)((MenuItem)sender).Tag)[2]);
             List<Competicao_Partida> partidas = (List<Competicao_Partida>)(((List<Object>)((MenuItem)sender).Tag)[3]);
 
-            if (partida.equipe1.atletas is null)
-                partida.equipe1.atletas = PessoaRepositorio.Instance.getAtletasByEquipeCompeticao(competicao.id, partida.equipe1.id);
+            if (partida.data is null)
+                MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
+                String.Format("Não foi possível importar a planilhada da partida entre {0} e {1} pois não foi definida uma data para a realização da partida", partida.equipe1.nome, partida.equipe2.nome),
+                String.Format("{0} - {1} x {2}", competicao.nome, partida.equipe1.nome, partida.equipe2.nome), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            else if (partida.arbitro is null)
+                MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
+                String.Format("Não foi possível realizar a partida entre {0} e {1} pois não foi definido o árbitro da partida", partida.equipe1.nome, partida.equipe2.nome),
+                String.Format("{0} - {1} x {2}", competicao.nome, partida.equipe1.nome, partida.equipe2.nome), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            else {
+                if (partida.equipe1.atletas is null)
+                    partida.equipe1.atletas = PessoaRepositorio.Instance.getAtletasByEquipeCompeticao(competicao.id, partida.equipe1.id);
 
-            if (partida.equipe2.atletas is null)
-                partida.equipe2.atletas = PessoaRepositorio.Instance.getAtletasByEquipeCompeticao(competicao.id, partida.equipe2.id);
+                if (partida.equipe2.atletas is null)
+                    partida.equipe2.atletas = PessoaRepositorio.Instance.getAtletasByEquipeCompeticao(competicao.id, partida.equipe2.id);
 
-            partida = GerenciadorCSV.importarPlanilha(competicao, partida);
+                partida = GerenciadorCSV.importarPlanilha(competicao, partida);
 
-            if (!(partida is null)) {
-                abrePartida(partida, dataGridView, partidas, true);
+                if (!(partida is null)) {
+                    abrePartida(partida, dataGridView, partidas, true);
+                }
             }
 
         }
@@ -265,13 +328,24 @@ namespace SecEsportes.Views
             Competicao competicao = (Competicao)(((List<Object>)((MenuItem)sender).Tag)[0]);
             Competicao_Partida partida = (Competicao_Partida)(((List<Object>)((MenuItem)sender).Tag)[1]);
 
-            if (partida.equipe1.atletas is null)
-                partida.equipe1.atletas = PessoaRepositorio.Instance.getAtletasByEquipeCompeticao(competicao.id, partida.equipe1.id);
+            if (partida.data is null)
+                MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
+                String.Format("Não foi possível exportar a planilha da partida entre {0} e {1} pois não foi definida uma data para a realização da partida", partida.equipe1.nome, partida.equipe2.nome),
+                String.Format("{0} - {1} x {2}", competicao.nome, partida.equipe1.nome, partida.equipe2.nome), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            else if (partida.arbitro is null)
+                MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
+                String.Format("Não foi possível realizar a partida entre {0} e {1} pois não foi definido o árbitro da partida", partida.equipe1.nome, partida.equipe2.nome),
+                String.Format("{0} - {1} x {2}", competicao.nome, partida.equipe1.nome, partida.equipe2.nome), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            else {
 
-            if (partida.equipe2.atletas is null)
-                partida.equipe2.atletas = PessoaRepositorio.Instance.getAtletasByEquipeCompeticao(competicao.id, partida.equipe2.id);
+                if (partida.equipe1.atletas is null)
+                    partida.equipe1.atletas = PessoaRepositorio.Instance.getAtletasByEquipeCompeticao(competicao.id, partida.equipe1.id);
 
-            GerenciadorCSV.exportarPlanilha(competicao, partida);
+                if (partida.equipe2.atletas is null)
+                    partida.equipe2.atletas = PessoaRepositorio.Instance.getAtletasByEquipeCompeticao(competicao.id, partida.equipe2.id);
+
+                GerenciadorCSV.exportarPlanilha(competicao, partida);
+            }
         }
 
         private void dgvRodadas_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e) {
@@ -281,7 +355,16 @@ namespace SecEsportes.Views
                 List<Competicao_Partida> partidas = competicao.partidas.FindAll(partidasAEncontrar => partidasAEncontrar.rodada == numRodada);
                 Competicao_Partida partida = partidas[e.RowIndex];
 
-                abrePartida(partida, (DataGridView) sender, partidas, false);
+                if (partida.data is null)
+                    MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
+                    String.Format("Não foi possível realizar a partida entre {0} e {1} pois não foi definida uma data para a realização da partida", partida.equipe1.nome, partida.equipe2.nome),
+                    String.Format("{0} - {1} x {2}", competicao.nome, partida.equipe1.nome, partida.equipe2.nome), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                else if (partida.arbitro is null)
+                    MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
+                    String.Format("Não foi possível realizar a partida entre {0} e {1} pois não foi definido o árbitro da partida", partida.equipe1.nome, partida.equipe2.nome),
+                    String.Format("{0} - {1} x {2}", competicao.nome, partida.equipe1.nome, partida.equipe2.nome), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                else
+                    abrePartida(partida, (DataGridView)sender, partidas, false);
 
             }
         }

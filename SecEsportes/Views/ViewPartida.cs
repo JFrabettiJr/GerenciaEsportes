@@ -255,7 +255,6 @@ namespace SecEsportes.Views {
 
             partidaIniciada = false;
             partida.encerrada = true;
-            partida.data = DateTime.Now;;
             CompeticaoRepositorio.Instance.updatePartida(ref competicao, partida);
 
             load(null, null);

@@ -276,13 +276,48 @@ namespace SecEsportes.Repositorio {
                 return null;
             }
         }
+        public List<Pessoa_Insert> getArbitrosForaCompeticao(int idCompeticao, ref string errorMessage) {
+            try {
+                using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
+                    connection.Open();
+
+                    string strSQL;
+                    strSQL =    "SELECT 0 As Selected, pessoa.id as id_pessoa, Pessoa_Funcoes.id_funcao " +
+                                "FROM   Pessoa " +
+                                "       INNER JOIN Pessoa_Funcoes ON Pessoa.id = Pessoa_Funcoes.id_Pessoa " +
+                                "WHERE   1 = 1 " +
+                                "        AND Pessoa_Funcoes.id_Funcao IN(SELECT  id " +
+                                "                                        FROM    Funcao WHERE codigo = @codigoArbitro) " +
+                                "        AND Pessoa.id NOT IN(  SELECT  id_Arbitro " +
+                                "                               FROM    Competicao_Arbitragem " +
+                                "                               WHERE   Competicao_Arbitragem.id_Competicao = @idCompeticao) " +
+                                "ORDER BY  Pessoa.Nome";
+
+                    List<Pessoa_Insert> arbitros = connection.Query<Pessoa_Insert>(strSQL,
+                        new {
+                            FuncaoRepositorio.Instance.codigoArbitro,
+                            idCompeticao
+                        }).ToList();
+
+                    foreach (Cargo arbitro in arbitros) {
+                        arbitro.funcao = FuncaoRepositorio.Instance.get(arbitro.id_funcao);
+                        arbitro.pessoa = PessoaRepositorio.Instance.get(arbitro.id_pessoa);
+                    }
+
+                    return arbitros;
+                }
+            } catch (Exception ex) {
+                errorMessage = ex.Message;
+                return null;
+            }
+        }
         public Cargo getCargo(int id_Pessoa) {
             try {
                 using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
                     connection.Open();
 
                     string strSQL;
-                    strSQL = "SELECT pessoa.id AS id_pessoa, Pessoa_Funcoes.id_Funcao " +
+                    strSQL =    "SELECT pessoa.id AS id_pessoa, Pessoa_Funcoes.id_Funcao " +
                                 "FROM   pessoa " +
                                 "       INNER JOIN Pessoa_Funcoes ON Pessoa.id = Pessoa_Funcoes.id_Pessoa " +
                                 "WHERE  Pessoa.id = @id_Pessoa ";

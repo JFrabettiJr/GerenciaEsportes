@@ -24,14 +24,27 @@ namespace SecEsportes.Infraestrutura {
             conteudoCSV.AppendFormat("{0}", partida.id).AppendLine().AppendLine(); // Linha 5
             /*  idPartida = A5 - [4, 0]  */
 
+            // Data da partida
+            conteudoCSV.AppendLine("dataPartida"); // Linha 7
+            if (partida.data is null)
+                conteudoCSV.AppendFormat("{0}", "").AppendLine().AppendLine(); // Linha 8
+            else
+                conteudoCSV.AppendFormat("{0}", ((DateTime)partida.data).ToString("dd/MM/yyyy")).AppendLine().AppendLine(); // Linha 8
+            /*  dataPartida = A8 - [7, 0]   */
+
+            // Árbitro
+            conteudoCSV.AppendLine("idArbito;Arbitro"); // Linha 10
+            conteudoCSV.AppendFormat("{0};{1}", (partida.arbitro is null ? 0 : partida.arbitro.pessoa.id), (partida.arbitro is null ? "" : partida.arbitro.pessoa.nome)).AppendLine().AppendLine();  // Linha 11
+            /*  idCompeticao = A11 - [10, 0]   */
+
             // Equipes
-            conteudoCSV.AppendLine("idEquipe1;Equipe 1; ;idEquipe2;Equipe 2"); // Linha 7
-            conteudoCSV.AppendFormat("{0};{1};;{2};{3}", partida.equipe1.id, partida.equipe1.nome, partida.equipe2.id, partida.equipe2.nome).AppendLine().AppendLine(); // Linha 8
-            /*  idEquipe1 = A8 - [7, 0]
-             *  idEquipe2 = D8 - [7, 3] */
+            conteudoCSV.AppendLine("idEquipe1;Equipe 1; ;idEquipe2;Equipe 2"); // Linha 13
+            conteudoCSV.AppendFormat("{0};{1};;{2};{3}", partida.equipe1.id, partida.equipe1.nome, partida.equipe2.id, partida.equipe2.nome).AppendLine().AppendLine(); // Linha 14
+            /*  idEquipe1 = A14 - [13, 0]
+             *  idEquipe2 = D14 - [13, 3] */
 
             // Atletas
-            conteudoCSV.AppendLine("idAtleta;numAtleta;Atleta;Gol;Gol Penalti;Cartao Amarelo;Cartao Vermelho;;idAtleta;numAtleta;Atleta;Gol;Gol Penalti;Cartao Amarelo;Cartao Vermelho"); // Linha 10
+            conteudoCSV.AppendLine("idAtleta;numAtleta;Atleta;Gol;Gol Penalti;Cartao Amarelo;Cartao Vermelho;;idAtleta;numAtleta;Atleta;Gol;Gol Penalti;Cartao Amarelo;Cartao Vermelho"); // Linha 16
 
             int numLinhas = (partida.equipe1.atletas.Count > partida.equipe2.atletas.Count ? partida.equipe1.atletas.Count : partida.equipe2.atletas.Count);
             for (int iCount = 0; iCount < numLinhas; iCount++) {
@@ -127,7 +140,7 @@ namespace SecEsportes.Infraestrutura {
                                 }
                                 break;
 
-                            case 7: // Linha do id das equipes
+                            case 13: // Linha do id das equipes
                                 if (Convert.ToInt32(line[0]) != partida.equipe1.id) {
                                     throw new Exception(String.Format("{0} x {1} - Não foi possível importar a planilha da partida" +
                                         Environment.NewLine + Environment.NewLine + "O id da equipe 1 na planilha ({2}) está diferente do id da equipe 1 ({3}).",
@@ -142,7 +155,7 @@ namespace SecEsportes.Infraestrutura {
                                 break;
 
                             default:
-                                if (numLinha >= 10 && line.Count == 15) {
+                                if (numLinha >= 16 && line.Count == 15) {
                                     List<string> infoEquipe1 = line.GetRange(0, 7);
                                     List<string> infoEquipe2 = line.GetRange(8, 7);
 

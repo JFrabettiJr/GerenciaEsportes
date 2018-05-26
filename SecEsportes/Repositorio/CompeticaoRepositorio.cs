@@ -75,6 +75,7 @@ namespace SecEsportes.Repositorio {
                                         "    id_Competicao INTEGER, " +
                                         "    id_Equipe1 INTEGER, " +
                                         "    id_Equipe2 INTEGER, " +
+                                        "    id_Arbitro INTEGER, " +
                                         "    Data DATETIME, " +
                                         "    Rodada INT, /* > 0 Representa o nº da Rodada | < 0 Representa MataMata (-1 Final, -2 SemiFinal, -3 Quartas de final, etc.)*/ " +
                                         "    numGrupo INT, " +
@@ -99,6 +100,20 @@ namespace SecEsportes.Repositorio {
                                         "    FOREIGN KEY(id_Partida) REFERENCES Competicao_Partida(id), " +
                                         "    FOREIGN KEY(id_Equipe) REFERENCES Equipe_Competicao(id_Equipe), " +
                                         "    FOREIGN KEY(id_Atleta) REFERENCES Pessoa(id) " +
+                                        ") ";
+                command.ExecuteNonQuery();
+            }
+
+            //Criação da tabela Competicao_Arbitragem
+            if (connection.GetSchema("Tables", new[] { null, null, "Competicao_Arbitragem", null }).Rows.Count == 0) {
+                SQLiteCommand command = connection.CreateCommand();
+
+                command.CommandText = "CREATE TABLE Competicao_Arbitragem( " +
+                                        "    id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                                        "    id_Competicao INTEGER, " +
+                                        "    id_Arbitro INTEGER, " +
+                                        "    FOREIGN KEY(id_Competicao) REFERENCES Competicao(id), " +
+                                        "    FOREIGN KEY(id_Arbitro) REFERENCES Pessoa(id) " +
                                         ") ";
                 command.ExecuteNonQuery();
             }
@@ -169,9 +184,41 @@ namespace SecEsportes.Repositorio {
                         partida.equipe1 = EquipeRepositorio.Instance.getEquipeCompeticao(partida.id_Equipe1, id_Competicao);
                         partida.equipe2 = EquipeRepositorio.Instance.getEquipeCompeticao(partida.id_Equipe2, id_Competicao);
                         partida.eventos = getEventosPorPartida(partida.id, id_Competicao);
+                        partida.arbitro = PessoaRepositorio.Instance.getCargo(partida.id_Arbitro);
                     }
+                        
 
                     return partidas;
+                }
+            } catch (Exception ex) {
+                return null;
+            }
+        }
+        public List<Cargo> getArbitroPorCompeticao(int id_Competicao) {
+            try {
+                using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
+                    connection.Open();
+
+                    List<Cargo> arbitros = new List<Cargo>();
+                    Funcao funcaoArbitro = null;
+
+                    string strSQL;
+                    strSQL =    "SELECT id_Arbitro " +
+                                "FROM   Competicao_Arbitragem " +
+                                "WHERE  id_Competicao = @id_Competicao ";
+
+                    List<int> idArbitros = connection.Query<int>(strSQL,
+                        new { id_Competicao }).ToList();
+
+                    for (int iCount = 0; iCount < idArbitros.Count; iCount++) {
+                        Pessoa pessoaArbitro = PessoaRepositorio.Instance.get(idArbitros[iCount]);
+                        if (funcaoArbitro is null)
+                            funcaoArbitro = pessoaArbitro.funcoes.Find(find => find.codigo.Equals(FuncaoRepositorio.Instance.codigoArbitro));
+
+                        arbitros.Add(new Cargo(pessoaArbitro.id, funcaoArbitro, pessoaArbitro));
+                    }
+
+                    return arbitros;
                 }
             } catch (Exception ex) {
                 return null;
@@ -485,19 +532,26 @@ namespace SecEsportes.Repositorio {
             try {
 
                 string strSQL;
-                strSQL = "INSERT INTO Competicao_Partida " +
-                            "(id_Competicao, id_Equipe1, id_Equipe2, Data, Rodada, numGrupo, encerrada) " +
+                strSQL =    "INSERT INTO Competicao_Partida " +
+                            "(id_Competicao, id_Equipe1, id_Equipe2, id_Arbitro, Data, Rodada, numGrupo, encerrada) " +
                             "VALUES " +
-                            "(@id_Competicao, @id_Equipe1, @id_Equipe2, @Data, @Rodada, @numGrupo, @encerrada); " +
+                            "(@id_Competicao, @id_Equipe1, @id_Equipe2, @id_Arbitro, @Data, @Rodada, @numGrupo, @encerrada); " +
                             "SELECT last_insert_rowid()";
 
                 int idPartida = 0;
+
+                int id_Arbitro;
+                if (partida.arbitro is null)
+                    id_Arbitro = 0;
+                else
+                    id_Arbitro = partida.arbitro.pessoa.id;
 
                 idPartida = SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query<int>(strSQL,
                     new {
                         id_Competicao = competicao.id,
                         id_Equipe1 = partida.equipe1.id,
                         id_Equipe2 = partida.equipe2.id,
+                        id_Arbitro,
                         Data = partida.data,
                         Rodada = partida.rodada,
                         partida.numGrupo,
@@ -606,108 +660,142 @@ namespace SecEsportes.Repositorio {
                 string strSQL;
 
                 // Define a partida como finalizada
-                strSQL = "UPDATE Competicao_Partida " +
+                strSQL =    "UPDATE Competicao_Partida " +
                             "SET    encerrada = @encerrada, " +
-                            "       data = @data " +
+                            "       data = @data, " +
+                            "       id_Arbitro = @id_Arbitro " +
                             "WHERE  id = @id_Partida ";
+
+                int id_Arbitro;
+                if (partida.arbitro is null)
+                    id_Arbitro = 0;
+                else
+                    id_Arbitro = partida.arbitro.pessoa.id;
 
                 SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(strSQL,
                     new {   partida.encerrada,
                             partida.data,
+                            id_Arbitro,
                             id_Partida = partida.id
                     });
 
-                int golsEquipe1, golsEquipe2;
-                golsEquipe1 = partida.eventos.FindAll(gols => gols.equipe.id.Equals(partida.equipe1.id) && gols.tpEvento.Equals(tpEventoEnum.Gol)).Count;
-                golsEquipe2 = partida.eventos.FindAll(gols => gols.equipe.id.Equals(partida.equipe2.id) && gols.tpEvento.Equals(tpEventoEnum.Gol)).Count;
+                if (partida.encerrada) {
+                    int golsEquipe1, golsEquipe2;
+                    golsEquipe1 = partida.eventos.FindAll(gols => gols.equipe.id.Equals(partida.equipe1.id) && gols.tpEvento.Equals(tpEventoEnum.Gol)).Count;
+                    golsEquipe2 = partida.eventos.FindAll(gols => gols.equipe.id.Equals(partida.equipe2.id) && gols.tpEvento.Equals(tpEventoEnum.Gol)).Count;
 
-                // Se for os jogos da fase de classificação, atribui a pontuação
-                if (partida.rodada > 0) {
-                    // Atualiza as informações das equipes
-                    strSQL = "UPDATE Equipe_Competicao " +
-                                "SET    jogos = jogos + 1, " +
-                                "       golsPro = golsPro + @golsPro, " +
-                                "       golsContra = golsContra + @golsContra, " +
-                                "       vitorias = vitorias + @vitorias, " +
-                                "       empates = empates + @empates, " +
-                                "       derrotas = derrotas + @derrotas, " +
-                                "       pontos = pontos + @pontos " +
-                                "WHERE  id_Equipe = @id_Equipe " +
-                                "       AND id_Competicao = @id_Competicao ";
+                    // Se for os jogos da fase de classificação, atribui a pontuação
+                    if (partida.rodada > 0) {
+                        // Atualiza as informações das equipes
+                        strSQL = "UPDATE Equipe_Competicao " +
+                                    "SET    jogos = jogos + 1, " +
+                                    "       golsPro = golsPro + @golsPro, " +
+                                    "       golsContra = golsContra + @golsContra, " +
+                                    "       vitorias = vitorias + @vitorias, " +
+                                    "       empates = empates + @empates, " +
+                                    "       derrotas = derrotas + @derrotas, " +
+                                    "       pontos = pontos + @pontos " +
+                                    "WHERE  id_Equipe = @id_Equipe " +
+                                    "       AND id_Competicao = @id_Competicao ";
 
-                    int vitorias, empates, derrotas, pontos;
+                        int vitorias, empates, derrotas, pontos;
 
-                    // Atualiza a equipe 1
-                    vitorias = (golsEquipe1 > golsEquipe2 ? 1 : 0);
-                    derrotas = (golsEquipe2 > golsEquipe1 ? 1 : 0);
-                    empates = (golsEquipe2 == golsEquipe1 ? 1 : 0);
-                    pontos = (vitorias == 1 ? 3 : (empates == 1 ? 1 : 0));
-                    SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(strSQL,
-                        new {
-                            golsPro = golsEquipe1,
-                            golsContra = golsEquipe2,
-                            vitorias,
-                            empates,
-                            derrotas,
-                            pontos,
-                            id_Equipe = partida.equipe1.id,
-                            id_Competicao = competicao.id
-                        });
+                        // Atualiza a equipe 1
+                        vitorias = (golsEquipe1 > golsEquipe2 ? 1 : 0);
+                        derrotas = (golsEquipe2 > golsEquipe1 ? 1 : 0);
+                        empates = (golsEquipe2 == golsEquipe1 ? 1 : 0);
+                        pontos = (vitorias == 1 ? 3 : (empates == 1 ? 1 : 0));
+                        SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(strSQL,
+                            new {
+                                golsPro = golsEquipe1,
+                                golsContra = golsEquipe2,
+                                vitorias,
+                                empates,
+                                derrotas,
+                                pontos,
+                                id_Equipe = partida.equipe1.id,
+                                id_Competicao = competicao.id
+                            });
 
-                    // Atualiza a equipe 2
-                    vitorias = (golsEquipe2 > golsEquipe1 ? 1 : 0);
-                    derrotas = (golsEquipe1 > golsEquipe2 ? 1 : 0);
-                    empates = (golsEquipe2 == golsEquipe1 ? 1 : 0);
-                    pontos = (vitorias == 1 ? 3 : (empates == 1 ? 1 : 0));
-                    SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(strSQL,
-                        new {
-                            golsPro = golsEquipe2,
-                            golsContra = golsEquipe1,
-                            vitorias,
-                            empates,
-                            derrotas,
-                            pontos,
-                            id_Equipe = partida.equipe2.id,
-                            id_Competicao = competicao.id
-                        });
-                }
-                
-                // Verifica se é a final e atribui o campeão
-                if (competicao.fase_Atual == -1) {
-                    if (competicao.jogosIdaEVolta_MataMata) {
-                        Competicao_Partida partidaIda = competicao.partidas.Find(x => x.encerrada && x.rodada == partida.rodada && x.numGrupo == partida.numGrupo && x.equipe1.id == partida.equipe2.id && x.equipe2.id == partida.equipe1.id && x.id != partida.id);
-                        golsEquipe1 += partidaIda.eventos.FindAll(eventos => eventos.tpEvento.Equals(tpEventoEnum.Gol) && eventos.equipe.id == partida.equipe1.id).Count;
-                        golsEquipe2 += partidaIda.eventos.FindAll(eventos => eventos.tpEvento.Equals(tpEventoEnum.Gol) && eventos.equipe.id == partida.equipe2.id).Count;
+                        // Atualiza a equipe 2
+                        vitorias = (golsEquipe2 > golsEquipe1 ? 1 : 0);
+                        derrotas = (golsEquipe1 > golsEquipe2 ? 1 : 0);
+                        empates = (golsEquipe2 == golsEquipe1 ? 1 : 0);
+                        pontos = (vitorias == 1 ? 3 : (empates == 1 ? 1 : 0));
+                        SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(strSQL,
+                            new {
+                                golsPro = golsEquipe2,
+                                golsContra = golsEquipe1,
+                                vitorias,
+                                empates,
+                                derrotas,
+                                pontos,
+                                id_Equipe = partida.equipe2.id,
+                                id_Competicao = competicao.id
+                            });
                     }
-                    competicao.status = StatusEnum._0_Encerrada;
 
-                    // Verifica aqu se empatou e foi para os penaltis
-                    if (golsEquipe1 == golsEquipe2) {
-                        int golsPenalti1, golsPenalti2;
-                        golsPenalti1 = partida.eventos.FindAll(x => x.equipe.id == partida.equipe1.id && x.tpEvento == tpEventoEnum.Gol_Penalti).Count;
-                        golsPenalti2 = partida.eventos.FindAll(x => x.equipe.id == partida.equipe2.id && x.tpEvento == tpEventoEnum.Gol_Penalti).Count;
+                    // Verifica se é a final e atribui o campeão
+                    if (competicao.fase_Atual == -1) {
+                        if (competicao.jogosIdaEVolta_MataMata) {
+                            Competicao_Partida partidaIda = competicao.partidas.Find(x => x.encerrada && x.rodada == partida.rodada && x.numGrupo == partida.numGrupo && x.equipe1.id == partida.equipe2.id && x.equipe2.id == partida.equipe1.id && x.id != partida.id);
+                            golsEquipe1 += partidaIda.eventos.FindAll(eventos => eventos.tpEvento.Equals(tpEventoEnum.Gol) && eventos.equipe.id == partida.equipe1.id).Count;
+                            golsEquipe2 += partidaIda.eventos.FindAll(eventos => eventos.tpEvento.Equals(tpEventoEnum.Gol) && eventos.equipe.id == partida.equipe2.id).Count;
+                        }
+                        competicao.status = StatusEnum._0_Encerrada;
 
-                        if (golsPenalti1 > golsPenalti2) {
-                            competicao.campeao = partida.equipe1;
+                        // Verifica aqu se empatou e foi para os penaltis
+                        if (golsEquipe1 == golsEquipe2) {
+                            int golsPenalti1, golsPenalti2;
+                            golsPenalti1 = partida.eventos.FindAll(x => x.equipe.id == partida.equipe1.id && x.tpEvento == tpEventoEnum.Gol_Penalti).Count;
+                            golsPenalti2 = partida.eventos.FindAll(x => x.equipe.id == partida.equipe2.id && x.tpEvento == tpEventoEnum.Gol_Penalti).Count;
+
+                            if (golsPenalti1 > golsPenalti2) {
+                                competicao.campeao = partida.equipe1;
+                            } else {
+                                if (golsPenalti2 > golsPenalti1) {
+                                    competicao.campeao = partida.equipe2;
+                                }
+                            }
                         } else {
-                            if (golsPenalti2 > golsPenalti1) {
-                                competicao.campeao = partida.equipe2;
+
+                            // Não foi para os penaltis
+                            if (golsEquipe1 > golsEquipe2) {
+                                competicao.campeao = partida.equipe1;
+                            } else {
+                                if (golsEquipe2 > golsEquipe1) {
+                                    competicao.campeao = partida.equipe2;
+                                }
                             }
                         }
-                    } else {
-
-                        // Não foi para os penaltis
-                        if (golsEquipe1 > golsEquipe2) {
-                            competicao.campeao = partida.equipe1;
-                        } else {
-                            if (golsEquipe2 > golsEquipe1) {
-                                competicao.campeao = partida.equipe2;
-                            }
-                        }
+                        competicao.id_Campeao = competicao.campeao.id;
+                        update(competicao);
                     }
-                    competicao.id_Campeao = competicao.campeao.id;
-                    update(competicao);
                 }
+
+                return true;
+            } catch (Exception ex) {
+                return false;
+            }
+        }
+
+        public bool insertArbitro(ref Competicao competicao, Cargo arbitro) {
+            try {
+
+                string strSQL;
+                strSQL = "INSERT INTO Competicao_Arbitragem " +
+                            "(id_Competicao, id_Arbitro) " +
+                            "VALUES " +
+                            "(@id_Competicao, @id_Arbitro) ";
+
+                SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(strSQL,
+                new {
+                    id_Competicao = competicao.id,
+                    id_Arbitro = arbitro.pessoa.id
+                });
+
+                if (competicao.arbitros.FindAll(find => find.pessoa.id == arbitro.pessoa.id).Count == 0)
+                    competicao.arbitros.Add(arbitro);
 
                 return true;
             } catch (Exception ex) {
@@ -779,5 +867,28 @@ namespace SecEsportes.Repositorio {
                 return false;
             }
         }
+
+        public bool deleteArbitroDaCompeticao(ref Competicao competicao, Cargo arbitro) {
+            try {
+
+                string strSQL;
+                strSQL =    "DELETE FROM Competicao_Arbitragem " +
+                            "WHERE  id_Competicao = @id_Competicao " +
+                            "       AND id_Arbitro = @id_Arbitro ";
+
+                SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(strSQL,
+                new {
+                    id_Competicao = competicao.id,
+                    id_Arbitro = arbitro.pessoa.id
+                });
+
+                competicao.arbitros.Remove(arbitro);
+
+                return true;
+            } catch (Exception ex) {
+                return false;
+            }
+        }
+
     }
 }

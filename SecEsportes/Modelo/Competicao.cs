@@ -26,6 +26,7 @@ namespace SecEsportes.Modelo{
         public int id_Campeao { get; set; }
         public EquipeCompeticao campeao { get; set; }
         public int fase_Atual { get; set; }
+        public List<Cargo> arbitros { get; set; }
 
         public Competicao() { }
 

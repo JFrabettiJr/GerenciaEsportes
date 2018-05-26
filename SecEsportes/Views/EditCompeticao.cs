@@ -17,7 +17,7 @@ namespace SecEsportes.Views {
         private Usuario usuarioLogado;
 
         #region Inicialização da classe
-        public EditCompeticao(Usuario usuarioLogado, Competicao competicao) {
+        public EditCompeticao(Usuario usuarioLogado, Competicao competicao) {   
             windowMode = Utilidades.WindowMode.ModoCriacaoForm;
             InitializeComponent();
 
@@ -154,6 +154,8 @@ namespace SecEsportes.Views {
         private void btnAtualizar_Click(object sender, EventArgs e) {
             clearFields();
             fillFields();
+
+            competicao.arbitros = CompeticaoRepositorio.Instance.getArbitroPorCompeticao(competicao.id);
 
             // Verifica qual o modo que a competição está para avaliar qual será a visualizaçao
             int posicaoInicial, tamanhoTotal = 0;
@@ -1038,6 +1040,10 @@ namespace SecEsportes.Views {
 
         private void btnVisaoGeral_Click(object sender, EventArgs e) {
             new ViewCompeticao(usuarioLogado, competicao).ShowDialog();
+        }
+
+        private void btnArbitros_Click(object sender, EventArgs e) {
+            new EditArbitros(usuarioLogado, competicao).ShowDialog();
         }
     }
 }
