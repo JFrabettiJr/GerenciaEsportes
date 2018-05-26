@@ -37,9 +37,9 @@ namespace SecEsportes.Repositorio {
                     "id_Modalidade INTEGER, " +
                     "numTimes INTEGER, " +
                     "numGrupos INTEGER, " +
-                    "mataMata INTEGER, " +
+                    "faseFinal INTEGER, " +
                     "jogosIdaEVolta INTEGER, " +
-                    "jogosIdaEVolta_MataMata INTEGER, " +
+                    "jogosIdaEVolta_Final INTEGER, " +
                     "status INTEGER, " +
                     "nomesGrupos INTEGER, " +
                     "numMinimoJogadores INTEGER, " +
@@ -77,7 +77,7 @@ namespace SecEsportes.Repositorio {
                                         "    id_Equipe2 INTEGER, " +
                                         "    id_Arbitro INTEGER, " +
                                         "    Data DATETIME, " +
-                                        "    Rodada INT, /* > 0 Representa o nº da Rodada | < 0 Representa MataMata (-1 Final, -2 SemiFinal, -3 Quartas de final, etc.)*/ " +
+                                        "    Rodada INT, /* > 0 Representa o nº da Rodada | < 0 Representa FaseFinal (-1 Final, -2 SemiFinal, -3 Quartas de final, etc.)*/ " +
                                         "    numGrupo INT, " +
                                         "    encerrada INT, " +
                                         "    FOREIGN KEY(id_Competicao) REFERENCES Competicao(id), " +
@@ -458,9 +458,9 @@ namespace SecEsportes.Repositorio {
             try {
                 competicao.id = SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query<int>("" +
                     "INSERT INTO Competicao " +
-                    "(Nome, dataInicial, dataFinal, id_Modalidade, numTimes, numGrupos, mataMata, jogosIdaEVolta, jogosIdaEvolta_MataMata, status, nomesGrupos, numMinimoJogadores, id_Campeao, fase_Atual) " +
+                    "(Nome, dataInicial, dataFinal, id_Modalidade, numTimes, numGrupos, faseFinal, jogosIdaEVolta, jogosIdaEvolta_FaseFinal, status, nomesGrupos, numMinimoJogadores, id_Campeao, fase_Atual) " +
                     "VALUES " +
-                    "(@Nome, @dataInicial, @dataFinal, @id_Modalidade, @numTimes, @numGrupos, @mataMata, @jogosIdaEVolta, @jogosIdaEVolta_MataMata, @status, @nomesGrupos, @numMinimoJogadores, @id_Campeao, @fase_Atual); " +
+                    "(@Nome, @dataInicial, @dataFinal, @id_Modalidade, @numTimes, @numGrupos, @faseFinal, @jogosIdaEVolta, @jogosIdaEVolta_faseFinal, @status, @nomesGrupos, @numMinimoJogadores, @id_Campeao, @fase_Atual); " +
                     "select last_insert_rowid()",
                     new {
                         competicao.nome,
@@ -469,9 +469,9 @@ namespace SecEsportes.Repositorio {
                         id_Modalidade = competicao.modalidade.id,
                         competicao.numTimes,
                         competicao.numGrupos,
-                        competicao.mataMata,
+                        competicao.faseFinal,
                         jogosIdaEVolta = (competicao.jogosIdaEVolta == true ? 1 : 0),
-                        jogosIdaEVolta_MataMata = (competicao.jogosIdaEVolta_MataMata == true ? 1 : 0),
+                        jogosIdaEVolta_FaseFinal = (competicao.jogosIdaEVolta_FaseFinal == true ? 1 : 0),
                         competicao.status,
                         competicao.nomesGrupos,
                         competicao.numMinimoJogadores,
@@ -601,9 +601,9 @@ namespace SecEsportes.Repositorio {
                             "       id_Modalidade = @id_Modalidade, " +
                             "       numTimes = @numTimes," +
                             "       numGrupos = @numGrupos, " +
-                            "       mataMata = @mataMata, " +
+                            "       faseFinal = @faseFinal, " +
                             "       jogosIdaEVolta = @jogosIdaEVolta, " +
-                            "       jogosIdaEVolta_MataMata = @jogosIdaEVolta_MataMata, " +
+                            "       jogosIdaEVolta_FaseFinal = @jogosIdaEVolta_FaseFinal, " +
                             "       status = @status, " +
                             "       nomesGrupos = @nomesGrupos, " +
                             "       numMinimoJogadores = @numMinimoJogadores, " +
@@ -619,9 +619,9 @@ namespace SecEsportes.Repositorio {
                         id_Modalidade = competicao.modalidade.id,
                         competicao.numTimes,
                         competicao.numGrupos,
-                        competicao.mataMata,
+                        competicao.faseFinal,
                         jogosIdaEVolta = (competicao.jogosIdaEVolta == true ? 1 : 0),
-                        jogosIdaEVolta_MataMata = (competicao.jogosIdaEVolta_MataMata == true ? 1 : 0),
+                        jogosIdaEVolta_FaseFinal = (competicao.jogosIdaEVolta_FaseFinal == true ? 1 : 0),
                         competicao.status,
                         competicao.nomesGrupos,
                         competicao.numMinimoJogadores,
@@ -737,7 +737,7 @@ namespace SecEsportes.Repositorio {
 
                     // Verifica se é a final e atribui o campeão
                     if (competicao.fase_Atual == -1) {
-                        if (competicao.jogosIdaEVolta_MataMata) {
+                        if (competicao.jogosIdaEVolta_FaseFinal) {
                             Competicao_Partida partidaIda = competicao.partidas.Find(x => x.encerrada && x.rodada == partida.rodada && x.numGrupo == partida.numGrupo && x.equipe1.id == partida.equipe2.id && x.equipe2.id == partida.equipe1.id && x.id != partida.id);
                             golsEquipe1 += partidaIda.eventos.FindAll(eventos => eventos.tpEvento.Equals(tpEventoEnum.Gol) && eventos.equipe.id == partida.equipe1.id).Count;
                             golsEquipe2 += partidaIda.eventos.FindAll(eventos => eventos.tpEvento.Equals(tpEventoEnum.Gol) && eventos.equipe.id == partida.equipe2.id).Count;

@@ -67,12 +67,12 @@ namespace SecEsportes.Views
 
             // Cria as abas das partidas da fase final
             int numAbasAdicionais = 0;
-            switch (competicao.mataMata) {
-                case MataMataEnum._1_Nao:   numAbasAdicionais = 0;  break;
-                case MataMataEnum._2_Final: numAbasAdicionais = 1; break;
-                case MataMataEnum._3_SemiFinal: numAbasAdicionais = 2; break;
-                case MataMataEnum._4_QuartasFinal: numAbasAdicionais = 3; break;
-                case MataMataEnum._5_OitavasFinal: numAbasAdicionais = 4; break;
+            switch (competicao.faseFinal) {
+                case FaseFinalEnum._1_Nao:   numAbasAdicionais = 0;  break;
+                case FaseFinalEnum._2_Final: numAbasAdicionais = 1; break;
+                case FaseFinalEnum._3_SemiFinal: numAbasAdicionais = 2; break;
+                case FaseFinalEnum._4_QuartasFinal: numAbasAdicionais = 3; break;
+                case FaseFinalEnum._5_OitavasFinal: numAbasAdicionais = 4; break;
             }
 
             // Define o nome da aba e o número da rodada (fase final)
@@ -161,11 +161,11 @@ namespace SecEsportes.Views
             int numProximaFase = 0;
             int numPartidasASeremGeradas = 0;
 
-            switch (competicao.mataMata) {
-                case MataMataEnum._5_OitavasFinal: numProximaFase = -4; numPartidasASeremGeradas = 8; break;
-                case MataMataEnum._4_QuartasFinal: numProximaFase = -3; numPartidasASeremGeradas = 4; break;
-                case MataMataEnum._3_SemiFinal: numProximaFase = -2; numPartidasASeremGeradas = 2; break;
-                case MataMataEnum._2_Final: numProximaFase = -1; numPartidasASeremGeradas = 1; break;
+            switch (competicao.faseFinal) {
+                case FaseFinalEnum._5_OitavasFinal: numProximaFase = -4; numPartidasASeremGeradas = 8; break;
+                case FaseFinalEnum._4_QuartasFinal: numProximaFase = -3; numPartidasASeremGeradas = 4; break;
+                case FaseFinalEnum._3_SemiFinal: numProximaFase = -2; numPartidasASeremGeradas = 2; break;
+                case FaseFinalEnum._2_Final: numProximaFase = -1; numPartidasASeremGeradas = 1; break;
             }
 
             competicao.equipes = EquipeRepositorio.Instance.getEquipesByCompeticao(competicao.id);
@@ -458,15 +458,15 @@ namespace SecEsportes.Views
 
                 // Caso a fase atual seja a fase classificatória
                 if (competicao.fase_Atual >= 0) {
-                    switch (competicao.mataMata) {
-                        case MataMataEnum._5_OitavasFinal: numProximaFase = -4; numPartidasASeremGeradas = 8; break;
-                        case MataMataEnum._4_QuartasFinal: numProximaFase = -3; numPartidasASeremGeradas = 4; break;
-                        case MataMataEnum._3_SemiFinal: numProximaFase = -2; numPartidasASeremGeradas = 2; break;
-                        case MataMataEnum._2_Final: numProximaFase = -1; numPartidasASeremGeradas = 1; break;
+                    switch (competicao.faseFinal) {
+                        case FaseFinalEnum._5_OitavasFinal: numProximaFase = -4; numPartidasASeremGeradas = 8; break;
+                        case FaseFinalEnum._4_QuartasFinal: numProximaFase = -3; numPartidasASeremGeradas = 4; break;
+                        case FaseFinalEnum._3_SemiFinal: numProximaFase = -2; numPartidasASeremGeradas = 2; break;
+                        case FaseFinalEnum._2_Final: numProximaFase = -1; numPartidasASeremGeradas = 1; break;
                     }
 
                     // O campeonato é só por pontos corridos
-                    if ( (competicao.mataMata == MataMataEnum._1_Nao) && (competicao.grupos.Count == 1) ) {
+                    if ( (competicao.faseFinal == FaseFinalEnum._1_Nao) && (competicao.grupos.Count == 1) ) {
                         competicao.status = StatusEnum._0_Encerrada;
 
                         EquipeCompeticao campeao = (from proximaFase in competicao.grupos[0]
@@ -482,7 +482,7 @@ namespace SecEsportes.Views
                         Utilidades.criaPartidasProximaFase(ref competicao, timesProximaFase, numPartidasASeremGeradas, numTimesRestantes, numTimesPorGrupo , numProximaFase);
 
                         // Cria as partidas de volta da fase final
-                        if (competicao.jogosIdaEVolta_MataMata) {
+                        if (competicao.jogosIdaEVolta_FaseFinal) {
                             List<Competicao_Partida> partidasIda = competicao.partidas.FindAll(partidasIdaAEncontrar => partidasIdaAEncontrar.rodada == numProximaFase);
                             for (int numPartidaVolta = 0; numPartidaVolta < partidasIda.Count; numPartidaVolta++) {
                                 Competicao_Partida partidaDeVolta = new Competicao_Partida(partidasIda[numPartidaVolta].equipe2, partidasIda[numPartidaVolta].equipe1, numProximaFase, partidasIda[numPartidaVolta].numGrupo);
@@ -508,7 +508,7 @@ namespace SecEsportes.Views
                         EquipeCompeticao equipeVencedora = null;
 
                         int golsEquipe1, golsEquipe2;
-                        if (competicao.jogosIdaEVolta_MataMata) {
+                        if (competicao.jogosIdaEVolta_FaseFinal) {
                             if (iCount < partidasFaseAnterior.Count / 2) {
                                 Competicao_Partida partidaDeVoltaFaseAnterior = partidasFaseAnterior.FindAll(x => x.numGrupo == partidaFaseAnterior.numGrupo && x.rodada == partidaFaseAnterior.rodada).Last();
 
@@ -621,7 +621,7 @@ namespace SecEsportes.Views
                     }
 
                     // Cria as partidas de volta da fase final
-                    if (competicao.jogosIdaEVolta_MataMata) {
+                    if (competicao.jogosIdaEVolta_FaseFinal) {
                         List<Competicao_Partida> partidasIda = competicao.partidas.FindAll(partidasIdaAEncontrar => partidasIdaAEncontrar.rodada == numProximaFase);
                         for (int numPartidaVolta = 0; numPartidaVolta < partidasIda.Count; numPartidaVolta++) {
                             Competicao_Partida partidaDeVolta = new Competicao_Partida(partidasIda[numPartidaVolta].equipe2, partidasIda[numPartidaVolta].equipe1, numProximaFase, partidasIda[numPartidaVolta].numGrupo);
@@ -642,11 +642,11 @@ namespace SecEsportes.Views
             int numProximaFase = 0;
             int numPartidasASeremGeradas = 0;
 
-            switch (competicao.mataMata) {
-                case MataMataEnum._5_OitavasFinal: numProximaFase = -4; numPartidasASeremGeradas = 8; break;
-                case MataMataEnum._4_QuartasFinal: numProximaFase = -3; numPartidasASeremGeradas = 4; break;
-                case MataMataEnum._3_SemiFinal: numProximaFase = -2; numPartidasASeremGeradas = 2; break;
-                case MataMataEnum._2_Final: numProximaFase = -1; numPartidasASeremGeradas = 1; break;
+            switch (competicao.faseFinal) {
+                case FaseFinalEnum._5_OitavasFinal: numProximaFase = -4; numPartidasASeremGeradas = 8; break;
+                case FaseFinalEnum._4_QuartasFinal: numProximaFase = -3; numPartidasASeremGeradas = 4; break;
+                case FaseFinalEnum._3_SemiFinal: numProximaFase = -2; numPartidasASeremGeradas = 2; break;
+                case FaseFinalEnum._2_Final: numProximaFase = -1; numPartidasASeremGeradas = 1; break;
             }
 
             competicao.equipes = EquipeRepositorio.Instance.getEquipesByCompeticao(competicao.id);

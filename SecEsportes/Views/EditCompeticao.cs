@@ -106,21 +106,21 @@ namespace SecEsportes.Views {
             newCompeticao.numGrupos = Convert.ToInt32(txtNumGrupos.Text);
             newCompeticao.numMinimoJogadores = Convert.ToInt32(txtNumMinJogadores.Text);
 
-            switch (cboMataMata.SelectedIndex) {
+            switch (cboFaseFinal.SelectedIndex) {
                 case 0:
-                    newCompeticao.mataMata = MataMataEnum._1_Nao;
+                    newCompeticao.faseFinal = FaseFinalEnum._1_Nao;
                     break;
                 case 1:
-                    newCompeticao.mataMata = MataMataEnum._2_Final;
+                    newCompeticao.faseFinal = FaseFinalEnum._2_Final;
                     break;
                 case 2:
-                    newCompeticao.mataMata = MataMataEnum._3_SemiFinal;
+                    newCompeticao.faseFinal = FaseFinalEnum._3_SemiFinal;
                     break;
                 case 3:
-                    newCompeticao.mataMata = MataMataEnum._4_QuartasFinal;
+                    newCompeticao.faseFinal = FaseFinalEnum._4_QuartasFinal;
                     break;
                 case 4:
-                    newCompeticao.mataMata = MataMataEnum._5_OitavasFinal;
+                    newCompeticao.faseFinal = FaseFinalEnum._5_OitavasFinal;
                     break;
             }
 
@@ -134,7 +134,7 @@ namespace SecEsportes.Views {
             }
 
             newCompeticao.jogosIdaEVolta = chkIdaEVolta.Checked;
-            newCompeticao.jogosIdaEVolta_MataMata = chkIdaEVoltaMataMata.Checked;
+            newCompeticao.jogosIdaEVolta_FaseFinal = chkIdaEVoltaFaseFinal.Checked;
 
             newCompeticao.status = competicao.status;
 
@@ -203,11 +203,11 @@ namespace SecEsportes.Views {
                 int numProximaFase = 0;
                 int numPartidasASeremGeradas = 0;
 
-                switch (competicao.mataMata) {
-                    case MataMataEnum._5_OitavasFinal: numProximaFase = -4; numPartidasASeremGeradas = 8; break;
-                    case MataMataEnum._4_QuartasFinal: numProximaFase = -3; numPartidasASeremGeradas = 4; break;
-                    case MataMataEnum._3_SemiFinal: numProximaFase = -2; numPartidasASeremGeradas = 2; break;
-                    case MataMataEnum._2_Final: numProximaFase = -1; numPartidasASeremGeradas = 1; break;
+                switch (competicao.faseFinal) {
+                    case FaseFinalEnum._5_OitavasFinal: numProximaFase = -4; numPartidasASeremGeradas = 8; break;
+                    case FaseFinalEnum._4_QuartasFinal: numProximaFase = -3; numPartidasASeremGeradas = 4; break;
+                    case FaseFinalEnum._3_SemiFinal: numProximaFase = -2; numPartidasASeremGeradas = 2; break;
+                    case FaseFinalEnum._2_Final: numProximaFase = -1; numPartidasASeremGeradas = 1; break;
                 }
                 List<List<EquipeCompeticao>> timesProximaFase = Utilidades.listaEquipesClassificadas(competicao, numPartidasASeremGeradas, numProximaFase);
 
@@ -540,9 +540,9 @@ namespace SecEsportes.Views {
             txtNumTimes.Text = "0";
             txtNumMinJogadores.Text = "0";
             txtNumGrupos.Text = "0";
-            cboMataMata.SelectedIndex = -1;
+            cboFaseFinal.SelectedIndex = -1;
             chkIdaEVolta.Checked = false;
-            chkIdaEVoltaMataMata.Checked = false;
+            chkIdaEVoltaFaseFinal.Checked = false;
             cboNomeacaoGrupos.SelectedIndex = -1;
             txtStatus.Text = "";
         }
@@ -564,13 +564,13 @@ namespace SecEsportes.Views {
             competicao.equipes = EquipeRepositorio.Instance.getEquipesByCompeticao(competicao.id);
             competicao.grupos = CompeticaoRepositorio.Instance.getGruposPorCompeticao(competicao.id, competicao.equipes);
 
-            // Carrega o combobox das opções de mata-mata (conferir o MataMataEnum da classe Competicao)
-            cboMataMata.Items.Clear();
-            cboMataMata.Items.Add("Não");               //_1_Nao,
-            cboMataMata.Items.Add("Final");             //_2_Final,
-            cboMataMata.Items.Add("Semi-Final");        //_3_SemiFinal,
-            cboMataMata.Items.Add("Quartas de Final");  //_4_QuartasFinal,
-            cboMataMata.Items.Add("Oitavas de Final");  //_5_OitavasFinal,
+            // Carrega o combobox das opções de fase final (conferir o FaseFinalEnum da classe Competicao)
+            cboFaseFinal.Items.Clear();
+            cboFaseFinal.Items.Add("Não");               //_1_Nao,
+            cboFaseFinal.Items.Add("Final");             //_2_Final,
+            cboFaseFinal.Items.Add("Semi-Final");        //_3_SemiFinal,
+            cboFaseFinal.Items.Add("Quartas de Final");  //_4_QuartasFinal,
+            cboFaseFinal.Items.Add("Oitavas de Final");  //_5_OitavasFinal,
 
             // Carrega o combobox das opções de nomeação dos grupos
             cboNomeacaoGrupos.Items.Clear();
@@ -590,21 +590,21 @@ namespace SecEsportes.Views {
             txtNumGrupos.Text = competicao.numGrupos.ToString();
             txtNumMinJogadores.Text = competicao.numMinimoJogadores.ToString();
 
-            switch (competicao.mataMata) {
-                case MataMataEnum._1_Nao:
-                    cboMataMata.SelectedIndex = 0;
+            switch (competicao.faseFinal) {
+                case FaseFinalEnum._1_Nao:
+                    cboFaseFinal.SelectedIndex = 0;
                     break;
-                case MataMataEnum._2_Final:
-                    cboMataMata.SelectedIndex = 1;
+                case FaseFinalEnum._2_Final:
+                    cboFaseFinal.SelectedIndex = 1;
                     break;
-                case MataMataEnum._3_SemiFinal:
-                    cboMataMata.SelectedIndex = 2;
+                case FaseFinalEnum._3_SemiFinal:
+                    cboFaseFinal.SelectedIndex = 2;
                     break;
-                case MataMataEnum._4_QuartasFinal:
-                    cboMataMata.SelectedIndex = 3;
+                case FaseFinalEnum._4_QuartasFinal:
+                    cboFaseFinal.SelectedIndex = 3;
                     break;
-                case MataMataEnum._5_OitavasFinal:
-                    cboMataMata.SelectedIndex = 4;
+                case FaseFinalEnum._5_OitavasFinal:
+                    cboFaseFinal.SelectedIndex = 4;
                     break;
             }
 
@@ -657,7 +657,7 @@ namespace SecEsportes.Views {
             }
 
             chkIdaEVolta.Checked = competicao.jogosIdaEVolta;
-            chkIdaEVoltaMataMata.Checked = competicao.jogosIdaEVolta_MataMata;
+            chkIdaEVoltaFaseFinal.Checked = competicao.jogosIdaEVolta_FaseFinal;
 
             // Recarrega o DataGrid View das Equipes
             refreshDataGridView();
@@ -763,11 +763,11 @@ namespace SecEsportes.Views {
                     int numProximaFase = 0;
                     int numPartidasASeremGeradas = 0;
 
-                    switch (competicao.mataMata) {
-                        case MataMataEnum._5_OitavasFinal: numProximaFase = -4; numPartidasASeremGeradas = 8; break;
-                        case MataMataEnum._4_QuartasFinal: numProximaFase = -3; numPartidasASeremGeradas = 4; break;
-                        case MataMataEnum._3_SemiFinal: numProximaFase = -2; numPartidasASeremGeradas = 2; break;
-                        case MataMataEnum._2_Final: numProximaFase = -1; numPartidasASeremGeradas = 1; break;
+                    switch (competicao.faseFinal) {
+                        case FaseFinalEnum._5_OitavasFinal: numProximaFase = -4; numPartidasASeremGeradas = 8; break;
+                        case FaseFinalEnum._4_QuartasFinal: numProximaFase = -3; numPartidasASeremGeradas = 4; break;
+                        case FaseFinalEnum._3_SemiFinal: numProximaFase = -2; numPartidasASeremGeradas = 2; break;
+                        case FaseFinalEnum._2_Final: numProximaFase = -1; numPartidasASeremGeradas = 1; break;
                     }
                     List<List<EquipeCompeticao>> timesProximaFase = Utilidades.listaEquipesClassificadas(competicao, numPartidasASeremGeradas, numProximaFase);
 

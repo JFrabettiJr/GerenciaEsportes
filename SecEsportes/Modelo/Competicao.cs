@@ -17,10 +17,10 @@ namespace SecEsportes.Modelo{
         public int numTimes { get; set; }
         public int numGrupos { get; set; }
         public int numMinimoJogadores { get; set; }
-        public MataMataEnum mataMata { get; set; }
+        public FaseFinalEnum faseFinal { get; set; }
         public StatusEnum status { get; set; }
         public bool jogosIdaEVolta { get; set; }
-        public bool jogosIdaEVolta_MataMata { get; set; }
+        public bool jogosIdaEVolta_FaseFinal { get; set; }
         public NomesGruposEnum nomesGrupos { get; set; }
         public List<List<EquipeCompeticao>> grupos { get; set; }
         public int id_Campeao { get; set; }
@@ -49,7 +49,7 @@ namespace SecEsportes.Modelo{
         _1_PorLetras
     }
 
-    public enum MataMataEnum{
+    public enum FaseFinalEnum{
         _1_Nao,
         _2_Final,
         _3_SemiFinal,

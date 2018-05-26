@@ -229,7 +229,7 @@ namespace SecEsportes.Views {
                     golsEquipe2 = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol) && eventosAEncontrar.equipe.id.Equals(partida.equipe2.id)).Count;
 
                     // Se for mata-mata só vai para os penaltis no segundo jogo
-                    if (competicao.jogosIdaEVolta_MataMata) {
+                    if (competicao.jogosIdaEVolta_FaseFinal) {
                         // Verifica se é o jogo de volta
                         Competicao_Partida partidaIda = competicao.partidas.Find(x => x.encerrada && x.rodada == partida.rodada && x.numGrupo == partida.numGrupo && x.equipe1.id == partida.equipe2.id && x.equipe2.id == partida.equipe1.id && x.id != partida.id);
                         if (!(partidaIda is null)) {

@@ -72,8 +72,8 @@ namespace SecEsportes
                 competicao = new Competicao("Copa do mundo de 2014", new DateTime(2014, 06, 01), modalidade);
                 competicao.dataFinal = new DateTime(2014, 07, 01);
                 competicao.jogosIdaEVolta = false;
-                competicao.jogosIdaEVolta_MataMata = false;
-                competicao.mataMata = MataMataEnum._4_QuartasFinal;
+                competicao.jogosIdaEVolta_FaseFinal = false;
+                competicao.faseFinal = FaseFinalEnum._4_QuartasFinal;
                 competicao.nomesGrupos = NomesGruposEnum._0_PorNumeracao;
                 competicao.numGrupos = 4;
                 competicao.numTimes = 16;
