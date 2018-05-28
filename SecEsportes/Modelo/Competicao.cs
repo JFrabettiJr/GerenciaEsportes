@@ -27,6 +27,8 @@ namespace SecEsportes.Modelo{
         public EquipeCompeticao campeao { get; set; }
         public int fase_Atual { get; set; }
         public List<Cargo> arbitros { get; set; }
+        public bool zerarCartoesFaseFinal { get; set; }
+        public SuspensaoEnum tpSuspensao { get; set; }
 
         public Competicao() { }
 
@@ -55,6 +57,13 @@ namespace SecEsportes.Modelo{
         _3_SemiFinal,
         _4_QuartasFinal,
         _5_OitavasFinal
+    }
+
+    public enum SuspensaoEnum {
+        _1_2CA_1Jogo_2CAe1CV_2Jogos,
+        _2_3CA_1Jogo_3CAe1CV_2Jogos,
+        _3_2CA_1Jogo,
+        _4_3CA_1Jogo
     }
 
 }

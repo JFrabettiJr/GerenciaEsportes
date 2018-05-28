@@ -110,7 +110,7 @@ namespace SecEsportes.Repositorio {
                     connection.Open();
 
                     string strSQL;
-                    strSQL = "SELECT	pessoa.id as id_pessoa, EA.id_funcao, EA.Numero " +
+                    strSQL = "SELECT	pessoa.id as id_pessoa, EA.id_funcao, EA.Numero, EA.numCartoesAcumulados " +
                                 "FROM   Equipe_Atletas AS EA " +
                                 "       INNER JOIN Pessoa ON Pessoa.id = EA.id_Atleta " +
                                 "WHERE  EA.id_Competicao = @id_Competicao " +

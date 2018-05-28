@@ -175,6 +175,8 @@ namespace SecEsportes.Views
 
             for (int numGrupo = 0; numGrupo < competicao.numGrupos; numGrupo++) {
                 DataGridView dgvGrupos = CompeticaoViewUtilidades.criaAba(CompeticaoViewUtilidades.getNomeGrupo(competicao.nomesGrupos, numGrupo + 1), numGrupo, tcClassificacao);
+                dgvGrupos.Tag = new List<Object> { numGrupo, competicao, usuarioLogado };
+                dgvGrupos.CellMouseDoubleClick += CompeticaoViewUtilidades.dgvEquipesGrupo_CellMouseDoubleClick;
 
                 if (numGrupo < competicao.grupos.Count)
                     CompeticaoViewUtilidades.refreshDataGridViewGrupos(competicao, dgvGrupos, competicao.grupos[numGrupo], timesProximaFase[numGrupo]);
@@ -219,21 +221,25 @@ namespace SecEsportes.Views
                 DataGridView dataGridView = (DataGridView)sender;
                 Competicao_Partida partida = partidasPorRodada_view[tcPartidas.SelectedIndex][e.RowIndex];
 
-                string strData = dataGridView.Rows[e.RowIndex].Cells["Data_view"].Value.ToString();
-                DateTime dataPartida = new DateTime();
-                if (DateTime.TryParseExact(strData, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dataPartida)) {
-                    if (dataPartida.Date >= DateTime.Now.Date) {
-                        partida.data = dataPartida;
-                        partidasPorRodada_view[tcPartidas.SelectedIndex][e.RowIndex].data = dataPartida;
-                        partidasPorRodada[tcPartidas.SelectedIndex].Find(find => find.id == partida.id).data = dataPartida;
+                if (partida.encerrada) {
+                    dataGridView.Rows[e.RowIndex].Cells["Data_view"].Value = ((DateTime)partida.data).ToString("dd/MM/yyyy");
+                } else {
+                    string strData = dataGridView.Rows[e.RowIndex].Cells["Data_view"].Value.ToString();
+                    DateTime dataPartida = new DateTime();
+                    if (DateTime.TryParseExact(strData, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.NoCurrentDateDefault, out dataPartida)) {
+                        if (dataPartida.Date >= DateTime.Now.Date) {
+                            partida.data = dataPartida;
+                            partidasPorRodada_view[tcPartidas.SelectedIndex][e.RowIndex].data = dataPartida;
+                            partidasPorRodada[tcPartidas.SelectedIndex].Find(find => find.id == partida.id).data = dataPartida;
 
-                        CompeticaoRepositorio.Instance.updatePartida(ref competicao, partida);
+                            CompeticaoRepositorio.Instance.updatePartida(ref competicao, partida);
 
-                        return;
+                            return;
+                        }
                     }
-                }
 
-                dataGridView.Rows[e.RowIndex].Cells["Data_view"].Value = "";
+                    dataGridView.Rows[e.RowIndex].Cells["Data_view"].Value = "";
+                }
 
             }
         }
@@ -464,6 +470,10 @@ namespace SecEsportes.Views
                         case FaseFinalEnum._3_SemiFinal: numProximaFase = -2; numPartidasASeremGeradas = 2; break;
                         case FaseFinalEnum._2_Final: numProximaFase = -1; numPartidasASeremGeradas = 1; break;
                     }
+
+                    // Zera os cartões da competição
+                    if (competicao.zerarCartoesFaseFinal)
+                        CompeticaoRepositorio.Instance.zeraSuspensao(competicao);
 
                     // O campeonato é só por pontos corridos
                     if ( (competicao.faseFinal == FaseFinalEnum._1_Nao) && (competicao.grupos.Count == 1) ) {

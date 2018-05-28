@@ -79,6 +79,9 @@ namespace SecEsportes
                 competicao.numTimes = 16;
                 competicao.status = StatusEnum._1_Aberta;
                 competicao.numMinimoJogadores = 5;
+                competicao.arbitros = new List<Cargo>();
+                competicao.tpSuspensao = SuspensaoEnum._2_3CA_1Jogo_3CAe1CV_2Jogos;
+                competicao.zerarCartoesFaseFinal = true;
                 CompeticaoRepositorio.Instance.insert(ref competicao, ref myString);
 
                 // Cria a equipe do Brasil
@@ -487,8 +490,6 @@ namespace SecEsportes
             PessoaRepositorio.Instance.insert(ref arbitro, ref myString);
 
             Cargo cargoArbitro = new Cargo(arbitro.id, funcoes.Find(funcao => funcao.codigo.Equals(FuncaoRepositorio.Instance.codigoArbitro)), arbitro);
-            cargoArbitro.id_pessoa = arbitro.id;
-            cargoArbitro.id_funcao = arbitro.funcoes[0].id;
 
             CompeticaoRepositorio.Instance.insertArbitro(ref competicao, cargoArbitro);
         }
@@ -503,7 +504,6 @@ namespace SecEsportes
 
             if ((!(equipeCompeticao is null)) && (!(competicao is null))) {
                 Cargo cargoTreinador = new Cargo(treinador.id, funcoes.Find(funcao => funcao.codigo.Equals(FuncaoRepositorio.Instance.codigoTreinador)), treinador);
-                cargoTreinador.id_pessoa = treinador.id;
 
                 equipeCompeticao.treinador = cargoTreinador;
                 equipeCompeticao.id_treinador = treinador.id;

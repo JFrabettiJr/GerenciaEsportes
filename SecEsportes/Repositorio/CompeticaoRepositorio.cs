@@ -39,12 +39,14 @@ namespace SecEsportes.Repositorio {
                     "numGrupos INTEGER, " +
                     "faseFinal INTEGER, " +
                     "jogosIdaEVolta INTEGER, " +
-                    "jogosIdaEVolta_Final INTEGER, " +
+                    "jogosIdaEVolta_FaseFinal INTEGER, " +
                     "status INTEGER, " +
                     "nomesGrupos INTEGER, " +
                     "numMinimoJogadores INTEGER, " +
                     "id_Campeao INTEGER, " +
-                    "fase_Atual INTEGER, " + 
+                    "fase_Atual INTEGER, " +
+                    "zerarCartoesFaseFinal INTEGER, " +
+                    "tpSuspensao INTEGER, " +
                     "FOREIGN KEY(id_Modalidade) REFERENCES modalidade(id) " +
                     "FOREIGN KEY(id_Campeao) REFERENCES Equipe_Competicao(id) " +
                     ") ";
@@ -114,6 +116,23 @@ namespace SecEsportes.Repositorio {
                                         "    id_Arbitro INTEGER, " +
                                         "    FOREIGN KEY(id_Competicao) REFERENCES Competicao(id), " +
                                         "    FOREIGN KEY(id_Arbitro) REFERENCES Pessoa(id) " +
+                                        ") ";
+                command.ExecuteNonQuery();
+            }
+
+            //Criação da tabela Competicao_Suspensao
+            if (connection.GetSchema("Tables", new[] { null, null, "Competicao_Suspensao", null }).Rows.Count == 0) {
+                SQLiteCommand command = connection.CreateCommand();
+
+                command.CommandText = "CREATE TABLE Competicao_Suspensao( " +
+                                        "    id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                                        "    id_Competicao INTEGER, " +
+                                        "    id_Equipe INTEGER, " +
+                                        "    id_Atleta INTEGER, " +
+                                        "    numJogosSuspensao INTEGER, " +
+                                        "    FOREIGN KEY(id_Competicao) REFERENCES Competicao(id), " +
+                                        "    FOREIGN KEY(id_Equipe) REFERENCES Equipe_Competicao(id_Equipe), " +
+                                        "    FOREIGN KEY(id_Atleta) REFERENCES Pessoa(id) " +
                                         ") ";
                 command.ExecuteNonQuery();
             }
@@ -458,9 +477,9 @@ namespace SecEsportes.Repositorio {
             try {
                 competicao.id = SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query<int>("" +
                     "INSERT INTO Competicao " +
-                    "(Nome, dataInicial, dataFinal, id_Modalidade, numTimes, numGrupos, faseFinal, jogosIdaEVolta, jogosIdaEvolta_FaseFinal, status, nomesGrupos, numMinimoJogadores, id_Campeao, fase_Atual) " +
+                    "(Nome, dataInicial, dataFinal, id_Modalidade, numTimes, numGrupos, faseFinal, jogosIdaEVolta, jogosIdaEvolta_FaseFinal, status, nomesGrupos, numMinimoJogadores, id_Campeao, fase_Atual, zerarCartoesFaseFinal, tpSuspensao) " +
                     "VALUES " +
-                    "(@Nome, @dataInicial, @dataFinal, @id_Modalidade, @numTimes, @numGrupos, @faseFinal, @jogosIdaEVolta, @jogosIdaEVolta_faseFinal, @status, @nomesGrupos, @numMinimoJogadores, @id_Campeao, @fase_Atual); " +
+                    "(@Nome, @dataInicial, @dataFinal, @id_Modalidade, @numTimes, @numGrupos, @faseFinal, @jogosIdaEVolta, @jogosIdaEVolta_faseFinal, @status, @nomesGrupos, @numMinimoJogadores, @id_Campeao, @fase_Atual, @zerarCartoesFaseFinal, @tpSuspensao); " +
                     "select last_insert_rowid()",
                     new {
                         competicao.nome,
@@ -476,7 +495,9 @@ namespace SecEsportes.Repositorio {
                         competicao.nomesGrupos,
                         competicao.numMinimoJogadores,
                         id_Campeao = (competicao.campeao is null ? 0 : competicao.campeao.id),
-                        competicao.fase_Atual
+                        competicao.fase_Atual,
+                        competicao.zerarCartoesFaseFinal,
+                        competicao.tpSuspensao
                     }).First();
                 return true;
             } catch (Exception ex) {
@@ -566,11 +587,11 @@ namespace SecEsportes.Repositorio {
                 return false;
             }
         }
-        public bool insertEvento(Competicao_Partida partida, Competicao_Partida_Evento evento) {
+        public bool insertEvento(ref Competicao_Partida partida, Competicao_Partida_Evento evento) {
             try {
 
                 string strSQL;
-                strSQL = "INSERT INTO Competicao_Partida_Evento " +
+                strSQL =    "INSERT INTO Competicao_Partida_Evento " +
                             "(id_Partida, id_Equipe, id_Atleta, tpEvento) " +
                             "VALUES " +
                             "(@id_Partida, @id_Equipe, @id_Atleta, @tpEvento) ";
@@ -581,6 +602,47 @@ namespace SecEsportes.Repositorio {
                             id_Atleta = evento.atleta.pessoa.id,
                             evento.tpEvento
                     });
+
+                if (evento.tpEvento == tpEventoEnum.CartaoAmarelo) {
+                    strSQL =    "UPDATE Equipe_Atletas " +
+                                "SET    numCartoesAcumulados = numCartoesAcumulados + 1 " +
+                                "WHERE  id_Equipe = @id_Equipe " +
+                                "       AND id_Competicao = @id_Competicao " +
+                                "       AND id_Atleta = @id_Atleta; " +
+                                " " +
+                                "SELECT numCartoesAcumulados " +
+                                "FROM   Equipe_Atletas " +
+                                "WHERE  id_Equipe = @id_Equipe " +
+                                "       AND id_Competicao = @id_Competicao " +
+                                "       AND id_Atleta = @id_Atleta; ";
+
+                    if (partida.equipe1.id == evento.equipe.id)
+                        partida.equipe1.atletas.Find(find => find.pessoa.id == evento.atleta.pessoa.id).numCartoesAcumulados = 
+                            SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query<int>(strSQL,
+                            new {
+                                id_Equipe = evento.equipe.id,
+                                id_Competicao = partida.id_Competicao,
+                                id_Atleta = evento.atleta.pessoa.id
+                            }).First<int>();
+                    else if (partida.equipe2.id == evento.equipe.id)
+                        partida.equipe2.atletas.Find(find => find.pessoa.id == evento.atleta.pessoa.id).numCartoesAcumulados =
+                            SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query<int>(strSQL,
+                            new {
+                                id_Equipe = evento.equipe.id,
+                                id_Competicao = partida.id_Competicao,
+                                id_Atleta = evento.atleta.pessoa.id
+                            }).First<int>();
+
+                    //Verifica se foi o 2º cartão amarelo
+                    if (partida.eventos.FindAll(find => find.atleta.pessoa.id == evento.atleta.pessoa.id && find.tpEvento == tpEventoEnum.CartaoAmarelo).Count > 1) {
+
+                        //Verifica se já foi inserido o cartão vermelho
+                        if (partida.eventos.FindAll(find => find.atleta.pessoa.id == evento.atleta.pessoa.id && find.tpEvento == tpEventoEnum.CartaoVermelho).Count == 0)
+                            partida.eventos.Add(new Competicao_Partida_Evento(evento.equipe, evento.atleta, tpEventoEnum.CartaoVermelho));
+                    }
+
+                }
+
                 return true;
             } catch (Exception ex) {
                 return false;
@@ -608,7 +670,9 @@ namespace SecEsportes.Repositorio {
                             "       nomesGrupos = @nomesGrupos, " +
                             "       numMinimoJogadores = @numMinimoJogadores, " +
                             "       id_Campeao = @id_Campeao, " +
-                            "       fase_Atual = @fase_Atual " + 
+                            "       fase_Atual = @fase_Atual, " +
+                            "       zerarCartoesFaseFinal = @zerarCartoesFaseFinal, " +
+                            "       tpSuspensao = @tpSuspensao " + 
                             "WHERE id = @id";
 
                 SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(strSQL,
@@ -627,6 +691,8 @@ namespace SecEsportes.Repositorio {
                         competicao.numMinimoJogadores,
                         id_Campeao = (competicao.campeao is null ? 0 : competicao.campeao.id),
                         competicao.fase_Atual,
+                        competicao.zerarCartoesFaseFinal,
+                        competicao.tpSuspensao,
                         competicao.id
                     });
                 return true;
@@ -771,7 +837,202 @@ namespace SecEsportes.Repositorio {
                         competicao.id_Campeao = competicao.campeao.id;
                         update(competicao);
                     }
+
+                    // Verifica se algum atleta foi suspenso
+                    verificaSuspensoes(competicao, partida);
+
                 }
+
+                return true;
+            } catch (Exception ex) {
+                return false;
+            }
+        }
+
+        public void verificaSuspensoes(Competicao competicao, Competicao_Partida partida) {
+            // Verifica os atletas que já cumpriram suspensão
+            verificaSuspensoesCumpridas(competicao, partida);
+
+            // Verifica os atletas suspensos por vermelho
+            List<Atleta> suspensosCV_Equipe1 = new List<Atleta>(), suspensosCV_Equipe2 = new List<Atleta>();
+            suspensosCV_Equipe1.AddRange(partida.equipe1.atletas.FindAll(find => partida.eventos.FindAll(find2 => find2.atleta.pessoa.id == find.pessoa.id && find2.tpEvento == tpEventoEnum.CartaoVermelho).Count > 0));
+            suspensosCV_Equipe2.AddRange(partida.equipe2.atletas.FindAll(find => partida.eventos.FindAll(find2 => find2.atleta.pessoa.id == find.pessoa.id && find2.tpEvento == tpEventoEnum.CartaoVermelho).Count > 0));
+
+            // Verifica os atletas suspensos por amarelo
+            int numCartoesSuspensao = 0;
+            switch (competicao.tpSuspensao) {
+                case SuspensaoEnum._1_2CA_1Jogo_2CAe1CV_2Jogos: case SuspensaoEnum._3_2CA_1Jogo: numCartoesSuspensao = 2; break;
+                case SuspensaoEnum._2_3CA_1Jogo_3CAe1CV_2Jogos: case SuspensaoEnum._4_3CA_1Jogo: numCartoesSuspensao = 3; break;
+            }
+
+            List<Atleta> suspensosCA_Equipe1 = new List<Atleta>(), suspensosCA_Equipe2 = new List<Atleta>();
+            suspensosCA_Equipe1.AddRange(partida.equipe1.atletas.FindAll(find => find.numCartoesAcumulados >= numCartoesSuspensao));
+            suspensosCA_Equipe2.AddRange(partida.equipe2.atletas.FindAll(find => find.numCartoesAcumulados >= numCartoesSuspensao));
+
+            // Verifica os atletas suspensos por amarelo e vermelho
+            List<Atleta> suspensosCAeCV_Equipe1 = new List<Atleta>(), suspensosCAeCV_Equipe2 = new List<Atleta>();
+            suspensosCAeCV_Equipe1.AddRange(suspensosCV_Equipe1.FindAll(find => suspensosCA_Equipe1.FindAll(find2 => find2.pessoa.id == find.pessoa.id).Count > 0));
+            suspensosCAeCV_Equipe2.AddRange(suspensosCV_Equipe2.FindAll(find => suspensosCA_Equipe2.FindAll(find2 => find2.pessoa.id == find.pessoa.id).Count > 0));
+
+            // Remove da lista de suspensos por amarelo ou vermelho e mantém apenas na lista de suspensos por amarelo e vermelho
+            suspensosCA_Equipe1.RemoveAll(find => suspensosCAeCV_Equipe1.FindAll(find2 => find2.pessoa.id == find.pessoa.id).Count > 0);
+            suspensosCA_Equipe2.RemoveAll(find => suspensosCAeCV_Equipe2.FindAll(find2 => find2.pessoa.id == find.pessoa.id).Count > 0);
+            suspensosCV_Equipe1.RemoveAll(find => suspensosCAeCV_Equipe1.FindAll(find2 => find2.pessoa.id == find.pessoa.id).Count > 0);
+            suspensosCV_Equipe2.RemoveAll(find => suspensosCAeCV_Equipe2.FindAll(find2 => find2.pessoa.id == find.pessoa.id).Count > 0);
+
+            // Cria as suspensões para quem está suspenso por amarelos e vermelho
+            int numJogosSuspensao = 0;
+            switch (competicao.tpSuspensao) {
+                case SuspensaoEnum._1_2CA_1Jogo_2CAe1CV_2Jogos: case SuspensaoEnum._2_3CA_1Jogo_3CAe1CV_2Jogos: numJogosSuspensao = 2;  break;
+                case SuspensaoEnum._3_2CA_1Jogo:                case SuspensaoEnum._4_3CA_1Jogo: numJogosSuspensao = 1;                 break;
+            }
+
+            foreach (Atleta suspenso_CAeCV in suspensosCAeCV_Equipe1) {
+                Competicao_Suspensao suspensao = new Competicao_Suspensao(competicao, partida.equipe1, suspenso_CAeCV, numJogosSuspensao);
+                insertSuspensao(ref suspensao);
+            }
+
+            foreach (Atleta suspenso_CAeCV in suspensosCAeCV_Equipe2) {
+                Competicao_Suspensao suspensao = new Competicao_Suspensao(competicao, partida.equipe2, suspenso_CAeCV, numJogosSuspensao);
+                insertSuspensao(ref suspensao);
+            }
+
+            // Cria as suspensões para quem está suspenso por amarelos
+            foreach (Atleta suspenso_CA in suspensosCA_Equipe1) {
+                Competicao_Suspensao suspensao = new Competicao_Suspensao(competicao, partida.equipe1, suspenso_CA, 1);
+                insertSuspensao(ref suspensao);
+            }
+
+            foreach (Atleta suspenso_CA in suspensosCA_Equipe2) {
+                Competicao_Suspensao suspensao = new Competicao_Suspensao(competicao, partida.equipe2, suspenso_CA, 1);
+                insertSuspensao(ref suspensao);
+            }
+
+            // Cria as suspensões para quem está suspenso por vermelho
+            foreach (Atleta suspenso_CV in suspensosCV_Equipe1) {
+                Competicao_Suspensao suspensao = new Competicao_Suspensao(competicao, partida.equipe1, suspenso_CV, 1);
+                insertSuspensao(ref suspensao);
+            }
+
+            foreach (Atleta suspenso_CV in suspensosCV_Equipe2) {
+                Competicao_Suspensao suspensao = new Competicao_Suspensao(competicao, partida.equipe2, suspenso_CV, 1);
+                insertSuspensao(ref suspensao);
+            }
+
+        }
+
+        public void verificaSuspensoesCumpridas(Competicao competicao, Competicao_Partida partida) {
+            try {
+                string strSQL;
+                strSQL =    "UPDATE Competicao_Suspensao " +
+                            "SET    numJogosSuspensao = numJogosSuspensao - 1 " +
+                            "WHERE  id_Competicao = @id_Competicao " +
+                            "       AND (id_Equipe = @id_Equipe1 OR id_Equipe = @id_Equipe2) ";
+
+                SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query<Competicao_Suspensao>(strSQL,
+                new {
+                    id_Competicao = competicao.id,
+                    id_Equipe1 = partida.equipe1.id,
+                    id_Equipe2 = partida.equipe2.id
+                });
+
+
+            } catch (Exception ex) {
+                
+            }
+        }
+
+        public void zeraSuspensao(Competicao competicao) {
+            try {
+                string strSQL;
+                strSQL =    "UPDATE Competicao_Suspensao " +
+                            "SET    numJogosSuspensao = 0 " +
+                            "WHERE  id_Competicao = @id_Competicao ";
+
+                SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query<Competicao_Suspensao>(strSQL,
+                new {
+                    id_Competicao = competicao.id
+                });
+
+
+            } catch (Exception ex) {
+
+            }
+        }
+
+        public List<Competicao_Suspensao> getSuspensoesPorEquipe(int id_Competicao, int id_Equipe) {
+            try {
+
+                List<Competicao_Suspensao> suspensoes;
+
+                string strSQL;
+                strSQL =    "SELECT * " +
+                            "FROM   Competicao_Suspensao " +
+                            "WHERE  id_Competicao = @id_Competicao " +
+                            "       AND id_Equipe = @id_Equipe" +
+                            "       AND numJogosSuspensao > 0 ";
+
+                suspensoes = SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query<Competicao_Suspensao>(strSQL,
+                new {
+                    id_Competicao,
+                    id_Equipe
+                }).ToList();
+
+                foreach (Competicao_Suspensao suspensao in suspensoes) {
+                    suspensao.atleta = PessoaRepositorio.Instance.getAtleta(suspensao.id_Atleta);
+                    suspensao.equipe = EquipeRepositorio.Instance.getEquipeCompeticao(suspensao.id_Equipe, suspensao.id_Competicao);
+                }
+
+                return suspensoes;
+            } catch (Exception ex) {
+                return null;
+            }
+        }
+
+        public bool insertSuspensao(ref Competicao_Suspensao suspensao) {
+            try {
+
+                string strSQL;
+                strSQL =    "INSERT INTO Competicao_Suspensao " +
+                            "   (id_Competicao, id_Equipe, id_Atleta, numJogosSuspensao) " +
+                            "VALUES " +
+                            "   (@id_Competicao, @id_Equipe, @id_Atleta, @numJogosSuspensao); " +
+                            " " +
+                            "select last_insert_rowid()";
+
+                suspensao.id = SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query<int>(strSQL,
+                new {
+                    id_Competicao = suspensao.id_Competicao,
+                    id_Equipe = suspensao.id_Equipe,
+                    id_Atleta = suspensao.atleta.pessoa.id,
+                    numJogosSuspensao = suspensao.numJogosSuspensao
+                }).First();
+
+                return true;
+            } catch (Exception ex) {
+                return false;
+            }
+        }
+
+        public bool updateSuspensao(Competicao_Suspensao suspensao) {
+            try {
+
+                string strSQL;
+                strSQL =    "UPDATE Competicao_Suspensao " +
+                            "SET    id_Competicao = @id_Competicao, " +
+                            "       id_Equipe = @id_Equipe, " +
+                            "       id_Atleta = @id_Atleta, " +
+                            "       numJogosSuspensao = @numJogosSuspensao " +
+                            "WHERE  id = @id ";
+
+                suspensao.id = SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query<int>(strSQL,
+                new {
+                    id_Competicao = suspensao.id_Competicao,
+                    id_Equipe = suspensao.id_Equipe,
+                    id_Atleta = suspensao.atleta.pessoa.id,
+                    numJogosSuspensao = suspensao.numJogosSuspensao,
+                    id = suspensao.id
+                }).First();
 
                 return true;
             } catch (Exception ex) {

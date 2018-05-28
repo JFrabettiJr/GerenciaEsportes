@@ -610,6 +610,19 @@ namespace SecEsportes.Infraestrutura
             dgvGrupo.Refresh();
         }
 
+        public static void dgvEquipesGrupo_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e) {
+            DataGridView dataGridView = (DataGridView)sender;
+            int numGrupo = Convert.ToInt32(((List<Object>)dataGridView.Tag)[0]);
+            Competicao competicao = (Competicao)((List<Object>)dataGridView.Tag)[1];
+            Usuario usuarioLogado = (Usuario)((List<Object>)dataGridView.Tag)[2];
+
+            List<EquipeCompeticao> equipesNogrupo = (from equipes in competicao.grupos[numGrupo]
+                                                     orderby equipes.pontos descending, equipes.vitorias descending, equipes.golsPro - equipes.golsContra descending
+                                                     select equipes).ToList<EquipeCompeticao>();
+
+            if ((e.RowIndex > -1) && (!(competicao.grupos is null)))
+                new Views.EditEquipe(usuarioLogado, equipesNogrupo[e.RowIndex], competicao).ShowDialog();
+        }
 
     }
 

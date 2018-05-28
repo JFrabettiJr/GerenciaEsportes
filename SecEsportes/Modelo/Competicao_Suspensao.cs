@@ -5,10 +5,10 @@ namespace SecEsportes.Modelo {
     /// <summary>
     /// Classe que representa uma competição (Exemplos: Municipal de Futsal, Suíço Master, Areião, etc).
     /// </summary>
-    public class Competicao_Partida_Evento {
+    public class Competicao_Suspensao {
         public int id { get; set; }
 
-        public int id_Partida { get; set; }
+        public int id_Competicao { get; set; }
 
         public int id_Equipe { get; set; }
         public EquipeCompeticao equipe { get; set; }
@@ -16,26 +16,20 @@ namespace SecEsportes.Modelo {
         public int id_Atleta { get; set; }
         public Atleta atleta { get; set; }
 
-        public tpEventoEnum tpEvento { get; set; }
+        public int numJogosSuspensao { get; set; }
 
-        public Competicao_Partida_Evento() { }
+        public Competicao_Suspensao() { }
 
-        public Competicao_Partida_Evento(EquipeCompeticao equipe, Atleta atleta, tpEventoEnum tpEvento) {
-            this.equipe = equipe;
+        public Competicao_Suspensao(Competicao competicao, EquipeCompeticao equipe, Atleta atleta, int numJogosSuspensao) {
             this.atleta = atleta;
-            this.tpEvento = tpEvento;
+            this.numJogosSuspensao = numJogosSuspensao;
+            this.equipe = equipe;
 
-            this.id_Equipe = equipe.id;
             this.id_Atleta = atleta.pessoa.id;
+            this.id_Competicao = competicao.id;
+            this.id_Equipe = equipe.id;
 
         }
-    }
-
-    public enum tpEventoEnum {
-        Gol,
-        CartaoAmarelo,
-        CartaoVermelho,
-        Gol_Penalti
     }
 
 }

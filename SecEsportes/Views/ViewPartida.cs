@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 using SecEsportes.Infraestrutura;
 using SecEsportes.Modelo;
@@ -10,8 +11,10 @@ namespace SecEsportes.Views {
         private Competicao_Partida partida;
         private Competicao competicao;
         private bool partidaIniciada;
-        private string errorMessage = "";
         private bool penalidades = false;
+
+        private List<Competicao_Suspensao> atletas_Suspensos_Equipe1;
+        private List<Competicao_Suspensao> atletas_Suspensos_Equipe2;
 
         private Usuario usuarioLogado;
 
@@ -36,18 +39,26 @@ namespace SecEsportes.Views {
             lblTime1.Text = partida.equipe1.nome;
             lblTecnico1.Text = "Técnico: " + partida.equipe1.treinador.pessoa.nome;
             lblRepresentante1.Text = "Representante: " + partida.equipe1.representante.pessoa.nome;
-            lblPlacarTime1.Text = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.equipe.id == partida.equipe1.id && eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol)).Count.ToString();
-            lblPlacarTime1_Penalti.Text = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.equipe.id == partida.equipe1.id && eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol_Penalti)).Count.ToString();
             partida.equipe1.atletas = PessoaRepositorio.Instance.getAtletasByEquipeCompeticao(competicao.id, partida.equipe1.id);
-            refreshDataGridViewAtletas(dgvEquipe1, partida.equipe1, partida.equipe1.atletas);
+            atletas_Suspensos_Equipe1 = CompeticaoRepositorio.Instance.getSuspensoesPorEquipe(competicao.id, partida.equipe1.id);
 
             lblTime2.Text = partida.equipe2.nome;
             lblTecnico2.Text = "Técnico: " + partida.equipe2.treinador.pessoa.nome;
             lblRepresentante2.Text = "Representante: " + partida.equipe2.representante.pessoa.nome;
+            partida.equipe2.atletas = PessoaRepositorio.Instance.getAtletasByEquipeCompeticao(competicao.id, partida.equipe2.id);
+            atletas_Suspensos_Equipe2 = CompeticaoRepositorio.Instance.getSuspensoesPorEquipe(competicao.id, partida.equipe2.id);
+
+            fillFields();
+        }
+
+        private void fillFields() {
+            lblPlacarTime1.Text = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.equipe.id == partida.equipe1.id && eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol)).Count.ToString();
+            lblPlacarTime1_Penalti.Text = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.equipe.id == partida.equipe1.id && eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol_Penalti)).Count.ToString();
+            refreshDataGridViewAtletas(dgvEquipe1, partida.equipe1, partida.equipe1.atletas, atletas_Suspensos_Equipe1);
+
             lblPlacarTime2.Text = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.equipe.id == partida.equipe2.id && eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol)).Count.ToString();
             lblPlacarTime2_Penalti.Text = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.equipe.id == partida.equipe2.id && eventosAEncontrar.tpEvento.Equals(tpEventoEnum.Gol_Penalti)).Count.ToString();
-            partida.equipe2.atletas = PessoaRepositorio.Instance.getAtletasByEquipeCompeticao(competicao.id, partida.equipe2.id);
-            refreshDataGridViewAtletas(dgvEquipe2, partida.equipe2, partida.equipe2.atletas);
+            refreshDataGridViewAtletas(dgvEquipe2, partida.equipe2, partida.equipe2.atletas, atletas_Suspensos_Equipe2);
 
             if (partidaIniciada) {
                 btnEncerrarPartida.Enabled = true;
@@ -58,7 +69,7 @@ namespace SecEsportes.Views {
                 btnIniciarPartida.Enabled = false;
                 btnDisputaPenaltis.Enabled = false;
             }
-            if(!(partidaIniciada) && !(partida.encerrada)) {
+            if (!(partidaIniciada) && !(partida.encerrada)) {
                 btnEncerrarPartida.Enabled = false;
                 btnIniciarPartida.Enabled = true;
             }
@@ -67,10 +78,9 @@ namespace SecEsportes.Views {
                 btnDisputaPenaltis.Visible = false;
             else
                 btnDisputaPenaltis.Visible = true;
-
         }
 
-        public void refreshDataGridViewAtletas(DataGridView dgvAtletas, EquipeCompeticao equipe, List<Atleta> atletas) {
+        public void refreshDataGridViewAtletas(DataGridView dgvAtletas, EquipeCompeticao equipe, List<Atleta> atletas, List<Competicao_Suspensao> suspensoes) {
             dgvAtletas.DataSource = null;
             dgvAtletas.Refresh();
 
@@ -83,6 +93,7 @@ namespace SecEsportes.Views {
                 dgvAtletas.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "Gol" });
                 dgvAtletas.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "CartaoAmarelo" });
                 dgvAtletas.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "CartaoVermelho" });
+                dgvAtletas.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "Disponivel" });
             }
 
             for (var iCount = 0; iCount < dgvAtletas.Columns.Count; iCount++) {
@@ -112,8 +123,8 @@ namespace SecEsportes.Views {
                         dgvAtletas.Columns[iCount].Width = 25;
                         break;
                     default:
-                        dgvAtletas.Columns.RemoveAt(iCount);
-                        iCount--;
+                        dgvAtletas.Columns[iCount].Name = dgvAtletas.Columns[iCount].DataPropertyName;
+                        dgvAtletas.Columns[iCount].Visible = false;
                         break;
                 }
             }
@@ -124,6 +135,13 @@ namespace SecEsportes.Views {
                 dgvAtletas.Rows[iCount].Cells["Gol"].Value = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.atleta.pessoa.id.Equals(atletas[iCount].pessoa.id) && eventosAEncontrar.tpEvento == tpEventoEnum.Gol).Count.ToString();
                 dgvAtletas.Rows[iCount].Cells["CartaoAmarelo"].Value = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.atleta.pessoa.id.Equals(atletas[iCount].pessoa.id) && eventosAEncontrar.tpEvento == tpEventoEnum.CartaoAmarelo).Count.ToString();
                 dgvAtletas.Rows[iCount].Cells["CartaoVermelho"].Value = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.atleta.pessoa.id.Equals(atletas[iCount].pessoa.id) && eventosAEncontrar.tpEvento == tpEventoEnum.CartaoVermelho).Count.ToString();
+
+                if (suspensoes.FindAll(find => find.atleta.pessoa.id == atletas[iCount].pessoa.id).Count > 0) {
+                    dgvAtletas.Rows[iCount].Cells["Disponivel"].Value = "N";
+                    dgvAtletas.Rows[iCount].DefaultCellStyle.ForeColor = Color.Red;
+                } else
+                    dgvAtletas.Rows[iCount].Cells["Disponivel"].Value = "S";
+
             }
 
             dgvAtletas.Refresh();
@@ -146,6 +164,14 @@ namespace SecEsportes.Views {
                                 break;
                         }
 
+                        // Identifica se o atleta não está suspenso
+                        DataGridView dataGridView = (DataGridView)sender;
+                        bool atletaSuspenso;
+                        if (dataGridView["disponivel", e.RowIndex].Value.ToString() == "N")
+                            atletaSuspenso = true;
+                        else
+                            atletaSuspenso = false;
+
                         // Cria o menu de contexto
                         ContextMenu contextMenu = new ContextMenu();
                         MenuItem menuItem;
@@ -154,21 +180,25 @@ namespace SecEsportes.Views {
                             menuItem = new MenuItem("Gol de pênalti");
                             menuItem.Click += mnuNewEvento;
                             menuItem.Tag = new List<Object>() { tpEventoEnum.Gol_Penalti, numEquipe, equipe.atletas[e.RowIndex] };
+                            menuItem.Enabled = !atletaSuspenso;
                             contextMenu.MenuItems.Add(menuItem);
                         } else {
                             menuItem = new MenuItem("Gol");
-                            menuItem.Click += mnuNewEvento;
                             menuItem.Tag = new List<Object>() { tpEventoEnum.Gol, numEquipe, equipe.atletas[e.RowIndex] };
+                            menuItem.Click += mnuNewEvento;
+                            menuItem.Enabled = !atletaSuspenso;
                             contextMenu.MenuItems.Add(menuItem);
 
                             menuItem = new MenuItem("Cartão Amarelo");
                             menuItem.Tag = new List<Object>() { tpEventoEnum.CartaoAmarelo, numEquipe, equipe.atletas[e.RowIndex] };
                             menuItem.Click += mnuNewEvento;
+                            menuItem.Enabled = !atletaSuspenso;
                             contextMenu.MenuItems.Add(menuItem);
 
                             menuItem = new MenuItem("Cartão Vermelho");
                             menuItem.Tag = new List<Object>() { tpEventoEnum.CartaoVermelho, numEquipe, equipe.atletas[e.RowIndex] };
                             menuItem.Click += mnuNewEvento;
+                            menuItem.Enabled = !atletaSuspenso;
                             contextMenu.MenuItems.Add(menuItem);
                         }
                         
@@ -194,14 +224,14 @@ namespace SecEsportes.Views {
 
             Competicao_Partida_Evento evento = new Competicao_Partida_Evento(equipe, atleta, tpEvento);
             partida.eventos.Add(evento);
-            CompeticaoRepositorio.Instance.insertEvento(partida, evento);
-            load(null, null);
+            CompeticaoRepositorio.Instance.insertEvento(ref partida, evento);
+            fillFields();
 
         }
 
         private void btnIniciarPartida_Click(object sender, EventArgs e) {
             partidaIniciada = true;
-            load(null, null);
+            fillFields();
         }
 
         private void ViewPartida_FormClosing(object sender, FormClosingEventArgs e) {
@@ -257,7 +287,7 @@ namespace SecEsportes.Views {
             partida.encerrada = true;
             CompeticaoRepositorio.Instance.updatePartida(ref competicao, partida);
 
-            load(null, null);
+            fillFields();
         }
 
         private void btnDisputaPenaltis_Click(object sender, EventArgs e) {

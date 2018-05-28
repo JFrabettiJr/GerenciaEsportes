@@ -65,10 +65,14 @@
             this.btnGerarPartidas = new System.Windows.Forms.Button();
             this.btnVisaoGeral = new System.Windows.Forms.Button();
             this.btnArbitros = new System.Windows.Forms.Button();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tlp3 = new System.Windows.Forms.TableLayoutPanel();
+            this.lblSuspensao = new System.Windows.Forms.Label();
+            this.cboSuspensao = new System.Windows.Forms.ComboBox();
+            this.chkZerarCartoesFaseFinal = new System.Windows.Forms.CheckBox();
             this.tlp1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvEquipes)).BeginInit();
             this.tlp2.SuspendLayout();
+            this.tlp3.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlp1
@@ -210,6 +214,7 @@
             this.cboModalidades.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboModalidades.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboModalidades.FormattingEnabled = true;
             this.cboModalidades.Location = new System.Drawing.Point(445, 17);
             this.cboModalidades.Name = "cboModalidades";
@@ -244,11 +249,11 @@
             this.dgvEquipes.AllowUserToOrderColumns = true;
             this.dgvEquipes.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.dgvEquipes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvEquipes.Location = new System.Drawing.Point(10, 219);
+            this.dgvEquipes.Location = new System.Drawing.Point(10, 209);
             this.dgvEquipes.Name = "dgvEquipes";
             this.dgvEquipes.ReadOnly = true;
             this.dgvEquipes.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvEquipes.Size = new System.Drawing.Size(710, 145);
+            this.dgvEquipes.Size = new System.Drawing.Size(710, 155);
             this.dgvEquipes.TabIndex = 5;
             this.dgvEquipes.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvEquipes_CellMouseDoubleClick);
             this.dgvEquipes.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvEquipes_RowEnter);
@@ -282,7 +287,7 @@
             this.tlp2.Controls.Add(this.lblNumTimes, 0, 0);
             this.tlp2.Controls.Add(this.chkIdaEVolta, 3, 1);
             this.tlp2.Controls.Add(this.chkIdaEVoltaFaseFinal, 4, 1);
-            this.tlp2.Location = new System.Drawing.Point(10, 97);
+            this.tlp2.Location = new System.Drawing.Point(10, 87);
             this.tlp2.Name = "tlp2";
             this.tlp2.RowCount = 2;
             this.tlp2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 14F));
@@ -334,6 +339,7 @@
             this.cboNomeacaoGrupos.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboNomeacaoGrupos.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboNomeacaoGrupos.FormattingEnabled = true;
             this.cboNomeacaoGrupos.Location = new System.Drawing.Point(588, 17);
             this.cboNomeacaoGrupos.Name = "cboNomeacaoGrupos";
@@ -358,6 +364,7 @@
             this.cboFaseFinal.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboFaseFinal.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboFaseFinal.FormattingEnabled = true;
             this.cboFaseFinal.Location = new System.Drawing.Point(109, 17);
             this.cboFaseFinal.Name = "cboFaseFinal";
@@ -413,10 +420,10 @@
             // 
             // tcGrupos
             // 
-            this.tcGrupos.Location = new System.Drawing.Point(10, 379);
+            this.tcGrupos.Location = new System.Drawing.Point(10, 369);
             this.tcGrupos.Name = "tcGrupos";
             this.tcGrupos.SelectedIndex = 0;
-            this.tcGrupos.Size = new System.Drawing.Size(710, 145);
+            this.tcGrupos.Size = new System.Drawing.Size(710, 155);
             this.tcGrupos.TabIndex = 8;
             // 
             // btnAvancar
@@ -450,7 +457,7 @@
             // 
             // btnIncluirEquipes
             // 
-            this.btnIncluirEquipes.Location = new System.Drawing.Point(10, 191);
+            this.btnIncluirEquipes.Location = new System.Drawing.Point(10, 181);
             this.btnIncluirEquipes.Name = "btnIncluirEquipes";
             this.btnIncluirEquipes.Size = new System.Drawing.Size(90, 23);
             this.btnIncluirEquipes.TabIndex = 12;
@@ -460,7 +467,7 @@
             // 
             // btnExcluirEquipe
             // 
-            this.btnExcluirEquipe.Location = new System.Drawing.Point(105, 191);
+            this.btnExcluirEquipe.Location = new System.Drawing.Point(105, 181);
             this.btnExcluirEquipe.Name = "btnExcluirEquipe";
             this.btnExcluirEquipe.Size = new System.Drawing.Size(90, 23);
             this.btnExcluirEquipe.TabIndex = 13;
@@ -470,7 +477,7 @@
             // 
             // btnGerarGrupos
             // 
-            this.btnGerarGrupos.Location = new System.Drawing.Point(430, 191);
+            this.btnGerarGrupos.Location = new System.Drawing.Point(430, 181);
             this.btnGerarGrupos.Name = "btnGerarGrupos";
             this.btnGerarGrupos.Size = new System.Drawing.Size(90, 23);
             this.btnGerarGrupos.TabIndex = 14;
@@ -490,7 +497,7 @@
             // 
             // btnGerarPartidas
             // 
-            this.btnGerarPartidas.Location = new System.Drawing.Point(335, 191);
+            this.btnGerarPartidas.Location = new System.Drawing.Point(335, 181);
             this.btnGerarPartidas.Name = "btnGerarPartidas";
             this.btnGerarPartidas.Size = new System.Drawing.Size(90, 23);
             this.btnGerarPartidas.TabIndex = 16;
@@ -500,7 +507,7 @@
             // 
             // btnVisaoGeral
             // 
-            this.btnVisaoGeral.Location = new System.Drawing.Point(545, 191);
+            this.btnVisaoGeral.Location = new System.Drawing.Point(545, 181);
             this.btnVisaoGeral.Name = "btnVisaoGeral";
             this.btnVisaoGeral.Size = new System.Drawing.Size(175, 23);
             this.btnVisaoGeral.TabIndex = 17;
@@ -510,7 +517,7 @@
             // 
             // btnArbitros
             // 
-            this.btnArbitros.Location = new System.Drawing.Point(220, 191);
+            this.btnArbitros.Location = new System.Drawing.Point(220, 181);
             this.btnArbitros.Name = "btnArbitros";
             this.btnArbitros.Size = new System.Drawing.Size(90, 23);
             this.btnArbitros.TabIndex = 18;
@@ -518,18 +525,58 @@
             this.btnArbitros.UseVisualStyleBackColor = true;
             this.btnArbitros.Click += new System.EventHandler(this.btnArbitros_Click);
             // 
-            // tableLayoutPanel1
+            // tlp3
             // 
-            this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 75F));
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(10, 147);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 2;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 14F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(710, 40);
-            this.tableLayoutPanel1.TabIndex = 19;
+            this.tlp3.ColumnCount = 3;
+            this.tlp3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 32.5F));
+            this.tlp3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlp3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 42.5F));
+            this.tlp3.Controls.Add(this.lblSuspensao, 0, 0);
+            this.tlp3.Controls.Add(this.cboSuspensao, 0, 1);
+            this.tlp3.Controls.Add(this.chkZerarCartoesFaseFinal, 1, 1);
+            this.tlp3.Location = new System.Drawing.Point(10, 132);
+            this.tlp3.Name = "tlp3";
+            this.tlp3.RowCount = 2;
+            this.tlp3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 14F));
+            this.tlp3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
+            this.tlp3.Size = new System.Drawing.Size(710, 40);
+            this.tlp3.TabIndex = 19;
+            // 
+            // lblSuspensao
+            // 
+            this.lblSuspensao.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSuspensao.AutoSize = true;
+            this.lblSuspensao.Location = new System.Drawing.Point(3, 0);
+            this.lblSuspensao.Name = "lblSuspensao";
+            this.lblSuspensao.Size = new System.Drawing.Size(224, 14);
+            this.lblSuspensao.TabIndex = 17;
+            this.lblSuspensao.Text = "Suspensão";
+            // 
+            // cboSuspensao
+            // 
+            this.cboSuspensao.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboSuspensao.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSuspensao.FormattingEnabled = true;
+            this.cboSuspensao.Location = new System.Drawing.Point(3, 17);
+            this.cboSuspensao.Name = "cboSuspensao";
+            this.cboSuspensao.Size = new System.Drawing.Size(224, 21);
+            this.cboSuspensao.TabIndex = 16;
+            this.cboSuspensao.SelectedIndexChanged += new System.EventHandler(this.comboBox_SelectedIndexChanged);
+            // 
+            // chkZerarCartoesFaseFinal
+            // 
+            this.chkZerarCartoesFaseFinal.AutoSize = true;
+            this.chkZerarCartoesFaseFinal.Location = new System.Drawing.Point(233, 17);
+            this.chkZerarCartoesFaseFinal.Name = "chkZerarCartoesFaseFinal";
+            this.chkZerarCartoesFaseFinal.Size = new System.Drawing.Size(155, 17);
+            this.chkZerarCartoesFaseFinal.TabIndex = 15;
+            this.chkZerarCartoesFaseFinal.Text = "Zerar cartões na Fase Final";
+            this.chkZerarCartoesFaseFinal.UseVisualStyleBackColor = true;
+            this.chkZerarCartoesFaseFinal.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChange);
             // 
             // EditCompeticao
             // 
@@ -553,7 +600,7 @@
             this.Controls.Add(this.btnCancelar);
             this.Controls.Add(this.btnSalvar);
             this.Controls.Add(this.tlp1);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.tlp3);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "EditCompeticao";
@@ -566,6 +613,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvEquipes)).EndInit();
             this.tlp2.ResumeLayout(false);
             this.tlp2.PerformLayout();
+            this.tlp3.ResumeLayout(false);
+            this.tlp3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -589,7 +638,6 @@
         private System.Windows.Forms.TableLayoutPanel tlp2;
         private System.Windows.Forms.Label lblNumGrupos;
         private System.Windows.Forms.Label lblNumTimes;
-        private System.Windows.Forms.ComboBox cboFaseFinal;
         private System.Windows.Forms.Label lblFaseFinal;
         private System.Windows.Forms.CheckBox chkIdaEVolta;
         private System.Windows.Forms.CheckBox chkIdaEVoltaFaseFinal;
@@ -610,6 +658,10 @@
         private System.Windows.Forms.Button btnGerarPartidas;
         private System.Windows.Forms.Button btnVisaoGeral;
         private System.Windows.Forms.Button btnArbitros;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel tlp3;
+        private System.Windows.Forms.CheckBox chkZerarCartoesFaseFinal;
+        private System.Windows.Forms.ComboBox cboSuspensao;
+        private System.Windows.Forms.Label lblSuspensao;
+        private System.Windows.Forms.ComboBox cboFaseFinal;
     }
 }

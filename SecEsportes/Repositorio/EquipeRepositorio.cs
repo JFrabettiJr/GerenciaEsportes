@@ -92,6 +92,7 @@ namespace SecEsportes.Repositorio {
                     "id_Funcao INTEGER, " +
                     "id_Atleta INTEGER, " +
                     "numero INTEGER, " +
+                    "numCartoesAcumulados INTEGER, " +
                     "FOREIGN KEY(id_Equipe) REFERENCES Equipe(id), " +
                     "FOREIGN KEY(id_Competicao) REFERENCES Competicao(id), " +
                     "FOREIGN KEY(id_Funcao) REFERENCES Funcao(id), " +
@@ -136,13 +137,13 @@ namespace SecEsportes.Repositorio {
                 return null;
             }
         }
-        public int getNumAtletasPorCompeticao(int id_Competicao, int id_Equipe) {
+        public int getNumAtletasPorEquipe(int id_Competicao, int id_Equipe) {
             try {
                 using (var connection = SQLiteDatabase.Instance.SQLiteDatabaseConnection()) {
                     connection.Open();
 
                     string strSQL;
-                    strSQL = "SELECT COUNT(1) " +
+                    strSQL =    "SELECT COUNT(1) " +
                                 "FROM   Equipe_Atletas EA " +
                                 "WHERE  EA.id_Competicao = @id_Competicao " +
                                 "       AND EA.id_Equipe = @id_Equipe ";
@@ -183,9 +184,10 @@ namespace SecEsportes.Repositorio {
             try {
 
                 string strSQL;
-                strSQL = "INSERT INTO Equipe_Atletas (id_Equipe, id_Competicao, id_Funcao, id_Atleta, numero) " +
+                strSQL =    "INSERT INTO Equipe_Atletas " +
+                            "   (id_Equipe, id_Competicao, id_Funcao, id_Atleta, numero, numCartoesAcumulados) " +
                             "VALUES " +
-                            "(@id_Equipe, @id_Competicao, @id_Funcao, @id_Atleta, @numero) ";
+                            "   (@id_Equipe, @id_Competicao, @id_Funcao, @id_Atleta, @numero, @numCartoesAcumulados) ";
 
                 SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(strSQL,
                     new {
@@ -193,7 +195,8 @@ namespace SecEsportes.Repositorio {
                         id_Competicao = idCompeticao,
                         id_Funcao = atleta.id_funcao,
                         id_Atleta = atleta.id_pessoa,
-                        numero = atleta.numero
+                        numero = atleta.numero,
+                        atleta.numCartoesAcumulados
                     });
                 return true;
             }
@@ -242,16 +245,18 @@ namespace SecEsportes.Repositorio {
 
                 // Atualiza a numeração da equipe
                 if (!(equipe.atletas is null)) {
-                    strSQL = "UPDATE Equipe_Atletas " +
-                            "SET    numero = @numero " +
-                            "WHERE  id_Equipe = @id_Equipe " +
-                            "       AND id_Competicao = @id_Competicao " +
-                            "       AND id_Atleta = @id_Atleta ";
+                    strSQL =    "UPDATE Equipe_Atletas " +
+                                "SET    numero = @numero," +
+                                "       numCartoesAcumulados = @numCartoesAcumulados " +
+                                "WHERE  id_Equipe = @id_Equipe " +
+                                "       AND id_Competicao = @id_Competicao " +
+                                "       AND id_Atleta = @id_Atleta ";
 
                     foreach (Atleta atleta in equipe.atletas) {
                         SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(strSQL,
                             new {
-                                numero = atleta.numero,
+                                atleta.numero,
+                                atleta.numCartoesAcumulados,
                                 id_Equipe = equipe.id,
                                 id_Competicao = competicao.id,
                                 id_Atleta = atleta.id_pessoa

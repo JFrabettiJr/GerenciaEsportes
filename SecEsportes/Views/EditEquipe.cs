@@ -41,8 +41,12 @@ namespace SecEsportes.Views {
             cboTreinador.SelectedIndex = (equipe.treinador is null ? -1 : treinadores.FindIndex(treinador => treinador.id_pessoa == equipe.treinador.id_pessoa));
             cboRepresentante.SelectedIndex = (equipe.representante is null ? -1 : representantes.FindIndex(representante => representante.id_pessoa == equipe.representante.id_pessoa));
 
-            refreshDataGridView();
+            refreshDataGridView(dgvAtletas, equipe.atletas);
 
+            // Carrega os atletas suspensos
+            List<Competicao_Suspensao> suspensoes = CompeticaoRepositorio.Instance.getSuspensoesPorEquipe(competicao.id, equipe.id);
+            List<Atleta> atletasSuspensos = equipe.atletas.FindAll(find => suspensoes.FindAll(find2 => find2.atleta.pessoa.id == find.pessoa.id).Count > 0);
+            refreshDataGridView(dgvAtletasSuspensos, atletasSuspensos, suspensoes);
         }
 
         private void load(object sender, EventArgs e) {
@@ -63,58 +67,81 @@ namespace SecEsportes.Views {
                 cboTreinador.Items.Add(treinadores[iCount].pessoa.nome);
             }
 
+            if (competicao.status != StatusEnum._1_Aberta && competicao.status != StatusEnum._3_EmPreparacao) {
+                cboRepresentante.Enabled = false;
+                cboTreinador.Enabled = false;
+                btnIncluirAtleta.Enabled = false;
+                btnExcluirAtleta.Enabled = false;
+            }
+
             fillFields();
         }
         #endregion
         #region Manipulação do grid
-        private void refreshDataGridView() {
-            dgvAtletas.DataSource = null;
-            dgvAtletas.Refresh();
+        private void refreshDataGridView(DataGridView dataGridViewAtletas, List<Atleta> atletas) {
+            refreshDataGridView(dataGridViewAtletas, atletas, null);
+        }
+        private void refreshDataGridView(DataGridView dataGridViewAtletas, List<Atleta> atletas, List<Competicao_Suspensao> suspensoes) {
+            dataGridViewAtletas.DataSource = null;
+            dataGridViewAtletas.Refresh();
 
-            dgvAtletas.Columns.Clear();
+            dataGridViewAtletas.Columns.Clear();
 
-            //dgvAtletas.DataSource = atletas;
-            dgvAtletas.DataSource = equipe.atletas;
+            dataGridViewAtletas.DataSource = atletas;
 
             // Cria duas novas colunas
-            dgvAtletas.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Pessoa.nome) });
-            dgvAtletas.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Pessoa.dataNascimento) });
+            dataGridViewAtletas.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Pessoa.nome) });
+            dataGridViewAtletas.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Pessoa.dataNascimento) });
+            if (!(suspensoes is null))
+                dataGridViewAtletas.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "JogosSuspenso" });
 
-            for (var iCount = 0; iCount < dgvAtletas.Columns.Count; iCount++) {
-                switch (dgvAtletas.Columns[iCount].DataPropertyName) {
+            for (var iCount = 0; iCount < dataGridViewAtletas.Columns.Count; iCount++) {
+                switch (dataGridViewAtletas.Columns[iCount].DataPropertyName) {
                     case nameof(Pessoa.nome):
-                        dgvAtletas.Columns[iCount].Name = dgvAtletas.Columns[iCount].DataPropertyName;
-                        dgvAtletas.Columns[iCount].HeaderText = "Nome";
-                        dgvAtletas.Columns[iCount].Width = 150;
-                        dgvAtletas.Columns[iCount].ReadOnly = true;
+                        dataGridViewAtletas.Columns[iCount].Name = dataGridViewAtletas.Columns[iCount].DataPropertyName;
+                        dataGridViewAtletas.Columns[iCount].HeaderText = "Nome";
+                        dataGridViewAtletas.Columns[iCount].Width = 150;
+                        dataGridViewAtletas.Columns[iCount].ReadOnly = true;
                         break;
                     case nameof(Pessoa.dataNascimento):
-                        dgvAtletas.Columns[iCount].Name = dgvAtletas.Columns[iCount].DataPropertyName;
-                        dgvAtletas.Columns[iCount].HeaderText = "Data de nascimento";
-                        dgvAtletas.Columns[iCount].Width = 100;
-                        dgvAtletas.Columns[iCount].ReadOnly = true;
+                        dataGridViewAtletas.Columns[iCount].Name = dataGridViewAtletas.Columns[iCount].DataPropertyName;
+                        dataGridViewAtletas.Columns[iCount].HeaderText = "Data de nascimento";
+                        dataGridViewAtletas.Columns[iCount].Width = 100;
+                        dataGridViewAtletas.Columns[iCount].ReadOnly = true;
                         break;
                     case nameof(Atleta.numero):
-                        dgvAtletas.Columns[iCount].Name = dgvAtletas.Columns[iCount].DataPropertyName;
-                        dgvAtletas.Columns[iCount].HeaderText = "Númeração";
-                        dgvAtletas.Columns[iCount].Width = 75;
-                        dgvAtletas.Columns[iCount].ValueType = typeof(Int32);
+                        dataGridViewAtletas.Columns[iCount].Name = dataGridViewAtletas.Columns[iCount].DataPropertyName;
+                        dataGridViewAtletas.Columns[iCount].HeaderText = "Númeração";
+                        dataGridViewAtletas.Columns[iCount].Width = 75;
+                        dataGridViewAtletas.Columns[iCount].ValueType = typeof(Int32);
+                        if (!(suspensoes is null))
+                            dataGridViewAtletas.Columns[iCount].Visible = false;
+                        break;
+                    case "JogosSuspenso":
+                        dataGridViewAtletas.Columns[iCount].Name = dataGridViewAtletas.Columns[iCount].DataPropertyName;
+                        dataGridViewAtletas.Columns[iCount].HeaderText = "Jogos de suspenção";
+                        dataGridViewAtletas.Columns[iCount].Width = 75;
+                        dataGridViewAtletas.Columns[iCount].ValueType = typeof(Int32);
                         break;
                     default:
-                        dgvAtletas.Columns[iCount].Visible = false;
+                        dataGridViewAtletas.Columns[iCount].Visible = false;
                         break;
                 }
             }
 
             //Preenche os campos que vieram sem preenchimento do data set
-            for (var iCount = 0; iCount < dgvAtletas.Rows.Count; iCount++) {
-                //dgvAtletas.Rows[iCount].Cells[nameof(Pessoa.nome)].Value = atletas[iCount].pessoa.nome;
-                dgvAtletas.Rows[iCount].Cells[nameof(Pessoa.nome)].Value = equipe.atletas[iCount].pessoa.nome;
-                //dgvAtletas.Rows[iCount].Cells[nameof(Pessoa.dataNascimento)].Value = atletas[iCount].pessoa.dataNascimento.ToString("dd/MM/yyyy");
-                dgvAtletas.Rows[iCount].Cells[nameof(Pessoa.dataNascimento)].Value = equipe.atletas[iCount].pessoa.dataNascimento.ToString("dd/MM/yyyy");
+            for (var iCount = 0; iCount < dataGridViewAtletas.Rows.Count; iCount++) {
+                dataGridViewAtletas.Rows[iCount].Cells[nameof(Pessoa.nome)].Value = atletas[iCount].pessoa.nome;
+                dataGridViewAtletas.Rows[iCount].Cells[nameof(Pessoa.dataNascimento)].Value = atletas[iCount].pessoa.dataNascimento.ToString("dd/MM/yyyy");
+
+                if (!(suspensoes is null)) {
+                    int numJogosSuspenso = suspensoes.Find(find => find.atleta.pessoa.id == atletas[iCount].pessoa.id).numJogosSuspensao;
+                    dataGridViewAtletas.Rows[iCount].Cells["JogosSuspenso"].Value = numJogosSuspenso;
+                }
+
             }
 
-            dgvAtletas.Refresh();
+            dataGridViewAtletas.Refresh();
         }
         #endregion
         #region CRUD
@@ -129,7 +156,7 @@ namespace SecEsportes.Views {
                 equipe.atletas.Add(new Atleta(atleta.id, atleta.funcao, atleta.pessoa, null));
                 EquipeRepositorio.Instance.insertAtletaEmEquipe(competicao.id, equipe.id, atleta);
             }
-            refreshDataGridView();
+            refreshDataGridView(dgvAtletas, equipe.atletas);
         }
         private void btnExcluirAtleta_Click(object sender, EventArgs e) {
             if (dgvAtletas.SelectedCells.Count > 0) {
@@ -140,7 +167,7 @@ namespace SecEsportes.Views {
                     atleta.ToString(), "Confirmação", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
                     if (EquipeRepositorio.Instance.deletaAtletaDaEquipe(competicao.id, equipe.id, atleta, ref errorMessage)) {
                         equipe.atletas.RemoveAt(dgvAtletas.SelectedCells[0].RowIndex);
-                        refreshDataGridView();
+                        refreshDataGridView(dgvAtletas, equipe.atletas);
                     }else {
                         MessageBox.Show("Houve um erro ao tentar salvar o registro." + Environment.NewLine + Environment.NewLine + errorMessage, "Contate o Suporte técnico", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }

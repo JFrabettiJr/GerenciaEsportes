@@ -40,20 +40,29 @@ namespace SecEsportes.Infraestrutura {
             // Equipes
             conteudoCSV.AppendLine("idEquipe1;Equipe 1; ;idEquipe2;Equipe 2"); // Linha 13
             conteudoCSV.AppendFormat("{0};{1};;{2};{3}", partida.equipe1.id, partida.equipe1.nome, partida.equipe2.id, partida.equipe2.nome).AppendLine().AppendLine(); // Linha 14
-            /*  idEquipe1 = A14 - [13, 0]
-             *  idEquipe2 = D14 - [13, 3] */
+                                                                                                                                                                        /*  idEquipe1 = A14 - [13, 0]
+                                                                                                                                                                         *  idEquipe2 = D14 - [13, 3] */
+            // Atletas suspensos
+            List<Competicao_Suspensao> atletas_Suspensos_Equipe1 = CompeticaoRepositorio.Instance.getSuspensoesPorEquipe(competicao.id, partida.equipe1.id);
+            List<Competicao_Suspensao> atletas_Suspensos_Equipe2 = CompeticaoRepositorio.Instance.getSuspensoesPorEquipe(competicao.id, partida.equipe2.id);                                                                                                                                                  
 
             // Atletas
-            conteudoCSV.AppendLine("idAtleta;numAtleta;Atleta;Gol;Gol Penalti;Cartao Amarelo;Cartao Vermelho;;idAtleta;numAtleta;Atleta;Gol;Gol Penalti;Cartao Amarelo;Cartao Vermelho"); // Linha 16
+            conteudoCSV.AppendLine("idAtleta;numAtleta;Atleta;Gol;Gol Penalti;Cartao Amarelo;Cartao Vermelho;;;idAtleta;numAtleta;Atleta;Gol;Gol Penalti;Cartao Amarelo;Cartao Vermelho;"); // Linha 16
 
             int numLinhas = (partida.equipe1.atletas.Count > partida.equipe2.atletas.Count ? partida.equipe1.atletas.Count : partida.equipe2.atletas.Count);
             for (int iCount = 0; iCount < numLinhas; iCount++) {
                 Atleta atletaEquipe1, atletaEquipe2;
+                string atletaSuspenso_Equipe1 = "", atletaSuspenso_Equipe2 = "";
+
                 if (iCount < partida.equipe1.atletas.Count) {
                     atletaEquipe1 = partida.equipe1.atletas[iCount];
-                    conteudoCSV.AppendFormat("{0};{1};{2};0;0;0;0;", atletaEquipe1.pessoa.id, atletaEquipe1.numero, atletaEquipe1.pessoa.nome);
+
+                    if (!(atletas_Suspensos_Equipe1.Find(find => find.atleta.pessoa.id == atletaEquipe1.pessoa.id) is null))
+                        atletaSuspenso_Equipe1 = "Suspenso";
+
+                    conteudoCSV.AppendFormat("{0};{1};{2};0;0;0;0;{3};", atletaEquipe1.pessoa.id, atletaEquipe1.numero, atletaEquipe1.pessoa.nome, atletaSuspenso_Equipe1);
                 } else {
-                    conteudoCSV.Append(";;;;;;;");
+                    conteudoCSV.Append(";;;;;;;;");
                 }
                 /*  idAtleta = A? - [?, 0]
                  *  numeroAtleta = B? - [?, 1]
@@ -67,9 +76,13 @@ namespace SecEsportes.Infraestrutura {
 
                 if (iCount < partida.equipe2.atletas.Count) {
                     atletaEquipe2 = partida.equipe2.atletas[iCount];
-                    conteudoCSV.AppendFormat("{0};{1};{2};0;0;0;0;", atletaEquipe2.pessoa.id, atletaEquipe2.numero, atletaEquipe2.pessoa.nome);
+
+                    if (!(atletas_Suspensos_Equipe2.Find(find => find.atleta.pessoa.id == atletaEquipe2.pessoa.id) is null))
+                        atletaSuspenso_Equipe2 = "Suspenso";
+
+                    conteudoCSV.AppendFormat("{0};{1};{2};0;0;0;0;{3};", atletaEquipe2.pessoa.id, atletaEquipe2.numero, atletaEquipe2.pessoa.nome, atletaSuspenso_Equipe2);
                 } else {
-                    conteudoCSV.Append(";;;;;;;");
+                    conteudoCSV.Append(";;;;;;;;");
                 }
                 /*  idAtleta = I? - [?, 8]
                  *  numeroAtleta = J? - [?, 9]
@@ -117,7 +130,11 @@ namespace SecEsportes.Infraestrutura {
                     file = new StreamReader(openFileDialog.FileName);
 
                     int numLinha = 0;
-                
+
+                    // Atletas suspensos
+                    List<Competicao_Suspensao> atletas_Suspensos_Equipe1 = CompeticaoRepositorio.Instance.getSuspensoesPorEquipe(competicao.id, partida.equipe1.id);
+                    List<Competicao_Suspensao> atletas_Suspensos_Equipe2 = CompeticaoRepositorio.Instance.getSuspensoesPorEquipe(competicao.id, partida.equipe2.id);
+
                     // Lê linha por linha
                     while ((stringLine = file.ReadLine()) != null) {
                         // Separa a linha toda num array
@@ -155,9 +172,9 @@ namespace SecEsportes.Infraestrutura {
                                 break;
 
                             default:
-                                if (numLinha >= 16 && line.Count == 15) {
+                                if (numLinha >= 16 && line.Count == 17) {
                                     List<string> infoEquipe1 = line.GetRange(0, 7);
-                                    List<string> infoEquipe2 = line.GetRange(8, 7);
+                                    List<string> infoEquipe2 = line.GetRange(9, 7);
 
                                     Atleta atletaEquipe1, atletaEquipe2;
 
@@ -173,23 +190,27 @@ namespace SecEsportes.Infraestrutura {
                                             throw new Exception();
                                         }
 
-                                        // Cria os eventos da Equipe 1
-                                        int numGols1, numGolsPenalti1, numCA1, numCV1;
-                                        numGols1 = Convert.ToInt32(infoEquipe1[3]);
-                                        numGolsPenalti1 = Convert.ToInt32(infoEquipe1[4]);
-                                        numCA1 = Convert.ToInt32(infoEquipe1[5]);
-                                        numCV1 = Convert.ToInt32(infoEquipe1[6]);
-                                        for (int iCount = 0; iCount < numGols1; iCount++)
-                                            partida.eventos.Add(new Competicao_Partida_Evento(partida.equipe1, atletaEquipe1, tpEventoEnum.Gol));
+                                        // Verifica se o atleta não está suspenso
+                                        if (atletas_Suspensos_Equipe1.Find(find => find.atleta.pessoa.id == atletaEquipe1.pessoa.id) is null) {
 
-                                        for (int iCount = 0; iCount < numGolsPenalti1; iCount++)
-                                            partida.eventos.Add(new Competicao_Partida_Evento(partida.equipe1, atletaEquipe1, tpEventoEnum.Gol_Penalti));
+                                            // Cria os eventos da Equipe 1
+                                            int numGols1, numGolsPenalti1, numCA1, numCV1;
+                                            numGols1 = Convert.ToInt32(infoEquipe1[3]);
+                                            numGolsPenalti1 = Convert.ToInt32(infoEquipe1[4]);
+                                            numCA1 = Convert.ToInt32(infoEquipe1[5]);
+                                            numCV1 = Convert.ToInt32(infoEquipe1[6]);
+                                            for (int iCount = 0; iCount < numGols1; iCount++)
+                                                partida.eventos.Add(new Competicao_Partida_Evento(partida.equipe1, atletaEquipe1, tpEventoEnum.Gol));
 
-                                        for (int iCount = 0; iCount < numCA1; iCount++)
-                                            partida.eventos.Add(new Competicao_Partida_Evento(partida.equipe1, atletaEquipe1, tpEventoEnum.CartaoAmarelo));
+                                            for (int iCount = 0; iCount < numGolsPenalti1; iCount++)
+                                                partida.eventos.Add(new Competicao_Partida_Evento(partida.equipe1, atletaEquipe1, tpEventoEnum.Gol_Penalti));
 
-                                        for (int iCount = 0; iCount < numCV1; iCount++)
-                                            partida.eventos.Add(new Competicao_Partida_Evento(partida.equipe1, atletaEquipe1, tpEventoEnum.CartaoVermelho));
+                                            for (int iCount = 0; iCount < numCA1; iCount++)
+                                                partida.eventos.Add(new Competicao_Partida_Evento(partida.equipe1, atletaEquipe1, tpEventoEnum.CartaoAmarelo));
+
+                                            for (int iCount = 0; iCount < numCV1; iCount++)
+                                                partida.eventos.Add(new Competicao_Partida_Evento(partida.equipe1, atletaEquipe1, tpEventoEnum.CartaoVermelho));
+                                        }
 
                                     }
 
@@ -201,23 +222,28 @@ namespace SecEsportes.Infraestrutura {
                                             throw new Exception();
                                         }
 
-                                        // Cria os eventos da Equipe 2
-                                        int numGols2, numGolsPenalti2, numCA2, numCV2;
-                                        numGols2 = Convert.ToInt32(infoEquipe2[3]);
-                                        numGolsPenalti2 = Convert.ToInt32(infoEquipe2[4]);
-                                        numCA2 = Convert.ToInt32(infoEquipe2[5]);
-                                        numCV2 = Convert.ToInt32(infoEquipe2[6]);
-                                        for (int iCount = 0; iCount < numGols2; iCount++)
-                                            partida.eventos.Add(new Competicao_Partida_Evento(partida.equipe2, atletaEquipe2, tpEventoEnum.Gol));
+                                        // Verifica se o atleta não está suspenso
+                                        if (atletas_Suspensos_Equipe2.Find(find => find.atleta.pessoa.id == atletaEquipe2.pessoa.id) is null) {
 
-                                        for (int iCount = 0; iCount < numGolsPenalti2; iCount++)
-                                            partida.eventos.Add(new Competicao_Partida_Evento(partida.equipe2, atletaEquipe2, tpEventoEnum.Gol_Penalti));
+                                            // Cria os eventos da Equipe 2
+                                            int numGols2, numGolsPenalti2, numCA2, numCV2;
+                                            numGols2 = Convert.ToInt32(infoEquipe2[3]);
+                                            numGolsPenalti2 = Convert.ToInt32(infoEquipe2[4]);
+                                            numCA2 = Convert.ToInt32(infoEquipe2[5]);
+                                            numCV2 = Convert.ToInt32(infoEquipe2[6]);
+                                            for (int iCount = 0; iCount < numGols2; iCount++)
+                                                partida.eventos.Add(new Competicao_Partida_Evento(partida.equipe2, atletaEquipe2, tpEventoEnum.Gol));
 
-                                        for (int iCount = 0; iCount < numCA2; iCount++)
-                                            partida.eventos.Add(new Competicao_Partida_Evento(partida.equipe2, atletaEquipe2, tpEventoEnum.CartaoAmarelo));
+                                            for (int iCount = 0; iCount < numGolsPenalti2; iCount++)
+                                                partida.eventos.Add(new Competicao_Partida_Evento(partida.equipe2, atletaEquipe2, tpEventoEnum.Gol_Penalti));
 
-                                        for (int iCount = 0; iCount < numCV2; iCount++)
-                                            partida.eventos.Add(new Competicao_Partida_Evento(partida.equipe2, atletaEquipe2, tpEventoEnum.CartaoVermelho));
+                                            for (int iCount = 0; iCount < numCA2; iCount++)
+                                                partida.eventos.Add(new Competicao_Partida_Evento(partida.equipe2, atletaEquipe2, tpEventoEnum.CartaoAmarelo));
+
+                                            for (int iCount = 0; iCount < numCV2; iCount++)
+                                                partida.eventos.Add(new Competicao_Partida_Evento(partida.equipe2, atletaEquipe2, tpEventoEnum.CartaoVermelho));
+
+                                        }
 
                                     }
 
@@ -234,7 +260,7 @@ namespace SecEsportes.Infraestrutura {
 
                 // Insere efetivamente os eventos no banco de dados
                 for (int iCount = 0; iCount < partida.eventos.Count; iCount++) {
-                    CompeticaoRepositorio.Instance.insertEvento(partida, partida.eventos[iCount]);
+                    CompeticaoRepositorio.Instance.insertEvento(ref partida, partida.eventos[iCount]);
                 }
 
                 return partida;

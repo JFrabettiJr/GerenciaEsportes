@@ -125,16 +125,20 @@ namespace SecEsportes.Views {
             }
 
             switch (cboNomeacaoGrupos.SelectedIndex) {
-                case 0:
-                    newCompeticao.nomesGrupos = NomesGruposEnum._0_PorNumeracao;
-                    break;
-                case 1:
-                    newCompeticao.nomesGrupos = NomesGruposEnum._1_PorLetras;
-                    break;
+                case 0: newCompeticao.nomesGrupos = NomesGruposEnum._0_PorNumeracao;    break;
+                case 1: newCompeticao.nomesGrupos = NomesGruposEnum._1_PorLetras;   break;
+            }
+
+            switch (cboSuspensao.SelectedIndex) {
+                case 0: newCompeticao.tpSuspensao = SuspensaoEnum._1_2CA_1Jogo_2CAe1CV_2Jogos; break;
+                case 1: newCompeticao.tpSuspensao = SuspensaoEnum._2_3CA_1Jogo_3CAe1CV_2Jogos; break;
+                case 2: newCompeticao.tpSuspensao = SuspensaoEnum._3_2CA_1Jogo; break;
+                case 3: newCompeticao.tpSuspensao = SuspensaoEnum._4_3CA_1Jogo; break;
             }
 
             newCompeticao.jogosIdaEVolta = chkIdaEVolta.Checked;
             newCompeticao.jogosIdaEVolta_FaseFinal = chkIdaEVoltaFaseFinal.Checked;
+            newCompeticao.zerarCartoesFaseFinal = chkZerarCartoesFaseFinal.Checked;
 
             newCompeticao.status = competicao.status;
 
@@ -213,6 +217,8 @@ namespace SecEsportes.Views {
 
                 for (int numGrupo = 0; numGrupo < competicao.numGrupos; numGrupo++) {
                     DataGridView dataGridView = CompeticaoViewUtilidades.criaAba(CompeticaoViewUtilidades.getNomeGrupo(competicao.nomesGrupos, numGrupo + 1), numGrupo, tcGrupos, dgvGrupoEquipes_CellMouseClick);
+                    dataGridView.Tag = new List<Object> { numGrupo, competicao, usuarioLogado };
+                    dataGridView.CellMouseDoubleClick += CompeticaoViewUtilidades.dgvEquipesGrupo_CellMouseDoubleClick;
 
                     if (numGrupo < competicao.grupos.Count)
                         CompeticaoViewUtilidades.refreshDataGridViewGrupos(competicao, dataGridView, competicao.grupos[numGrupo], timesProximaFase[numGrupo]);
@@ -267,6 +273,7 @@ namespace SecEsportes.Views {
         private void bloqueiaCampos(bool bloqueia) {
             tlp1.Enabled = !bloqueia;
             tlp2.Enabled = !bloqueia;
+            tlp3.Enabled = !bloqueia;
         }
 
         private void dgvEquipes_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e) {
@@ -381,7 +388,7 @@ namespace SecEsportes.Views {
 
                     foreach (EquipeCompeticao equipe in equipes) {
                         // Verifica se toda equipe tem o numero minimo de jogadores
-                        if (EquipeRepositorio.Instance.getNumAtletasPorCompeticao(competicao.id, equipe.id) < competicao.numMinimoJogadores) {
+                        if (EquipeRepositorio.Instance.getNumAtletasPorEquipe(competicao.id, equipe.id) < competicao.numMinimoJogadores) {
                             MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
                             "Existem equipes que não tem o número mínimo de jogadores para a competição",
                             "Não foi possível avançar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -541,7 +548,9 @@ namespace SecEsportes.Views {
             txtNumMinJogadores.Text = "0";
             txtNumGrupos.Text = "0";
             cboFaseFinal.SelectedIndex = -1;
+            cboSuspensao.SelectedIndex = -1;
             chkIdaEVolta.Checked = false;
+            chkZerarCartoesFaseFinal.Checked = false;
             chkIdaEVoltaFaseFinal.Checked = false;
             cboNomeacaoGrupos.SelectedIndex = -1;
             txtStatus.Text = "";
@@ -576,6 +585,13 @@ namespace SecEsportes.Views {
             cboNomeacaoGrupos.Items.Clear();
             cboNomeacaoGrupos.Items.Add("Por numeração");
             cboNomeacaoGrupos.Items.Add("Por letras");
+
+            // Carrega o combobox das opções de suspensão (conferir o SuspensaoEnum da classe Competicao)
+            cboSuspensao.Items.Clear();
+            cboSuspensao.Items.Add("2 CAs = 1 Jogo | 2 CAs + 1 CV = 2 Jogos");
+            cboSuspensao.Items.Add("3 CAs = 1 Jogo | 3 CAs + 1 CV = 2 Jogos");
+            cboSuspensao.Items.Add("2 CAs = 1 Jogo");
+            cboSuspensao.Items.Add("3 CAs = 1 Jogo");
 
             // Preenche os campos
             txtNome.Text = competicao.nome;
@@ -648,16 +664,20 @@ namespace SecEsportes.Views {
             }
 
             switch (competicao.nomesGrupos) {
-                case NomesGruposEnum._0_PorNumeracao:
-                    cboNomeacaoGrupos.SelectedIndex = 0;
-                    break;
-                case NomesGruposEnum._1_PorLetras:
-                    cboNomeacaoGrupos.SelectedIndex = 1;
-                    break;
+                case NomesGruposEnum._0_PorNumeracao:   cboNomeacaoGrupos.SelectedIndex = 0;    break;
+                case NomesGruposEnum._1_PorLetras:  cboNomeacaoGrupos.SelectedIndex = 1;    break;
             }
 
+            switch (competicao.tpSuspensao) {
+                case SuspensaoEnum._1_2CA_1Jogo_2CAe1CV_2Jogos: cboSuspensao.SelectedIndex = 0; break;
+                case SuspensaoEnum._2_3CA_1Jogo_3CAe1CV_2Jogos: cboSuspensao.SelectedIndex = 1; break;
+                case SuspensaoEnum._3_2CA_1Jogo: cboSuspensao.SelectedIndex = 2; break;
+                case SuspensaoEnum._4_3CA_1Jogo: cboSuspensao.SelectedIndex = 3; break;
+            }
+            
             chkIdaEVolta.Checked = competicao.jogosIdaEVolta;
             chkIdaEVoltaFaseFinal.Checked = competicao.jogosIdaEVolta_FaseFinal;
+            chkZerarCartoesFaseFinal.Checked = competicao.zerarCartoesFaseFinal;
 
             // Recarrega o DataGrid View das Equipes
             refreshDataGridView();
@@ -713,8 +733,7 @@ namespace SecEsportes.Views {
         private void dgvEquipes_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e) {
             if (e.RowIndex > -1) {
                 EquipeCompeticao equipe = equipes[e.RowIndex];
-                EditEquipe formEditEquipe = new EditEquipe(usuarioLogado, equipe, competicao);
-                formEditEquipe.ShowDialog();
+                new EditEquipe(usuarioLogado, equipe, competicao).ShowDialog();
             }
         }
 
@@ -740,6 +759,8 @@ namespace SecEsportes.Views {
 
                 for (int numGrupo = 0; numGrupo < competicao.numGrupos; numGrupo++) {
                     DataGridView dataGridView = CompeticaoViewUtilidades.criaAba(CompeticaoViewUtilidades.getNomeGrupo(competicao.nomesGrupos, numGrupo + 1), numGrupo, tcGrupos, dgvGrupoEquipes_CellMouseClick);
+                    dataGridView.Tag = new List<Object> { numGrupo, competicao, usuarioLogado };
+                    dataGridView.CellMouseDoubleClick += CompeticaoViewUtilidades.dgvEquipesGrupo_CellMouseDoubleClick;
 
                     competicao.grupos.Add(new List<EquipeCompeticao>());
 

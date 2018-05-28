@@ -33,7 +33,6 @@
             this.lblNome = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.txtCodigo = new System.Windows.Forms.TextBox();
-            this.dgvAtletas = new System.Windows.Forms.DataGridView();
             this.btnExcluirAtleta = new System.Windows.Forms.Button();
             this.btnIncluirAtleta = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -44,9 +43,18 @@
             this.btnAtualizar = new System.Windows.Forms.Button();
             this.btnCancelar = new System.Windows.Forms.Button();
             this.btnSalvar = new System.Windows.Forms.Button();
+            this.tcEquipe = new System.Windows.Forms.TabControl();
+            this.tpAtletas = new System.Windows.Forms.TabPage();
+            this.tpAtletasSuspensos = new System.Windows.Forms.TabPage();
+            this.dgvAtletas = new System.Windows.Forms.DataGridView();
+            this.dgvAtletasSuspensos = new System.Windows.Forms.DataGridView();
             this.tlpCadFuncao.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvAtletas)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
+            this.tcEquipe.SuspendLayout();
+            this.tpAtletas.SuspendLayout();
+            this.tpAtletasSuspensos.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvAtletas)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvAtletasSuspensos)).BeginInit();
             this.SuspendLayout();
             // 
             // tlpCadFuncao
@@ -103,22 +111,6 @@
             this.txtCodigo.ReadOnly = true;
             this.txtCodigo.Size = new System.Drawing.Size(106, 20);
             this.txtCodigo.TabIndex = 2;
-            // 
-            // dgvAtletas
-            // 
-            this.dgvAtletas.AllowUserToAddRows = false;
-            this.dgvAtletas.AllowUserToDeleteRows = false;
-            this.dgvAtletas.AllowUserToOrderColumns = true;
-            this.dgvAtletas.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
-            this.dgvAtletas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvAtletas.Location = new System.Drawing.Point(10, 133);
-            this.dgvAtletas.MultiSelect = false;
-            this.dgvAtletas.Name = "dgvAtletas";
-            this.dgvAtletas.Size = new System.Drawing.Size(560, 275);
-            this.dgvAtletas.TabIndex = 5;
-            this.dgvAtletas.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvAtletas_CellEndEdit);
-            this.dgvAtletas.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvEquipes_RowEnter);
-            this.dgvAtletas.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keyDown);
             // 
             // btnExcluirAtleta
             // 
@@ -229,17 +221,77 @@
             this.btnSalvar.UseVisualStyleBackColor = true;
             this.btnSalvar.Click += new System.EventHandler(this.btnSalvar_Click);
             // 
+            // tcEquipe
+            // 
+            this.tcEquipe.Controls.Add(this.tpAtletas);
+            this.tcEquipe.Controls.Add(this.tpAtletasSuspensos);
+            this.tcEquipe.Location = new System.Drawing.Point(10, 133);
+            this.tcEquipe.Name = "tcEquipe";
+            this.tcEquipe.SelectedIndex = 0;
+            this.tcEquipe.Size = new System.Drawing.Size(560, 275);
+            this.tcEquipe.TabIndex = 20;
+            // 
+            // tpAtletas
+            // 
+            this.tpAtletas.Controls.Add(this.dgvAtletas);
+            this.tpAtletas.Location = new System.Drawing.Point(4, 22);
+            this.tpAtletas.Name = "tpAtletas";
+            this.tpAtletas.Padding = new System.Windows.Forms.Padding(3);
+            this.tpAtletas.Size = new System.Drawing.Size(552, 249);
+            this.tpAtletas.TabIndex = 0;
+            this.tpAtletas.Text = "Atletas";
+            this.tpAtletas.UseVisualStyleBackColor = true;
+            // 
+            // tpAtletasSuspensos
+            // 
+            this.tpAtletasSuspensos.Controls.Add(this.dgvAtletasSuspensos);
+            this.tpAtletasSuspensos.Location = new System.Drawing.Point(4, 22);
+            this.tpAtletasSuspensos.Name = "tpAtletasSuspensos";
+            this.tpAtletasSuspensos.Padding = new System.Windows.Forms.Padding(3);
+            this.tpAtletasSuspensos.Size = new System.Drawing.Size(552, 249);
+            this.tpAtletasSuspensos.TabIndex = 1;
+            this.tpAtletasSuspensos.Text = "Atletas suspensos";
+            this.tpAtletasSuspensos.UseVisualStyleBackColor = true;
+            // 
+            // dgvAtletas
+            // 
+            this.dgvAtletas.AllowUserToAddRows = false;
+            this.dgvAtletas.AllowUserToDeleteRows = false;
+            this.dgvAtletas.AllowUserToOrderColumns = true;
+            this.dgvAtletas.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
+            this.dgvAtletas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvAtletas.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvAtletas.Location = new System.Drawing.Point(3, 3);
+            this.dgvAtletas.MultiSelect = false;
+            this.dgvAtletas.Name = "dgvAtletas";
+            this.dgvAtletas.Size = new System.Drawing.Size(546, 243);
+            this.dgvAtletas.TabIndex = 6;
+            // 
+            // dgvAtletasSuspensos
+            // 
+            this.dgvAtletasSuspensos.AllowUserToAddRows = false;
+            this.dgvAtletasSuspensos.AllowUserToDeleteRows = false;
+            this.dgvAtletasSuspensos.AllowUserToOrderColumns = true;
+            this.dgvAtletasSuspensos.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
+            this.dgvAtletasSuspensos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvAtletasSuspensos.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvAtletasSuspensos.Location = new System.Drawing.Point(3, 3);
+            this.dgvAtletasSuspensos.MultiSelect = false;
+            this.dgvAtletasSuspensos.Name = "dgvAtletasSuspensos";
+            this.dgvAtletasSuspensos.Size = new System.Drawing.Size(546, 243);
+            this.dgvAtletasSuspensos.TabIndex = 7;
+            // 
             // EditEquipe
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 421);
+            this.Controls.Add(this.tcEquipe);
             this.Controls.Add(this.btnAtualizar);
             this.Controls.Add(this.btnCancelar);
             this.Controls.Add(this.btnSalvar);
             this.Controls.Add(this.btnExcluirAtleta);
             this.Controls.Add(this.btnIncluirAtleta);
-            this.Controls.Add(this.dgvAtletas);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.tlpCadFuncao);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -251,9 +303,13 @@
             this.Load += new System.EventHandler(this.load);
             this.tlpCadFuncao.ResumeLayout(false);
             this.tlpCadFuncao.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvAtletas)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
+            this.tcEquipe.ResumeLayout(false);
+            this.tpAtletas.ResumeLayout(false);
+            this.tpAtletasSuspensos.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvAtletas)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvAtletasSuspensos)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -265,7 +321,6 @@
         private System.Windows.Forms.Label lblNome;
         private System.Windows.Forms.TextBox txtCodigo;
         private System.Windows.Forms.TextBox txtNome;
-        private System.Windows.Forms.DataGridView dgvAtletas;
         private System.Windows.Forms.Button btnExcluirAtleta;
         private System.Windows.Forms.Button btnIncluirAtleta;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
@@ -276,5 +331,10 @@
         private System.Windows.Forms.Button btnAtualizar;
         private System.Windows.Forms.Button btnCancelar;
         private System.Windows.Forms.Button btnSalvar;
+        private System.Windows.Forms.TabControl tcEquipe;
+        private System.Windows.Forms.TabPage tpAtletas;
+        private System.Windows.Forms.TabPage tpAtletasSuspensos;
+        private System.Windows.Forms.DataGridView dgvAtletas;
+        private System.Windows.Forms.DataGridView dgvAtletasSuspensos;
     }
 }

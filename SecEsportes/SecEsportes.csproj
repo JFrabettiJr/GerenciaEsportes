@@ -275,6 +275,7 @@
     <Compile Include="Infraestrutura\FileManagement.cs" />
     <Compile Include="Infraestrutura\SQLiteDatabase.cs" />
     <Compile Include="Infraestrutura\Utilidades.cs" />
+    <Compile Include="Modelo\Competicao_Suspensao.cs" />
     <Compile Include="Modelo\Pessoa_Insert.cs" />
     <Compile Include="Modelo\Atleta_List_Artilheiro.cs" />
     <Compile Include="Modelo\Atleta_Insert.cs" />

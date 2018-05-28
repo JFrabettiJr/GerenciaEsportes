@@ -13,6 +13,9 @@
             this.id = id;
             this.funcao = funcao;
             this.pessoa = pessoa;
+
+            this.id_pessoa = this.pessoa.id;
+            this.id_funcao = this.funcao.id;
         }
 
         public override string ToString() {
