@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Text;
 using System.Windows.Forms;
 using SecEsportes.Infraestrutura;
 using SecEsportes.Modelo;
@@ -90,9 +91,9 @@ namespace SecEsportes.Views {
 
             if (!(atletas is null)) {
                 dgvAtletas.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "NomeAtleta" });
-                dgvAtletas.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "Gol" });
-                dgvAtletas.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "CartaoAmarelo" });
-                dgvAtletas.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "CartaoVermelho" });
+                dgvAtletas.Columns.Add(new DataGridViewImageColumn(true) { DataPropertyName = "Gol" });
+                dgvAtletas.Columns.Add(new DataGridViewImageColumn(true) { DataPropertyName = "CartaoAmarelo" });
+                dgvAtletas.Columns.Add(new DataGridViewImageColumn(true) { DataPropertyName = "CartaoVermelho" });
                 dgvAtletas.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "Disponivel" });
             }
 
@@ -101,26 +102,29 @@ namespace SecEsportes.Views {
                     case "NomeAtleta":
                         dgvAtletas.Columns[iCount].HeaderText = "Atleta";
                         dgvAtletas.Columns[iCount].Name = dgvAtletas.Columns[iCount].DataPropertyName;
-                        dgvAtletas.Columns[iCount].DisplayIndex = 0;
+                        dgvAtletas.Columns[iCount].DisplayIndex = iCount;
                         dgvAtletas.Columns[iCount].Width = 185;
                         break;
                     case "Gol":
                         dgvAtletas.Columns[iCount].HeaderText = "G";
                         dgvAtletas.Columns[iCount].Name = dgvAtletas.Columns[iCount].DataPropertyName;
-                        dgvAtletas.Columns[iCount].DisplayIndex = 1;
+                        dgvAtletas.Columns[iCount].DisplayIndex = iCount;
                         dgvAtletas.Columns[iCount].Width = 25;
+                        ((DataGridViewImageColumn)dgvAtletas.Columns[iCount]).ImageLayout = DataGridViewImageCellLayout.Stretch;
                         break;
                     case "CartaoAmarelo":
                         dgvAtletas.Columns[iCount].HeaderText = "CA";
                         dgvAtletas.Columns[iCount].Name = dgvAtletas.Columns[iCount].DataPropertyName;
-                        dgvAtletas.Columns[iCount].DisplayIndex = 2;
+                        dgvAtletas.Columns[iCount].DisplayIndex = iCount;
                         dgvAtletas.Columns[iCount].Width = 25;
+                        ((DataGridViewImageColumn)dgvAtletas.Columns[iCount]).ImageLayout = DataGridViewImageCellLayout.Stretch;
                         break;
                     case "CartaoVermelho":
                         dgvAtletas.Columns[iCount].HeaderText = "CV";
                         dgvAtletas.Columns[iCount].Name = dgvAtletas.Columns[iCount].DataPropertyName;
-                        dgvAtletas.Columns[iCount].DisplayIndex = 3;
+                        dgvAtletas.Columns[iCount].DisplayIndex = iCount;
                         dgvAtletas.Columns[iCount].Width = 25;
+                        ((DataGridViewImageColumn)dgvAtletas.Columns[iCount]).ImageLayout = DataGridViewImageCellLayout.Stretch;
                         break;
                     default:
                         dgvAtletas.Columns[iCount].Name = dgvAtletas.Columns[iCount].DataPropertyName;
@@ -129,20 +133,50 @@ namespace SecEsportes.Views {
                 }
             }
 
-            //Preenche os campos que vieram sem preenchimento do data set
-            for (var iCount = 0; iCount < dgvAtletas.Rows.Count; iCount++) {
-                dgvAtletas.Rows[iCount].Cells["NomeAtleta"].Value = atletas[iCount].numero + " - " + atletas[iCount].pessoa.nome;
-                dgvAtletas.Rows[iCount].Cells["Gol"].Value = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.atleta.pessoa.id.Equals(atletas[iCount].pessoa.id) && eventosAEncontrar.tpEvento == tpEventoEnum.Gol).Count.ToString();
-                dgvAtletas.Rows[iCount].Cells["CartaoAmarelo"].Value = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.atleta.pessoa.id.Equals(atletas[iCount].pessoa.id) && eventosAEncontrar.tpEvento == tpEventoEnum.CartaoAmarelo).Count.ToString();
-                dgvAtletas.Rows[iCount].Cells["CartaoVermelho"].Value = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.atleta.pessoa.id.Equals(atletas[iCount].pessoa.id) && eventosAEncontrar.tpEvento == tpEventoEnum.CartaoVermelho).Count.ToString();
+            StringBuilder golsEquipe = new StringBuilder();
 
-                if (suspensoes.FindAll(find => find.atleta.pessoa.id == atletas[iCount].pessoa.id).Count > 0) {
+            //Preenche os campos que vieram sem preenchimento do data set
+            for (int iCount = 0; iCount < dgvAtletas.Rows.Count; iCount++) {
+                dgvAtletas.Rows[iCount].Cells["NomeAtleta"].Value = atletas[iCount].numero + " - " + atletas[iCount].pessoa.nome;
+
+                int gols, CA, CV;
+                gols = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.atleta.pessoa.id.Equals(atletas[iCount].pessoa.id) && eventosAEncontrar.tpEvento == tpEventoEnum.Gol).Count;
+                CA = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.atleta.pessoa.id.Equals(atletas[iCount].pessoa.id) && eventosAEncontrar.tpEvento == tpEventoEnum.CartaoAmarelo).Count;
+                CV = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.atleta.pessoa.id.Equals(atletas[iCount].pessoa.id) && eventosAEncontrar.tpEvento == tpEventoEnum.CartaoVermelho).Count;
+
+                if (gols > 0) {
+                    dgvAtletas.Rows[iCount].Cells["Gol"].Value = Properties.Resources.ball;
+                    golsEquipe.AppendFormat("{0}{1}, ", atletas[iCount].pessoa.nome, (gols > 1 ? "(" + gols + ")" : ""));
+
+                } else
+                    dgvAtletas.Rows[iCount].Cells["Gol"].Value = Properties.Resources.nothing;
+
+                if (CA == 1)
+                    dgvAtletas.Rows[iCount].Cells["CartaoAmarelo"].Value = Properties.Resources.amarelo;
+                else if (CA == 2)
+                    dgvAtletas.Rows[iCount].Cells["CartaoAmarelo"].Value = Properties.Resources.amarelos;
+                else
+                    dgvAtletas.Rows[iCount].Cells["CartaoAmarelo"].Value = Properties.Resources.nothing;
+
+                if (CV > 0)
+                    dgvAtletas.Rows[iCount].Cells["CartaoVermelho"].Value = Properties.Resources.vermelho;
+                else
+                    dgvAtletas.Rows[iCount].Cells["CartaoVermelho"].Value = Properties.Resources.nothing;
+
+                if ( (suspensoes.FindAll(find => find.atleta.pessoa.id == atletas[iCount].pessoa.id).Count > 0) || (CV > 0)) {
                     dgvAtletas.Rows[iCount].Cells["Disponivel"].Value = "N";
                     dgvAtletas.Rows[iCount].DefaultCellStyle.ForeColor = Color.Red;
                 } else
                     dgvAtletas.Rows[iCount].Cells["Disponivel"].Value = "S";
 
             }
+
+            if (golsEquipe.Length >= 2)
+                golsEquipe.Remove(golsEquipe.Length - 2, 2);
+            if (dgvAtletas.Tag.ToString() == "1")
+                lblGols1.Text = "Gols: " + golsEquipe.ToString();
+            else if (dgvAtletas.Tag.ToString() == "2")
+                lblGols2.Text = "Gols: " + golsEquipe.ToString();
 
             dgvAtletas.Refresh();
         }
@@ -296,6 +330,6 @@ namespace SecEsportes.Views {
             
             penalidades = true;
             btnEncerrarPartida.Enabled = true;
-        }
+        }   
     }
 }

@@ -31,6 +31,8 @@
             this.lblTime1 = new System.Windows.Forms.Label();
             this.lblCompeticao = new System.Windows.Forms.Label();
             this.tlpPartida = new System.Windows.Forms.TableLayoutPanel();
+            this.lblGols2 = new System.Windows.Forms.Label();
+            this.lblGols1 = new System.Windows.Forms.Label();
             this.lblPlacarTime2_Penalti = new System.Windows.Forms.Label();
             this.lblPlacarTime1_Penalti = new System.Windows.Forms.Label();
             this.lblRepresentante1 = new System.Windows.Forms.Label();
@@ -79,6 +81,8 @@
             this.tlpPartida.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5F));
             this.tlpPartida.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 7.5F));
             this.tlpPartida.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
+            this.tlpPartida.Controls.Add(this.lblGols2, 4, 4);
+            this.tlpPartida.Controls.Add(this.lblGols1, 0, 4);
             this.tlpPartida.Controls.Add(this.lblPlacarTime2_Penalti, 3, 1);
             this.tlpPartida.Controls.Add(this.lblPlacarTime1_Penalti, 1, 1);
             this.tlpPartida.Controls.Add(this.lblRepresentante1, 0, 2);
@@ -89,14 +93,37 @@
             this.tlpPartida.Controls.Add(this.lblPlacarTime1, 1, 0);
             this.tlpPartida.Controls.Add(this.lblTime2, 4, 0);
             this.tlpPartida.Controls.Add(this.lblTime1, 0, 0);
-            this.tlpPartida.Location = new System.Drawing.Point(12, 105);
+            this.tlpPartida.Location = new System.Drawing.Point(12, 75);
             this.tlpPartida.Name = "tlpPartida";
-            this.tlpPartida.RowCount = 3;
-            this.tlpPartida.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpPartida.RowCount = 5;
+            this.tlpPartida.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
             this.tlpPartida.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 18F));
             this.tlpPartida.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 18F));
-            this.tlpPartida.Size = new System.Drawing.Size(684, 70);
+            this.tlpPartida.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 5F));
+            this.tlpPartida.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
+            this.tlpPartida.Size = new System.Drawing.Size(684, 120);
             this.tlpPartida.TabIndex = 2;
+            // 
+            // lblGols2
+            // 
+            this.lblGols2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblGols2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblGols2.Location = new System.Drawing.Point(412, 75);
+            this.lblGols2.Name = "lblGols2";
+            this.lblGols2.Size = new System.Drawing.Size(269, 45);
+            this.lblGols2.TabIndex = 11;
+            this.lblGols2.Text = "Gols:";
+            this.lblGols2.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // lblGols1
+            // 
+            this.lblGols1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblGols1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblGols1.Location = new System.Drawing.Point(3, 75);
+            this.lblGols1.Name = "lblGols1";
+            this.lblGols1.Size = new System.Drawing.Size(267, 45);
+            this.lblGols1.TabIndex = 10;
+            this.lblGols1.Text = "Gols: ";
             // 
             // lblPlacarTime2_Penalti
             // 
@@ -204,14 +231,13 @@
             this.dgvEquipe1.AllowUserToAddRows = false;
             this.dgvEquipe1.AllowUserToDeleteRows = false;
             this.dgvEquipe1.AllowUserToOrderColumns = true;
-			this.dgvEquipe1.AutoGenerateColumns = true;
             this.dgvEquipe1.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.dgvEquipe1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvEquipe1.Location = new System.Drawing.Point(12, 181);
+            this.dgvEquipe1.Location = new System.Drawing.Point(12, 200);
             this.dgvEquipe1.MultiSelect = false;
             this.dgvEquipe1.Name = "dgvEquipe1";
             this.dgvEquipe1.ReadOnly = true;
-            this.dgvEquipe1.Size = new System.Drawing.Size(321, 320);
+            this.dgvEquipe1.Size = new System.Drawing.Size(321, 300);
             this.dgvEquipe1.TabIndex = 6;
             this.dgvEquipe1.Tag = "1";
             this.dgvEquipe1.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvEquipe_CellMouseClick);
@@ -221,23 +247,22 @@
             this.dgvEquipe2.AllowUserToAddRows = false;
             this.dgvEquipe2.AllowUserToDeleteRows = false;
             this.dgvEquipe2.AllowUserToOrderColumns = true;
-			this.dgvEquipe2.AutoGenerateColumns = true;
             this.dgvEquipe2.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.dgvEquipe2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvEquipe2.Location = new System.Drawing.Point(375, 181);
+            this.dgvEquipe2.Location = new System.Drawing.Point(375, 200);
             this.dgvEquipe2.MultiSelect = false;
             this.dgvEquipe2.Name = "dgvEquipe2";
             this.dgvEquipe2.ReadOnly = true;
-            this.dgvEquipe2.Size = new System.Drawing.Size(321, 320);
+            this.dgvEquipe2.Size = new System.Drawing.Size(321, 300);
             this.dgvEquipe2.TabIndex = 7;
             this.dgvEquipe2.Tag = "2";
             this.dgvEquipe2.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvEquipe_CellMouseClick);
             // 
             // btnEncerrarPartida
             // 
-            this.btnEncerrarPartida.Location = new System.Drawing.Point(556, 51);
+            this.btnEncerrarPartida.Location = new System.Drawing.Point(603, 41);
             this.btnEncerrarPartida.Name = "btnEncerrarPartida";
-            this.btnEncerrarPartida.Size = new System.Drawing.Size(140, 23);
+            this.btnEncerrarPartida.Size = new System.Drawing.Size(87, 23);
             this.btnEncerrarPartida.TabIndex = 16;
             this.btnEncerrarPartida.Text = "Encerrar partida";
             this.btnEncerrarPartida.UseVisualStyleBackColor = true;
@@ -245,9 +270,9 @@
             // 
             // btnIniciarPartida
             // 
-            this.btnIniciarPartida.Location = new System.Drawing.Point(410, 51);
+            this.btnIniciarPartida.Location = new System.Drawing.Point(510, 41);
             this.btnIniciarPartida.Name = "btnIniciarPartida";
-            this.btnIniciarPartida.Size = new System.Drawing.Size(140, 23);
+            this.btnIniciarPartida.Size = new System.Drawing.Size(87, 23);
             this.btnIniciarPartida.TabIndex = 17;
             this.btnIniciarPartida.Text = "Iniciar partida";
             this.btnIniciarPartida.UseVisualStyleBackColor = true;
@@ -256,7 +281,7 @@
             // btnDisputaPenaltis
             // 
             this.btnDisputaPenaltis.Enabled = false;
-            this.btnDisputaPenaltis.Location = new System.Drawing.Point(292, 80);
+            this.btnDisputaPenaltis.Location = new System.Drawing.Point(292, 50);
             this.btnDisputaPenaltis.Name = "btnDisputaPenaltis";
             this.btnDisputaPenaltis.Size = new System.Drawing.Size(126, 23);
             this.btnDisputaPenaltis.TabIndex = 18;
@@ -310,5 +335,7 @@
         private System.Windows.Forms.Label lblPlacarTime1_Penalti;
         private System.Windows.Forms.Label lblPlacarTime2_Penalti;
         private System.Windows.Forms.Button btnDisputaPenaltis;
+        private System.Windows.Forms.Label lblGols2;
+        private System.Windows.Forms.Label lblGols1;
     }
 }

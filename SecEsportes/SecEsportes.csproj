@@ -473,8 +473,15 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\soccer-1.png" />
     <None Include="Recursos\gramado.jpg" />
     <Content Include="Recursos\ImagemErro.png" />
+    <None Include="Recursos\Partida\ball.ico" />
+    <None Include="Recursos\Partida\amarelo.ico" />
+    <None Include="Recursos\Partida\amarelos.ico" />
+    <Content Include="Recursos\Partida\ball.png" />
+    <None Include="Recursos\Partida\vermelho.ico" />
+    <None Include="Recursos\Partida\nothing.ico" />
     <Content Include="Recursos\trophy.ico" />
     <Content Include="Recursos\trophy.png" />
   </ItemGroup>
