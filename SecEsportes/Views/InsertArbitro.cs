@@ -35,8 +35,11 @@ namespace SecEsportes.Views {
             //Preenche o ComboBox da busca
             cboCamposBusca.Items.Add("Nome");
             cboCamposBusca.Items.Add("Ano nascimento");
-
             cboCamposBusca.SelectedIndex = 0;
+
+            toolTip1.SetToolTip(btnDesmarcarTudo, btnDesmarcarTudo.Tag.ToString());
+            toolTip1.SetToolTip(btnInserir, btnInserir.Tag.ToString());
+            toolTip1.SetToolTip(btnMarcarTudo, btnMarcarTudo.Tag.ToString());
         }
         #endregion
         #region Manipulação do grid

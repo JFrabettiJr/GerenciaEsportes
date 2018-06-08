@@ -283,6 +283,16 @@ namespace SecEsportes.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap desmarcar_tudo {
+            get {
+                object obj = ResourceManager.GetObject("desmarcar_tudo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap excluir_arbitro {
             get {
                 object obj = ResourceManager.GetObject("excluir_arbitro", resourceCulture);
@@ -396,6 +406,16 @@ namespace SecEsportes.Properties {
         internal static System.Drawing.Bitmap import {
             get {
                 object obj = ResourceManager.GetObject("import", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap marcar_tudo {
+            get {
+                object obj = ResourceManager.GetObject("marcar_tudo", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
