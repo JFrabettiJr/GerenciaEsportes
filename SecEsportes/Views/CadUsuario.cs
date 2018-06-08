@@ -246,8 +246,13 @@ namespace SecEsportes.Views
             cboCamposBusca.Items.Add("E-mail");
             cboCamposBusca.Items.Add("Nome de usuário");
             cboCamposBusca.Items.Add("Tempo sem login (em dias)");
-
             cboCamposBusca.SelectedIndex = 0;
+
+            toolTip1.SetToolTip(btnAdicionar, btnAdicionar.Tag.ToString());
+            toolTip1.SetToolTip(btnAtualizar, btnAtualizar.Tag.ToString());
+            toolTip1.SetToolTip(btnCancelar, btnCancelar.Tag.ToString());
+            toolTip1.SetToolTip(btnExcluir, btnExcluir.Tag.ToString());
+            toolTip1.SetToolTip(btnSalvar, btnSalvar.Tag.ToString());
         }
 
         private void busca() {
@@ -283,5 +288,11 @@ namespace SecEsportes.Views
                 busca();
             }
         }
+
+        private void btn_EnableChanged(object sender, EventArgs e) {
+            PictureBox pictureBox = (PictureBox)sender;
+            Utilidades.enabled_Change(pictureBox.Enabled, pictureBox);
+        }
+
     }
 }

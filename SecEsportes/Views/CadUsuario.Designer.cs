@@ -27,13 +27,9 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CadUsuario));
-            this.btnSalvar = new System.Windows.Forms.Button();
-            this.btnAdicionar = new System.Windows.Forms.Button();
-            this.btnCancelar = new System.Windows.Forms.Button();
-            this.btnExcluir = new System.Windows.Forms.Button();
             this.dgvUsuarios = new System.Windows.Forms.DataGridView();
-            this.btnAtualizar = new System.Windows.Forms.Button();
             this.txtUsername = new System.Windows.Forms.TextBox();
             this.lblUsername = new System.Windows.Forms.Label();
             this.tlpCadFuncao = new System.Windows.Forms.TableLayoutPanel();
@@ -51,51 +47,24 @@
             this.lblBuscarPor = new System.Windows.Forms.Label();
             this.lblBusca = new System.Windows.Forms.Label();
             this.txtBusca = new System.Windows.Forms.TextBox();
+            this.btnAtualizar = new System.Windows.Forms.PictureBox();
+            this.btnExcluir = new System.Windows.Forms.PictureBox();
+            this.btnCancelar = new System.Windows.Forms.PictureBox();
+            this.btnSalvar = new System.Windows.Forms.PictureBox();
+            this.btnAdicionar = new System.Windows.Forms.PictureBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.btnPesquisar = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvUsuarios)).BeginInit();
             this.tlpCadFuncao.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.btnAtualizar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnExcluir)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnCancelar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnSalvar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnAdicionar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnPesquisar)).BeginInit();
             this.SuspendLayout();
-            // 
-            // btnSalvar
-            // 
-            this.btnSalvar.Location = new System.Drawing.Point(91, 10);
-            this.btnSalvar.Name = "btnSalvar";
-            this.btnSalvar.Size = new System.Drawing.Size(75, 23);
-            this.btnSalvar.TabIndex = 1;
-            this.btnSalvar.Text = "Salvar";
-            this.btnSalvar.UseVisualStyleBackColor = true;
-            this.btnSalvar.Click += new System.EventHandler(this.btnSalvar_Click);
-            // 
-            // btnAdicionar
-            // 
-            this.btnAdicionar.Location = new System.Drawing.Point(10, 10);
-            this.btnAdicionar.Name = "btnAdicionar";
-            this.btnAdicionar.Size = new System.Drawing.Size(75, 23);
-            this.btnAdicionar.TabIndex = 2;
-            this.btnAdicionar.Text = "Adicionar";
-            this.btnAdicionar.UseVisualStyleBackColor = true;
-            this.btnAdicionar.Click += new System.EventHandler(this.btnAdicionar_Click);
-            // 
-            // btnCancelar
-            // 
-            this.btnCancelar.Location = new System.Drawing.Point(172, 10);
-            this.btnCancelar.Name = "btnCancelar";
-            this.btnCancelar.Size = new System.Drawing.Size(75, 23);
-            this.btnCancelar.TabIndex = 3;
-            this.btnCancelar.Text = "Cancelar";
-            this.btnCancelar.UseVisualStyleBackColor = true;
-            this.btnCancelar.Click += new System.EventHandler(this.btnCancelar_Click);
-            // 
-            // btnExcluir
-            // 
-            this.btnExcluir.Location = new System.Drawing.Point(253, 10);
-            this.btnExcluir.Name = "btnExcluir";
-            this.btnExcluir.Size = new System.Drawing.Size(75, 23);
-            this.btnExcluir.TabIndex = 4;
-            this.btnExcluir.Text = "Excluir";
-            this.btnExcluir.UseVisualStyleBackColor = true;
-            this.btnExcluir.Click += new System.EventHandler(this.btnExcluir_Click);
             // 
             // dgvUsuarios
             // 
@@ -111,16 +80,6 @@
             this.dgvUsuarios.Size = new System.Drawing.Size(560, 220);
             this.dgvUsuarios.TabIndex = 5;
             this.dgvUsuarios.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvEquipes_RowEnter);
-            // 
-            // btnAtualizar
-            // 
-            this.btnAtualizar.Location = new System.Drawing.Point(334, 10);
-            this.btnAtualizar.Name = "btnAtualizar";
-            this.btnAtualizar.Size = new System.Drawing.Size(75, 23);
-            this.btnAtualizar.TabIndex = 6;
-            this.btnAtualizar.Text = "Atualizar";
-            this.btnAtualizar.UseVisualStyleBackColor = true;
-            this.btnAtualizar.Click += new System.EventHandler(this.btnAtualizar_Click);
             // 
             // txtUsername
             // 
@@ -152,7 +111,7 @@
             this.tlpCadFuncao.Controls.Add(this.txtNome, 1, 1);
             this.tlpCadFuncao.Controls.Add(this.lblUsername, 0, 0);
             this.tlpCadFuncao.Controls.Add(this.txtUsername, 0, 1);
-            this.tlpCadFuncao.Location = new System.Drawing.Point(10, 47);
+            this.tlpCadFuncao.Location = new System.Drawing.Point(10, 54);
             this.tlpCadFuncao.Name = "tlpCadFuncao";
             this.tlpCadFuncao.RowCount = 2;
             this.tlpCadFuncao.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 14F));
@@ -207,7 +166,7 @@
             this.tableLayoutPanel1.Controls.Add(this.lblSenha, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.txtSenha, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.label3, 0, 0);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(10, 93);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(10, 98);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 14F));
@@ -264,12 +223,13 @@
             this.tableLayoutPanel2.Controls.Add(this.lblBuscarPor, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.lblBusca, 0, 0);
             this.tableLayoutPanel2.Controls.Add(this.txtBusca, 0, 1);
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(10, 375);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(50, 375);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 2;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 14F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(560, 40);
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(520, 40);
             this.tableLayoutPanel2.TabIndex = 9;
             // 
             // cboCamposBusca
@@ -279,15 +239,15 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboCamposBusca.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboCamposBusca.FormattingEnabled = true;
-            this.cboCamposBusca.Location = new System.Drawing.Point(423, 17);
+            this.cboCamposBusca.Location = new System.Drawing.Point(393, 17);
             this.cboCamposBusca.Name = "cboCamposBusca";
-            this.cboCamposBusca.Size = new System.Drawing.Size(134, 21);
+            this.cboCamposBusca.Size = new System.Drawing.Size(124, 21);
             this.cboCamposBusca.TabIndex = 10;
             // 
             // lblBuscarPor
             // 
             this.lblBuscarPor.AutoSize = true;
-            this.lblBuscarPor.Location = new System.Drawing.Point(423, 0);
+            this.lblBuscarPor.Location = new System.Drawing.Point(393, 0);
             this.lblBuscarPor.Name = "lblBuscarPor";
             this.lblBuscarPor.Size = new System.Drawing.Size(58, 13);
             this.lblBuscarPor.TabIndex = 4;
@@ -307,30 +267,106 @@
             this.txtBusca.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtBusca.Location = new System.Drawing.Point(3, 17);
             this.txtBusca.Name = "txtBusca";
-            this.txtBusca.Size = new System.Drawing.Size(414, 20);
+            this.txtBusca.Size = new System.Drawing.Size(384, 20);
             this.txtBusca.TabIndex = 2;
             this.txtBusca.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtBusca_KeyDown);
+            // 
+            // btnAtualizar
+            // 
+            this.btnAtualizar.Image = ((System.Drawing.Image)(resources.GetObject("btnAtualizar.Image")));
+            this.btnAtualizar.Location = new System.Drawing.Point(174, 10);
+            this.btnAtualizar.Name = "btnAtualizar";
+            this.btnAtualizar.Size = new System.Drawing.Size(35, 35);
+            this.btnAtualizar.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.btnAtualizar.TabIndex = 22;
+            this.btnAtualizar.TabStop = false;
+            this.btnAtualizar.Tag = "Recarregar usuários";
+            this.btnAtualizar.EnabledChanged += new System.EventHandler(this.btn_EnableChanged);
+            this.btnAtualizar.Click += new System.EventHandler(this.btnAtualizar_Click);
+            // 
+            // btnExcluir
+            // 
+            this.btnExcluir.Image = ((System.Drawing.Image)(resources.GetObject("btnExcluir.Image")));
+            this.btnExcluir.Location = new System.Drawing.Point(133, 10);
+            this.btnExcluir.Name = "btnExcluir";
+            this.btnExcluir.Size = new System.Drawing.Size(35, 35);
+            this.btnExcluir.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.btnExcluir.TabIndex = 21;
+            this.btnExcluir.TabStop = false;
+            this.btnExcluir.Tag = "Excluir usuário";
+            this.btnExcluir.EnabledChanged += new System.EventHandler(this.btn_EnableChanged);
+            this.btnExcluir.Click += new System.EventHandler(this.btnExcluir_Click);
+            // 
+            // btnCancelar
+            // 
+            this.btnCancelar.Image = ((System.Drawing.Image)(resources.GetObject("btnCancelar.Image")));
+            this.btnCancelar.Location = new System.Drawing.Point(92, 10);
+            this.btnCancelar.Name = "btnCancelar";
+            this.btnCancelar.Size = new System.Drawing.Size(35, 35);
+            this.btnCancelar.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.btnCancelar.TabIndex = 20;
+            this.btnCancelar.TabStop = false;
+            this.btnCancelar.Tag = "Descartar alterações do usuário";
+            this.btnCancelar.EnabledChanged += new System.EventHandler(this.btn_EnableChanged);
+            this.btnCancelar.Click += new System.EventHandler(this.btnCancelar_Click);
+            // 
+            // btnSalvar
+            // 
+            this.btnSalvar.Image = ((System.Drawing.Image)(resources.GetObject("btnSalvar.Image")));
+            this.btnSalvar.Location = new System.Drawing.Point(51, 10);
+            this.btnSalvar.Name = "btnSalvar";
+            this.btnSalvar.Size = new System.Drawing.Size(35, 35);
+            this.btnSalvar.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.btnSalvar.TabIndex = 19;
+            this.btnSalvar.TabStop = false;
+            this.btnSalvar.Tag = "Salvar alterações do usuário";
+            this.btnSalvar.EnabledChanged += new System.EventHandler(this.btn_EnableChanged);
+            this.btnSalvar.Click += new System.EventHandler(this.btnSalvar_Click);
+            // 
+            // btnAdicionar
+            // 
+            this.btnAdicionar.Image = ((System.Drawing.Image)(resources.GetObject("btnAdicionar.Image")));
+            this.btnAdicionar.Location = new System.Drawing.Point(10, 10);
+            this.btnAdicionar.Name = "btnAdicionar";
+            this.btnAdicionar.Size = new System.Drawing.Size(35, 35);
+            this.btnAdicionar.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.btnAdicionar.TabIndex = 18;
+            this.btnAdicionar.TabStop = false;
+            this.btnAdicionar.Tag = "Adicionar usuário";
+            this.btnAdicionar.EnabledChanged += new System.EventHandler(this.btn_EnableChanged);
+            this.btnAdicionar.Click += new System.EventHandler(this.btnAdicionar_Click);
+            // 
+            // btnPesquisar
+            // 
+            this.btnPesquisar.Image = ((System.Drawing.Image)(resources.GetObject("btnPesquisar.Image")));
+            this.btnPesquisar.Location = new System.Drawing.Point(10, 375);
+            this.btnPesquisar.Name = "btnPesquisar";
+            this.btnPesquisar.Size = new System.Drawing.Size(35, 35);
+            this.btnPesquisar.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.btnPesquisar.TabIndex = 23;
+            this.btnPesquisar.TabStop = false;
             // 
             // CadUsuario
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 421);
-            this.Controls.Add(this.tableLayoutPanel2);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.btnPesquisar);
             this.Controls.Add(this.btnAtualizar);
-            this.Controls.Add(this.dgvUsuarios);
             this.Controls.Add(this.btnExcluir);
             this.Controls.Add(this.btnCancelar);
-            this.Controls.Add(this.btnAdicionar);
             this.Controls.Add(this.btnSalvar);
+            this.Controls.Add(this.btnAdicionar);
+            this.Controls.Add(this.tableLayoutPanel2);
+            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.dgvUsuarios);
             this.Controls.Add(this.tlpCadFuncao);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "CadUsuario";
             this.Padding = new System.Windows.Forms.Padding(20);
             this.ShowInTaskbar = false;
-            this.Text = "Cadastro de competições";
+            this.Text = "Cadastro de usuários";
             this.Load += new System.EventHandler(this.CadUsuario_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvUsuarios)).EndInit();
             this.tlpCadFuncao.ResumeLayout(false);
@@ -339,17 +375,18 @@
             this.tableLayoutPanel1.PerformLayout();
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.btnAtualizar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnExcluir)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnCancelar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnSalvar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnAdicionar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnPesquisar)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
-        private System.Windows.Forms.Button btnSalvar;
-        private System.Windows.Forms.Button btnAdicionar;
-        private System.Windows.Forms.Button btnCancelar;
-        private System.Windows.Forms.Button btnExcluir;
         private System.Windows.Forms.DataGridView dgvUsuarios;
-        private System.Windows.Forms.Button btnAtualizar;
         private System.Windows.Forms.TextBox txtUsername;
         private System.Windows.Forms.Label lblUsername;
         private System.Windows.Forms.TableLayoutPanel tlpCadFuncao;
@@ -367,5 +404,12 @@
         private System.Windows.Forms.Label lblBuscarPor;
         private System.Windows.Forms.Label lblBusca;
         private System.Windows.Forms.TextBox txtBusca;
+        private System.Windows.Forms.PictureBox btnAtualizar;
+        private System.Windows.Forms.PictureBox btnExcluir;
+        private System.Windows.Forms.PictureBox btnCancelar;
+        private System.Windows.Forms.PictureBox btnSalvar;
+        private System.Windows.Forms.PictureBox btnAdicionar;
+        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.PictureBox btnPesquisar;
     }
 }
