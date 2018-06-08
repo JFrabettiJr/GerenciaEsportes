@@ -250,6 +250,41 @@ namespace SecEsportes.Infraestrutura
             }
         }
 
+        public static void enabled_Change(bool enabled, PictureBox pictureBox) {
+            switch (pictureBox.Name) {
+                case "btnAdicionar":
+                    if (enabled)
+                        pictureBox.Image = Properties.Resources.crud_adicionar;
+                    else
+                        pictureBox.Image = Properties.Resources.crud_adicionar_disabled;
+                    break;
+                case "btnSalvar":
+                    if (enabled)
+                        pictureBox.Image = Properties.Resources.crud_salvar;
+                    else
+                        pictureBox.Image = Properties.Resources.crud_salvar_disabled;
+                    break;
+                case "btnCancelar":
+                    if (enabled)
+                        pictureBox.Image = Properties.Resources.crud_cancelar;
+                    else
+                        pictureBox.Image = Properties.Resources.crud_cancelar_disabled;
+                    break;
+                case "btnExcluir":
+                    if (enabled)
+                        pictureBox.Image = Properties.Resources.crud_deletar;
+                    else
+                        pictureBox.Image = Properties.Resources.crud_deletar_disabled;
+                    break;
+                case "btnAtualizar":
+                    if (enabled)
+                        pictureBox.Image = Properties.Resources.crud_recarregar;
+                    else
+                        pictureBox.Image = Properties.Resources.crud_recarregar_disabled;
+                    break;
+            }
+        }
+
     }
 
     public static class CompeticaoViewUtilidades {

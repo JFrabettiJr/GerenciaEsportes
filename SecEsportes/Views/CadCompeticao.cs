@@ -264,8 +264,13 @@ namespace SecEsportes.Views
         private void CadCompeticao_Load(object sender, EventArgs e) {
             //Preenche o ComboBox da busca
             cboCamposBusca.Items.Add("Nome");
-
             cboCamposBusca.SelectedIndex = 0;
+
+            tooltip.SetToolTip(btnAdicionar, btnAdicionar.Tag.ToString());
+            tooltip.SetToolTip(btnAtualizar, btnAtualizar.Tag.ToString());
+            tooltip.SetToolTip(btnCancelar, btnCancelar.Tag.ToString());
+            tooltip.SetToolTip(btnExcluir, btnExcluir.Tag.ToString());
+            tooltip.SetToolTip(btnSalvar, btnSalvar.Tag.ToString());
         }
 
         private void busca() {
@@ -288,6 +293,11 @@ namespace SecEsportes.Views
             if (e.KeyCode == Keys.Enter) {
                 busca();
             }
+        }
+
+        private void btn_EnableChanged(object sender, EventArgs e) {
+            PictureBox pictureBox = (PictureBox)sender;
+            Utilidades.enabled_Change(pictureBox.Enabled, pictureBox);
         }
     }
 }

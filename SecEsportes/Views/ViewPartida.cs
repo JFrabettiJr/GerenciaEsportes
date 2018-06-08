@@ -145,21 +145,21 @@ namespace SecEsportes.Views {
                 CV = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.atleta.pessoa.id.Equals(atletas[iCount].pessoa.id) && eventosAEncontrar.tpEvento == tpEventoEnum.CartaoVermelho).Count;
 
                 if (gols > 0) {
-                    dgvAtletas.Rows[iCount].Cells["Gol"].Value = Properties.Resources.ball;
+                    dgvAtletas.Rows[iCount].Cells["Gol"].Value = Properties.Resources.partida_ball;
                     golsEquipe.AppendFormat("{0}{1}, ", atletas[iCount].pessoa.nome, (gols > 1 ? "(" + gols + ")" : ""));
 
                 } else
                     dgvAtletas.Rows[iCount].Cells["Gol"].Value = Properties.Resources.nothing;
 
                 if (CA == 1)
-                    dgvAtletas.Rows[iCount].Cells["CartaoAmarelo"].Value = Properties.Resources.amarelo;
+                    dgvAtletas.Rows[iCount].Cells["CartaoAmarelo"].Value = Properties.Resources.partida_amarelo;
                 else if (CA == 2)
-                    dgvAtletas.Rows[iCount].Cells["CartaoAmarelo"].Value = Properties.Resources.amarelos;
+                    dgvAtletas.Rows[iCount].Cells["CartaoAmarelo"].Value = Properties.Resources.partida_amarelos;
                 else
                     dgvAtletas.Rows[iCount].Cells["CartaoAmarelo"].Value = Properties.Resources.nothing;
 
                 if (CV > 0)
-                    dgvAtletas.Rows[iCount].Cells["CartaoVermelho"].Value = Properties.Resources.vermelho;
+                    dgvAtletas.Rows[iCount].Cells["CartaoVermelho"].Value = Properties.Resources.partida_vermelho;
                 else
                     dgvAtletas.Rows[iCount].Cells["CartaoVermelho"].Value = Properties.Resources.nothing;
 

@@ -473,15 +473,37 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\crud_recarregar_disabled.png" />
+    <None Include="Resources\crud_procurar_disabled.png" />
+    <None Include="Resources\crud_deletar_disabled.png" />
+    <None Include="Resources\crud_cancelar_disabled.png" />
+    <None Include="Resources\crud_adicionar_disabled.png" />
+    <None Include="Resources\crud_salvar_disabled.png" />
+    <None Include="Resources\crud_procurar.png" />
+    <None Include="Resources\crud_deletar.png" />
+    <None Include="Resources\crud_cancelar.png" />
+    <None Include="Resources\crud_adicionar.png" />
+    <None Include="Resources\crud_salvar.png" />
+    <None Include="Resources\crud_recarregar.png" />
     <None Include="Resources\soccer-1.png" />
     <None Include="Recursos\gramado.jpg" />
     <Content Include="Recursos\ImagemErro.png" />
     <None Include="Recursos\Partida\ball.ico" />
     <None Include="Recursos\Partida\amarelo.ico" />
     <None Include="Recursos\Partida\amarelos.ico" />
+    <None Include="Recursos\Partida\amarelo1.ico" />
+    <None Include="Recursos\Partida\amarelos1.ico" />
+    <None Include="Recursos\Partida\amarelo11.ico" />
+    <None Include="Recursos\Partida\amarelos11.ico" />
     <Content Include="Recursos\Partida\ball.png" />
     <None Include="Recursos\Partida\vermelho.ico" />
     <None Include="Recursos\Partida\nothing.ico" />
+    <None Include="Recursos\Partida\ball1.ico" />
+    <None Include="Recursos\Partida\nothing1.ico" />
+    <None Include="Recursos\Partida\vermelho1.ico" />
+    <None Include="Recursos\Partida\ball11.ico" />
+    <None Include="Recursos\Partida\nothing11.ico" />
+    <None Include="Recursos\Partida\vermelho11.ico" />
     <Content Include="Recursos\trophy.ico" />
     <Content Include="Recursos\trophy.png" />
   </ItemGroup>

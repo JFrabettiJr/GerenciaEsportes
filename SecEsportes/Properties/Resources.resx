@@ -127,19 +127,55 @@
   <data name="ImagemErro" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Recursos\ImagemErro.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="amarelo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Recursos\Partida\amarelo.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ball" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Recursos\Partida\ball.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="vermelho" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Recursos\Partida\vermelho.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="amarelos" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Recursos\Partida\amarelos.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="nothing" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Recursos\Partida\nothing.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>..\Recursos\Partida\nothing11.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="partida_amarelo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Recursos\Partida\amarelo11.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="partida_amarelos" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Recursos\Partida\amarelos11.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="partida_ball" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Recursos\Partida\ball11.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="partida_vermelho" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Recursos\Partida\vermelho11.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="crud_adicionar" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\crud_adicionar.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="crud_cancelar" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\crud_cancelar.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="crud_recarregar" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\crud_recarregar.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="crud_salvar" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\crud_salvar.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="crud_adicionar_disabled" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\crud_adicionar_disabled.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="crud_cancelar_disabled" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\crud_cancelar_disabled.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="crud_deletar" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\crud_deletar.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="crud_deletar_disabled" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\crud_deletar_disabled.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="crud_procurar" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\crud_procurar.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="crud_procurar_disabled" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\crud_procurar_disabled.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="crud_recarregar_disabled" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\crud_recarregar_disabled.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="crud_salvar_disabled" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\crud_salvar_disabled.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
