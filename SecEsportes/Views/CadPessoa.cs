@@ -288,8 +288,13 @@ namespace SecEsportes.Views {
             cboCamposBusca.Items.Add("E-mail");
             cboCamposBusca.Items.Add("Ano nascimento");
             cboCamposBusca.Items.Add("Função (Código)");
-
             cboCamposBusca.SelectedIndex = 0;
+
+            toolTip1.SetToolTip(btnAdicionar, btnAdicionar.Tag.ToString());
+            toolTip1.SetToolTip(btnAtualizar, btnAtualizar.Tag.ToString());
+            toolTip1.SetToolTip(btnCancelar, btnCancelar.Tag.ToString());
+            toolTip1.SetToolTip(btnExcluir, btnExcluir.Tag.ToString());
+            toolTip1.SetToolTip(btnSalvar, btnSalvar.Tag.ToString());
         }
 
         private void txtBusca_KeyDown(object sender, KeyEventArgs e) {
@@ -378,6 +383,11 @@ namespace SecEsportes.Views {
                     contextMenu.Show(pctFotoAtleta, new Point(e.X, e.Y));
                 }
             }
+        }
+
+        private void btn_EnableChanged(object sender, EventArgs e) {
+            PictureBox pictureBox = (PictureBox)sender;
+            Utilidades.enabled_Change(pictureBox.Enabled, pictureBox);
         }
     }
 }
