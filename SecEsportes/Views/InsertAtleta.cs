@@ -37,8 +37,11 @@ namespace SecEsportes.Views
             //Preenche o ComboBox da busca
             cboCamposBusca.Items.Add("Nome");
             cboCamposBusca.Items.Add("Ano nascimento");
-
             cboCamposBusca.SelectedIndex = 0;
+
+            toolTip1.SetToolTip(btnDesmarcarTudo, btnDesmarcarTudo.Tag.ToString());
+            toolTip1.SetToolTip(btnInserir, btnInserir.Tag.ToString());
+            toolTip1.SetToolTip(btnMarcarTudo, btnMarcarTudo.Tag.ToString());
         }
         #endregion
         #region Manipulação do grid
@@ -49,14 +52,16 @@ namespace SecEsportes.Views
             dgvAtletas.Columns.Clear();
 
             dgvAtletas.DataSource = atletas_view;
-            
+
             // Cria duas novas colunas
+            dgvAtletas.Columns.Add(new DataGridViewColumn(new DataGridViewCheckBoxCell()) { DataPropertyName = nameof(Atleta_Insert.selected) });
             dgvAtletas.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Pessoa.nome) });
             dgvAtletas.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Pessoa.dataNascimento) });
 
             for (var iCount = 0; iCount < dgvAtletas.Columns.Count; iCount++){
                 switch (dgvAtletas.Columns[iCount].DataPropertyName){
                     case nameof(Atleta_Insert.selected):
+                        dgvAtletas.Columns[iCount].Name = dgvAtletas.Columns[iCount].DataPropertyName;
                         dgvAtletas.Columns[iCount].HeaderText = " ";
                         dgvAtletas.Columns[iCount].Width = 30;
                         break;

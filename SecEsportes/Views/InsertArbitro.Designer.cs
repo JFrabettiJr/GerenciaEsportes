@@ -52,6 +52,7 @@
             this.dgvArbitros.AllowUserToAddRows = false;
             this.dgvArbitros.AllowUserToDeleteRows = false;
             this.dgvArbitros.AllowUserToOrderColumns = true;
+            this.dgvArbitros.AutoGenerateColumns = false;
             this.dgvArbitros.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.dgvArbitros.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvArbitros.Location = new System.Drawing.Point(10, 51);

@@ -52,13 +52,14 @@ namespace SecEsportes.Views {
             dgvArbitros.DataSource = arbitros_view;
 
             // Cria duas novas colunas
-            dgvArbitros.Columns.Add(new DataGridViewColumn(new DataGridViewCheckBoxCell()) { DataPropertyName = nameof(Atleta_Insert.selected) });
+            dgvArbitros.Columns.Add(new DataGridViewColumn(new DataGridViewCheckBoxCell()) { DataPropertyName = nameof(Pessoa_Insert.selected) });
             dgvArbitros.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Pessoa.nome) });
             dgvArbitros.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Pessoa.dataNascimento) });
 
             for (var iCount = 0; iCount < dgvArbitros.Columns.Count; iCount++) {
                 switch (dgvArbitros.Columns[iCount].DataPropertyName) {
-                    case nameof(Atleta_Insert.selected):
+                    case nameof(Pessoa_Insert.selected):
+                        dgvArbitros.Columns[iCount].Name = dgvArbitros.Columns[iCount].DataPropertyName;
                         dgvArbitros.Columns[iCount].HeaderText = " ";
                         dgvArbitros.Columns[iCount].Width = 30;
                         break;
@@ -98,13 +99,13 @@ namespace SecEsportes.Views {
 
         private void btnMarcarTudo_Click(object sender, EventArgs e) {
             for (int iCount = 0; iCount < arbitros_view.Count; iCount++) {
-                dgvArbitros.Rows[iCount].Cells[nameof(Atleta_Insert.selected)].Value = true;
+                dgvArbitros.Rows[iCount].Cells[nameof(Pessoa_Insert.selected)].Value = true;
             }
         }
 
         private void btnDesmarcarTudo_Click(object sender, EventArgs e) {
             for (int iCount = 0; iCount < arbitros_view.Count; iCount++) {
-                dgvArbitros.Rows[iCount].Cells[nameof(Atleta_Insert.selected)].Value = false;
+                dgvArbitros.Rows[iCount].Cells[nameof(Pessoa_Insert.selected)].Value = false;
             }
         }
 
