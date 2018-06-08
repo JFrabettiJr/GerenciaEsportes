@@ -473,6 +473,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\arbitro.png" />
+    <None Include="Resources\export.png" />
+    <None Include="Resources\import.png" />
     <None Include="Resources\crud_recarregar_disabled.png" />
     <None Include="Resources\crud_procurar_disabled.png" />
     <None Include="Resources\crud_deletar_disabled.png" />

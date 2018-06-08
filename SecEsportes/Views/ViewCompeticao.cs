@@ -255,23 +255,26 @@ namespace SecEsportes.Views
                     Competicao_Partida partida = partidas[e.RowIndex];
 
                     // Cria o menu de contexto e suas respectivas configurações para cada equipe do grupo
-                    ContextMenu contextMenu = new ContextMenu(); ;
-                    MenuItem menuItem;
+                    ContextMenuStrip contextMenuStrip = new ContextMenuStrip();
+                    ToolStripMenuItem toolStripMenuItem;
 
-                    menuItem = new MenuItem("Importar planilha da partida");
-                    menuItem.Click += importarPlanilha;
-                    menuItem.Tag = new List<Object>() { competicao, partida, dataGridView, partidas};
-                    menuItem.Enabled = !partida.encerrada;
-                    contextMenu.MenuItems.Add(menuItem);
+                    toolStripMenuItem = new ToolStripMenuItem("Importar planilha da partida");
+                    toolStripMenuItem.Click += importarPlanilha;
+                    toolStripMenuItem.Tag = new List<Object>() { competicao, partida, dataGridView, partidas};
+                    toolStripMenuItem.Image = Properties.Resources.import;
+                    toolStripMenuItem.Enabled = !partida.encerrada;
+                    contextMenuStrip.Items.Add(toolStripMenuItem);
 
-                    menuItem = new MenuItem("Exportar layout da planilha para a partida");
-                    menuItem.Click += exportarPlanilha;
-                    menuItem.Tag = new List<Object>() { competicao, partida, dataGridView, partidas};
-                    menuItem.Enabled = !partida.encerrada;
-                    contextMenu.MenuItems.Add(menuItem);
+                    toolStripMenuItem = new ToolStripMenuItem("Exportar layout da planilha para a partida");
+                    toolStripMenuItem.Click += exportarPlanilha;
+                    toolStripMenuItem.Tag = new List<Object>() { competicao, partida, dataGridView, partidas};
+                    toolStripMenuItem.Image = Properties.Resources.export;
+                    toolStripMenuItem.Enabled = !partida.encerrada;
+                    contextMenuStrip.Items.Add(toolStripMenuItem);
 
-                    menuItem = new MenuItem("Definir árbitro da partida");
-                    menuItem.Click += (_sender, _e) => {
+                    toolStripMenuItem = new ToolStripMenuItem("Definir árbitro da partida");
+                    toolStripMenuItem.Image = Properties.Resources.arbitro;
+                    toolStripMenuItem.Click += (_sender, _e) => {
                         setArbitroForm = new SetArbitro(usuarioLogado, competicao, partida);
 
                         setArbitroForm.FormClosing += (__sender, __e) => {
@@ -290,21 +293,21 @@ namespace SecEsportes.Views
 
                         setArbitroForm.ShowDialog();
                     };
-                    menuItem.Tag = new List<Object>() { competicao, partida, dataGridView, partidas };
-                    menuItem.Enabled = !partida.encerrada;
-                    contextMenu.MenuItems.Add(menuItem);
+                    toolStripMenuItem.Tag = new List<Object>() { competicao, partida, dataGridView, partidas };
+                    toolStripMenuItem.Enabled = !partida.encerrada;
+                    contextMenuStrip.Items.Add(toolStripMenuItem);
 
                     // Define onde será aberto o menu de contexto
-                    contextMenu.Show(dataGridView, new Point(dataGridView.RowHeadersWidth, dataGridView.ColumnHeadersHeight));
+                    contextMenuStrip.Show(this, this.PointToClient(MousePosition));
                 }
             }
         }
 
         private void importarPlanilha(object sender, EventArgs e) {
-            Competicao competicao = (Competicao)(((List<Object>)((MenuItem)sender).Tag)[0]);
-            Competicao_Partida partida = (Competicao_Partida)(((List<Object>)((MenuItem)sender).Tag)[1]);
-            DataGridView dataGridView = (DataGridView)(((List<Object>)((MenuItem)sender).Tag)[2]);
-            List<Competicao_Partida> partidas = (List<Competicao_Partida>)(((List<Object>)((MenuItem)sender).Tag)[3]);
+            Competicao competicao = (Competicao)(((List<Object>)((ToolStripMenuItem)sender).Tag)[0]);
+            Competicao_Partida partida = (Competicao_Partida)(((List<Object>)((ToolStripMenuItem)sender).Tag)[1]);
+            DataGridView dataGridView = (DataGridView)(((List<Object>)((ToolStripMenuItem)sender).Tag)[2]);
+            List<Competicao_Partida> partidas = (List<Competicao_Partida>)(((List<Object>)((ToolStripMenuItem)sender).Tag)[3]);
 
             if (partida.data is null)
                 MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
@@ -331,8 +334,8 @@ namespace SecEsportes.Views
         }
 
         private void exportarPlanilha(object sender, EventArgs e) {
-            Competicao competicao = (Competicao)(((List<Object>)((MenuItem)sender).Tag)[0]);
-            Competicao_Partida partida = (Competicao_Partida)(((List<Object>)((MenuItem)sender).Tag)[1]);
+            Competicao competicao = (Competicao)(((List<Object>)((ToolStripMenuItem)sender).Tag)[0]);
+            Competicao_Partida partida = (Competicao_Partida)(((List<Object>)((ToolStripMenuItem)sender).Tag)[1]);
 
             if (partida.data is null)
                 MessageBox.Show("Por favor verifique" + Environment.NewLine + Environment.NewLine +
