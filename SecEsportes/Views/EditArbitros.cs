@@ -34,6 +34,10 @@ namespace SecEsportes.Views {
 
         private void load(object sender, EventArgs e) {
             btnAtualizar_Click(null, null);
+
+            toolTip1.SetToolTip(btnAtualizar, btnAtualizar.Tag.ToString());
+            toolTip1.SetToolTip(btnIncluirArbitro, btnIncluirArbitro.Tag.ToString());
+            toolTip1.SetToolTip(btnExcluirArbitro, btnExcluirArbitro.Tag.ToString());
         }
         #endregion
         #region Manipulação do grid
@@ -147,7 +151,12 @@ namespace SecEsportes.Views {
                 windowMode = Utilidades.WindowMode.ModoNormal;
             }
         }
-        
         #endregion
+
+        private void btn_EnableChanged(object sender, EventArgs e) {
+            PictureBox pictureBox = (PictureBox)sender;
+            Utilidades.enabled_Change(pictureBox.Enabled, pictureBox);
+        }
+
     }
 }

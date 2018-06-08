@@ -473,6 +473,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\excluir_arbitro.png" />
+    <None Include="Resources\adicionar_arbitro_disabled.png" />
+    <None Include="Resources\adicionar_arbitro.png" />
+    <None Include="Resources\excluir_arbitro_disabled.png" />
     <None Include="Resources\voltar_disabled.png" />
     <None Include="Resources\avancar_disabled.png" />
     <None Include="Resources\voltar.png" />

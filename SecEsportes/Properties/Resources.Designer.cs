@@ -63,6 +63,26 @@ namespace SecEsportes.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap adicionar_arbitro {
+            get {
+                object obj = ResourceManager.GetObject("adicionar_arbitro", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap adicionar_arbitro_disabled {
+            get {
+                object obj = ResourceManager.GetObject("adicionar_arbitro_disabled", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap adicionar_equipe {
             get {
                 object obj = ResourceManager.GetObject("adicionar_equipe", resourceCulture);
@@ -236,6 +256,26 @@ namespace SecEsportes.Properties {
         internal static System.Drawing.Bitmap crud_salvar_disabled {
             get {
                 object obj = ResourceManager.GetObject("crud_salvar_disabled", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap excluir_arbitro {
+            get {
+                object obj = ResourceManager.GetObject("excluir_arbitro", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap excluir_arbitro_disabled {
+            get {
+                object obj = ResourceManager.GetObject("excluir_arbitro_disabled", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

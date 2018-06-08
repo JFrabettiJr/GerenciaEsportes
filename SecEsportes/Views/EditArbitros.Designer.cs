@@ -27,12 +27,17 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditArbitros));
             this.dgvArbitros = new System.Windows.Forms.DataGridView();
-            this.btnExcluirArbitro = new System.Windows.Forms.Button();
-            this.btnIncluirArbitro = new System.Windows.Forms.Button();
-            this.btnAtualizar = new System.Windows.Forms.Button();
+            this.btnExcluirArbitro = new System.Windows.Forms.PictureBox();
+            this.btnIncluirArbitro = new System.Windows.Forms.PictureBox();
+            this.btnAtualizar = new System.Windows.Forms.PictureBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dgvArbitros)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnExcluirArbitro)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnIncluirArbitro)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnAtualizar)).BeginInit();
             this.SuspendLayout();
             // 
             // dgvArbitros
@@ -42,41 +47,50 @@
             this.dgvArbitros.AllowUserToOrderColumns = true;
             this.dgvArbitros.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.dgvArbitros.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvArbitros.Location = new System.Drawing.Point(10, 41);
+            this.dgvArbitros.Location = new System.Drawing.Point(10, 53);
             this.dgvArbitros.MultiSelect = false;
             this.dgvArbitros.Name = "dgvArbitros";
-            this.dgvArbitros.Size = new System.Drawing.Size(560, 367);
+            this.dgvArbitros.Size = new System.Drawing.Size(560, 355);
             this.dgvArbitros.TabIndex = 5;
             this.dgvArbitros.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvArbitros_RowEnter);
             // 
             // btnExcluirArbitro
             // 
-            this.btnExcluirArbitro.Location = new System.Drawing.Point(447, 12);
+            this.btnExcluirArbitro.Image = global::SecEsportes.Properties.Resources.excluir_arbitro;
+            this.btnExcluirArbitro.Location = new System.Drawing.Point(535, 12);
             this.btnExcluirArbitro.Name = "btnExcluirArbitro";
-            this.btnExcluirArbitro.Size = new System.Drawing.Size(122, 23);
-            this.btnExcluirArbitro.TabIndex = 15;
-            this.btnExcluirArbitro.Text = "Excluir árbitro";
-            this.btnExcluirArbitro.UseVisualStyleBackColor = true;
+            this.btnExcluirArbitro.Size = new System.Drawing.Size(35, 35);
+            this.btnExcluirArbitro.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.btnExcluirArbitro.TabIndex = 30;
+            this.btnExcluirArbitro.TabStop = false;
+            this.btnExcluirArbitro.Tag = "Excluir árbitro da competição";
+            this.btnExcluirArbitro.EnabledChanged += new System.EventHandler(this.btn_EnableChanged);
             this.btnExcluirArbitro.Click += new System.EventHandler(this.btnExcluirArbitro_Click);
             // 
             // btnIncluirArbitro
             // 
-            this.btnIncluirArbitro.Location = new System.Drawing.Point(319, 12);
+            this.btnIncluirArbitro.Image = global::SecEsportes.Properties.Resources.adicionar_arbitro;
+            this.btnIncluirArbitro.Location = new System.Drawing.Point(494, 12);
             this.btnIncluirArbitro.Name = "btnIncluirArbitro";
-            this.btnIncluirArbitro.Size = new System.Drawing.Size(122, 23);
-            this.btnIncluirArbitro.TabIndex = 14;
-            this.btnIncluirArbitro.Text = "Incluir árbitros";
-            this.btnIncluirArbitro.UseVisualStyleBackColor = true;
+            this.btnIncluirArbitro.Size = new System.Drawing.Size(35, 35);
+            this.btnIncluirArbitro.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.btnIncluirArbitro.TabIndex = 29;
+            this.btnIncluirArbitro.TabStop = false;
+            this.btnIncluirArbitro.Tag = "Adicionar árbitros na competição";
+            this.btnIncluirArbitro.EnabledChanged += new System.EventHandler(this.btn_EnableChanged);
             this.btnIncluirArbitro.Click += new System.EventHandler(this.btnIncluirArbitro_Click);
             // 
             // btnAtualizar
             // 
+            this.btnAtualizar.Image = global::SecEsportes.Properties.Resources.crud_recarregar;
             this.btnAtualizar.Location = new System.Drawing.Point(10, 12);
             this.btnAtualizar.Name = "btnAtualizar";
-            this.btnAtualizar.Size = new System.Drawing.Size(75, 23);
-            this.btnAtualizar.TabIndex = 19;
-            this.btnAtualizar.Text = "Atualizar";
-            this.btnAtualizar.UseVisualStyleBackColor = true;
+            this.btnAtualizar.Size = new System.Drawing.Size(35, 35);
+            this.btnAtualizar.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.btnAtualizar.TabIndex = 28;
+            this.btnAtualizar.TabStop = false;
+            this.btnAtualizar.Tag = "Recarregar árbitros da competição";
+            this.btnAtualizar.EnabledChanged += new System.EventHandler(this.btn_EnableChanged);
             this.btnAtualizar.Click += new System.EventHandler(this.btnAtualizar_Click);
             // 
             // EditArbitros
@@ -84,9 +98,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 421);
-            this.Controls.Add(this.btnAtualizar);
             this.Controls.Add(this.btnExcluirArbitro);
             this.Controls.Add(this.btnIncluirArbitro);
+            this.Controls.Add(this.btnAtualizar);
             this.Controls.Add(this.dgvArbitros);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -96,14 +110,18 @@
             this.Text = "Inserção de árbitros";
             this.Load += new System.EventHandler(this.load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvArbitros)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnExcluirArbitro)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnIncluirArbitro)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnAtualizar)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
         private System.Windows.Forms.DataGridView dgvArbitros;
-        private System.Windows.Forms.Button btnExcluirArbitro;
-        private System.Windows.Forms.Button btnIncluirArbitro;
-        private System.Windows.Forms.Button btnAtualizar;
+        private System.Windows.Forms.PictureBox btnExcluirArbitro;
+        private System.Windows.Forms.PictureBox btnIncluirArbitro;
+        private System.Windows.Forms.PictureBox btnAtualizar;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
