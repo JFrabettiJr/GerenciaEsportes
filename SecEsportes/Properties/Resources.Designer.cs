@@ -233,9 +233,9 @@ namespace SecEsportes.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon nothing {
+        internal static System.Drawing.Icon nothing_ico {
             get {
-                object obj = ResourceManager.GetObject("nothing", resourceCulture);
+                object obj = ResourceManager.GetObject("nothing_ico", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
@@ -243,40 +243,80 @@ namespace SecEsportes.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon partida_amarelo {
+        internal static System.Drawing.Icon partida_amarelo_ico {
             get {
-                object obj = ResourceManager.GetObject("partida_amarelo", resourceCulture);
+                object obj = ResourceManager.GetObject("partida_amarelo_ico", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap partida_amarelo_png {
+            get {
+                object obj = ResourceManager.GetObject("partida_amarelo_png", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon partida_amarelos {
+        internal static System.Drawing.Icon partida_amarelos_ico {
             get {
-                object obj = ResourceManager.GetObject("partida_amarelos", resourceCulture);
+                object obj = ResourceManager.GetObject("partida_amarelos_ico", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap partida_amarelos_png {
+            get {
+                object obj = ResourceManager.GetObject("partida_amarelos_png", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon partida_ball {
+        internal static System.Drawing.Icon partida_gol_ico {
             get {
-                object obj = ResourceManager.GetObject("partida_ball", resourceCulture);
+                object obj = ResourceManager.GetObject("partida_gol_ico", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap partida_gol_png {
+            get {
+                object obj = ResourceManager.GetObject("partida_gol_png", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon partida_vermelho {
+        internal static System.Drawing.Icon partida_vermelho_ico {
             get {
-                object obj = ResourceManager.GetObject("partida_vermelho", resourceCulture);
+                object obj = ResourceManager.GetObject("partida_vermelho_ico", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap partida_vermelho_png {
+            get {
+                object obj = ResourceManager.GetObject("partida_vermelho_png", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

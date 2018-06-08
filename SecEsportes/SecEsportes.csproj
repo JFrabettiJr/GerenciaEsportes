@@ -473,6 +473,21 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\ball.png" />
+    <None Include="Resources\partida_vermelho_png.png" />
+    <None Include="Resources\partida_gol_png.png" />
+    <None Include="Resources\partida_amarelos_png.png" />
+    <None Include="Resources\partida_amarelo_png.png" />
+    <None Include="Resources\partida_gol_ico.ico" />
+    <None Include="Resources\partida_ball_ico.ico" />
+    <None Include="Resources\partida_amarelos_ico.ico" />
+    <None Include="Resources\partida_amarelo_ico.ico" />
+    <None Include="Resources\nothing_ico.ico" />
+    <None Include="Resources\partida_vermelho_ico.ico" />
+    <None Include="Resources\vermelho_ico.ico" />
+    <None Include="Resources\ball_ico.ico" />
+    <None Include="Resources\amarelos_ico.ico" />
+    <None Include="Resources\amarelo_ico.ico" />
     <None Include="Resources\arbitro.png" />
     <None Include="Resources\export.png" />
     <None Include="Resources\import.png" />
@@ -491,22 +506,6 @@
     <None Include="Resources\soccer-1.png" />
     <None Include="Recursos\gramado.jpg" />
     <Content Include="Recursos\ImagemErro.png" />
-    <None Include="Recursos\Partida\ball.ico" />
-    <None Include="Recursos\Partida\amarelo.ico" />
-    <None Include="Recursos\Partida\amarelos.ico" />
-    <None Include="Recursos\Partida\amarelo1.ico" />
-    <None Include="Recursos\Partida\amarelos1.ico" />
-    <None Include="Recursos\Partida\amarelo11.ico" />
-    <None Include="Recursos\Partida\amarelos11.ico" />
-    <Content Include="Recursos\Partida\ball.png" />
-    <None Include="Recursos\Partida\vermelho.ico" />
-    <None Include="Recursos\Partida\nothing.ico" />
-    <None Include="Recursos\Partida\ball1.ico" />
-    <None Include="Recursos\Partida\nothing1.ico" />
-    <None Include="Recursos\Partida\vermelho1.ico" />
-    <None Include="Recursos\Partida\ball11.ico" />
-    <None Include="Recursos\Partida\nothing11.ico" />
-    <None Include="Recursos\Partida\vermelho11.ico" />
     <Content Include="Recursos\trophy.ico" />
     <Content Include="Recursos\trophy.png" />
   </ItemGroup>

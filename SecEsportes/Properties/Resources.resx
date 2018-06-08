@@ -127,21 +127,6 @@
   <data name="ImagemErro" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Recursos\ImagemErro.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="nothing" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Recursos\Partida\nothing11.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="partida_amarelo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Recursos\Partida\amarelo11.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="partida_amarelos" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Recursos\Partida\amarelos11.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="partida_ball" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Recursos\Partida\ball11.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="partida_vermelho" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Recursos\Partida\vermelho11.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="crud_adicionar" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\crud_adicionar.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -186,5 +171,32 @@
   </data>
   <data name="arbitro" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\arbitro.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="nothing_ico" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\nothing_ico.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="partida_amarelos_ico" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\partida_amarelos_ico.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="partida_amarelos_png" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\partida_amarelos_png.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="partida_amarelo_ico" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\partida_amarelo_ico.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="partida_amarelo_png" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\partida_amarelo_png.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="partida_gol_ico" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\partida_gol_ico.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="partida_gol_png" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\partida_gol_png.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="partida_vermelho_ico" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\partida_vermelho_ico.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="partida_vermelho_png" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\partida_vermelho_png.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

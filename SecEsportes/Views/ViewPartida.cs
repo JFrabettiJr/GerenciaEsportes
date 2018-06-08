@@ -145,23 +145,23 @@ namespace SecEsportes.Views {
                 CV = partida.eventos.FindAll(eventosAEncontrar => eventosAEncontrar.atleta.pessoa.id.Equals(atletas[iCount].pessoa.id) && eventosAEncontrar.tpEvento == tpEventoEnum.CartaoVermelho).Count;
 
                 if (gols > 0) {
-                    dgvAtletas.Rows[iCount].Cells["Gol"].Value = Properties.Resources.partida_ball;
+                    dgvAtletas.Rows[iCount].Cells["Gol"].Value = Properties.Resources.partida_gol_ico;
                     golsEquipe.AppendFormat("{0}{1}, ", atletas[iCount].pessoa.nome, (gols > 1 ? "(" + gols + ")" : ""));
 
                 } else
-                    dgvAtletas.Rows[iCount].Cells["Gol"].Value = Properties.Resources.nothing;
+                    dgvAtletas.Rows[iCount].Cells["Gol"].Value = Properties.Resources.nothing_ico;
 
                 if (CA == 1)
-                    dgvAtletas.Rows[iCount].Cells["CartaoAmarelo"].Value = Properties.Resources.partida_amarelo;
+                    dgvAtletas.Rows[iCount].Cells["CartaoAmarelo"].Value = Properties.Resources.partida_amarelo_ico;
                 else if (CA == 2)
-                    dgvAtletas.Rows[iCount].Cells["CartaoAmarelo"].Value = Properties.Resources.partida_amarelos;
+                    dgvAtletas.Rows[iCount].Cells["CartaoAmarelo"].Value = Properties.Resources.partida_amarelos_ico;
                 else
-                    dgvAtletas.Rows[iCount].Cells["CartaoAmarelo"].Value = Properties.Resources.nothing;
+                    dgvAtletas.Rows[iCount].Cells["CartaoAmarelo"].Value = Properties.Resources.nothing_ico;
 
                 if (CV > 0)
-                    dgvAtletas.Rows[iCount].Cells["CartaoVermelho"].Value = Properties.Resources.partida_vermelho;
+                    dgvAtletas.Rows[iCount].Cells["CartaoVermelho"].Value = Properties.Resources.partida_vermelho_ico;
                 else
-                    dgvAtletas.Rows[iCount].Cells["CartaoVermelho"].Value = Properties.Resources.nothing;
+                    dgvAtletas.Rows[iCount].Cells["CartaoVermelho"].Value = Properties.Resources.nothing_ico;
 
                 if ( (suspensoes.FindAll(find => find.atleta.pessoa.id == atletas[iCount].pessoa.id).Count > 0) || (CV > 0)) {
                     dgvAtletas.Rows[iCount].Cells["Disponivel"].Value = "N";
@@ -207,44 +207,47 @@ namespace SecEsportes.Views {
                             atletaSuspenso = false;
 
                         // Cria o menu de contexto
-                        ContextMenu contextMenu = new ContextMenu();
-                        MenuItem menuItem;
+                        ContextMenuStrip contextMenuStrip = new ContextMenuStrip();
+                        ToolStripMenuItem toolStripMenuItem;
 
                         if (penalidades) {
-                            menuItem = new MenuItem("Gol de pênalti");
-                            menuItem.Click += mnuNewEvento;
-                            menuItem.Tag = new List<Object>() { tpEventoEnum.Gol_Penalti, numEquipe, equipe.atletas[e.RowIndex] };
-                            menuItem.Enabled = !atletaSuspenso;
-                            contextMenu.MenuItems.Add(menuItem);
+                            toolStripMenuItem = new ToolStripMenuItem("Gol de pênalti");
+                            toolStripMenuItem.Click += mnuNewEvento;
+                            toolStripMenuItem.Tag = new List<Object>() { tpEventoEnum.Gol_Penalti, numEquipe, equipe.atletas[e.RowIndex] };
+                            toolStripMenuItem.Enabled = !atletaSuspenso;
+                            contextMenuStrip.Items.Add(toolStripMenuItem);
                         } else {
-                            menuItem = new MenuItem("Gol");
-                            menuItem.Tag = new List<Object>() { tpEventoEnum.Gol, numEquipe, equipe.atletas[e.RowIndex] };
-                            menuItem.Click += mnuNewEvento;
-                            menuItem.Enabled = !atletaSuspenso;
-                            contextMenu.MenuItems.Add(menuItem);
+                            toolStripMenuItem = new ToolStripMenuItem("Gol");
+                            toolStripMenuItem.Tag = new List<Object>() { tpEventoEnum.Gol, numEquipe, equipe.atletas[e.RowIndex] };
+                            toolStripMenuItem.Click += mnuNewEvento;
+                            toolStripMenuItem.Image = Properties.Resources.partida_gol_png;
+                            toolStripMenuItem.Enabled = !atletaSuspenso;
+                            contextMenuStrip.Items.Add(toolStripMenuItem);
 
-                            menuItem = new MenuItem("Cartão Amarelo");
-                            menuItem.Tag = new List<Object>() { tpEventoEnum.CartaoAmarelo, numEquipe, equipe.atletas[e.RowIndex] };
-                            menuItem.Click += mnuNewEvento;
-                            menuItem.Enabled = !atletaSuspenso;
-                            contextMenu.MenuItems.Add(menuItem);
+                            toolStripMenuItem = new ToolStripMenuItem("Cartão Amarelo");
+                            toolStripMenuItem.Tag = new List<Object>() { tpEventoEnum.CartaoAmarelo, numEquipe, equipe.atletas[e.RowIndex] };
+                            toolStripMenuItem.Click += mnuNewEvento;
+                            toolStripMenuItem.Image = Properties.Resources.partida_amarelo_png;
+                            toolStripMenuItem.Enabled = !atletaSuspenso;
+                            contextMenuStrip.Items.Add(toolStripMenuItem);
 
-                            menuItem = new MenuItem("Cartão Vermelho");
-                            menuItem.Tag = new List<Object>() { tpEventoEnum.CartaoVermelho, numEquipe, equipe.atletas[e.RowIndex] };
-                            menuItem.Click += mnuNewEvento;
-                            menuItem.Enabled = !atletaSuspenso;
-                            contextMenu.MenuItems.Add(menuItem);
+                            toolStripMenuItem = new ToolStripMenuItem("Cartão Vermelho");
+                            toolStripMenuItem.Tag = new List<Object>() { tpEventoEnum.CartaoVermelho, numEquipe, equipe.atletas[e.RowIndex] };
+                            toolStripMenuItem.Click += mnuNewEvento;
+                            toolStripMenuItem.Image = Properties.Resources.partida_vermelho_png;
+                            toolStripMenuItem.Enabled = !atletaSuspenso;
+                            contextMenuStrip.Items.Add(toolStripMenuItem);
                         }
-                        
+
                         // Exibe o menu de contexto
-                        contextMenu.Show(dgvEquipe, new System.Drawing.Point(dgvEquipe.RowHeadersWidth, dgvEquipe.ColumnHeadersHeight));
+                        contextMenuStrip.Show(this, this.PointToClient(MousePosition));
                     }
                 }
             }
         }
 
         private void mnuNewEvento(object sender, EventArgs e) {
-            MenuItem menuItem = (MenuItem)sender;
+            ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
             tpEventoEnum tpEvento = (tpEventoEnum)((List<Object>)menuItem.Tag)[0];
             int numEquipe = (int)((List<Object>)menuItem.Tag)[1];
             Atleta atleta = (Atleta)((List<Object>)menuItem.Tag)[2];
