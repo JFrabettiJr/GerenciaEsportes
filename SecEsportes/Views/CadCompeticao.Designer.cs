@@ -235,7 +235,7 @@
             this.btnSalvar.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.btnSalvar.TabIndex = 9;
             this.btnSalvar.TabStop = false;
-            this.btnSalvar.Tag = "Salvar edição da competição";
+            this.btnSalvar.Tag = "Salvar alterações da competição";
             this.btnSalvar.EnabledChanged += new System.EventHandler(this.btn_EnableChanged);
             this.btnSalvar.Click += new System.EventHandler(this.btnSalvar_Click);
             // 
@@ -248,7 +248,7 @@
             this.btnCancelar.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.btnCancelar.TabIndex = 10;
             this.btnCancelar.TabStop = false;
-            this.btnCancelar.Tag = "Cancelar edição da competição";
+            this.btnCancelar.Tag = "Descartar alterações da competição";
             this.btnCancelar.EnabledChanged += new System.EventHandler(this.btn_EnableChanged);
             this.btnCancelar.Click += new System.EventHandler(this.btnCancelar_Click);
             // 
