@@ -75,6 +75,12 @@ namespace SecEsportes.Views {
             }
 
             fillFields();
+
+            toolTip1.SetToolTip(btnAtualizar, btnAtualizar.Tag.ToString());
+            toolTip1.SetToolTip(btnCancelar, btnCancelar.Tag.ToString());
+            toolTip1.SetToolTip(btnSalvar, btnSalvar.Tag.ToString());
+            toolTip1.SetToolTip(btnIncluirAtleta, btnIncluirAtleta.Tag.ToString());
+            toolTip1.SetToolTip(btnExcluirAtleta, btnExcluirAtleta.Tag.ToString());
         }
         #endregion
         #region Manipulação do grid
@@ -264,5 +270,11 @@ namespace SecEsportes.Views {
             keyDown(null, null);
         }
         #endregion
+
+        private void btn_EnableChanged(object sender, EventArgs e) {
+            PictureBox pictureBox = (PictureBox)sender;
+            Utilidades.enabled_Change(pictureBox.Enabled, pictureBox);
+        }
+
     }
 }

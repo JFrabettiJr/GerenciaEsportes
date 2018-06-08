@@ -473,6 +473,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\excluir_atleta.png" />
+    <None Include="Resources\adicionar_atleta_disabled.png" />
+    <None Include="Resources\adicionar_atleta.png" />
+    <None Include="Resources\excluir_atleta_disabled.png" />
     <None Include="Resources\excluir_arbitro.png" />
     <None Include="Resources\adicionar_arbitro_disabled.png" />
     <None Include="Resources\adicionar_arbitro.png" />

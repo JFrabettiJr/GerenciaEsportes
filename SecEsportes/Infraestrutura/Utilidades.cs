@@ -342,6 +342,18 @@ namespace SecEsportes.Infraestrutura
                     else
                         pictureBox.Image = Properties.Resources.excluir_arbitro_disabled;
                     break;
+                case "btnIncluirAtleta":
+                    if (enabled)
+                        pictureBox.Image = Properties.Resources.adicionar_atleta;
+                    else
+                        pictureBox.Image = Properties.Resources.adicionar_atleta_disabled;
+                    break;
+                case "btnExcluirAtleta":
+                    if (enabled)
+                        pictureBox.Image = Properties.Resources.excluir_atleta;
+                    else
+                        pictureBox.Image = Properties.Resources.excluir_atleta_disabled;
+                    break;
             }
         }
 
