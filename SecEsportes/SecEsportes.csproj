@@ -473,6 +473,21 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\voltar_disabled.png" />
+    <None Include="Resources\avancar_disabled.png" />
+    <None Include="Resources\voltar.png" />
+    <None Include="Resources\avancar.png" />
+    <None Include="Resources\partida_disabled.png" />
+    <None Include="Resources\partida.png" />
+    <None Include="Resources\grupos_disabled.png" />
+    <None Include="Resources\grupos.png" />
+    <None Include="Resources\visao_geral_disabled.png" />
+    <None Include="Resources\visao_geral.png" />
+    <None Include="Resources\arbitro_disabled.png" />
+    <None Include="Resources\adicionar_equipe_disabled.png" />
+    <None Include="Resources\excluir_equipe_disabled.png" />
+    <None Include="Resources\adicionar_equipe.png" />
+    <None Include="Resources\excluir_equipe.png" />
     <None Include="Resources\ball.png" />
     <None Include="Resources\partida_vermelho_png.png" />
     <None Include="Resources\partida_gol_png.png" />

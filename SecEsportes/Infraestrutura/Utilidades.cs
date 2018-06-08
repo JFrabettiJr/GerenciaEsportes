@@ -282,6 +282,54 @@ namespace SecEsportes.Infraestrutura
                     else
                         pictureBox.Image = Properties.Resources.crud_recarregar_disabled;
                     break;
+                case "btnIncluirEquipes":
+                    if (enabled)
+                        pictureBox.Image = Properties.Resources.adicionar_equipe;
+                    else
+                        pictureBox.Image = Properties.Resources.adicionar_equipe_disabled;
+                    break;
+                case "btnExcluirEquipe":
+                    if (enabled)
+                        pictureBox.Image = Properties.Resources.excluir_equipe;
+                    else
+                        pictureBox.Image = Properties.Resources.excluir_equipe_disabled;
+                    break;
+                case "btnArbitros":
+                    if (enabled)
+                        pictureBox.Image = Properties.Resources.arbitro;
+                    else
+                        pictureBox.Image = Properties.Resources.arbitro_disabled;
+                    break;
+                case "btnVisaoGeral":
+                    if (enabled)
+                        pictureBox.Image = Properties.Resources.visao_geral;
+                    else
+                        pictureBox.Image = Properties.Resources.visao_geral_disabled;
+                    break;
+                case "btnGerarGrupos":
+                    if (enabled)
+                        pictureBox.Image = Properties.Resources.grupos;
+                    else
+                        pictureBox.Image = Properties.Resources.grupos_disabled;
+                    break;
+                case "btnGerarPartidas":
+                    if (enabled)
+                        pictureBox.Image = Properties.Resources.partida;
+                    else
+                        pictureBox.Image = Properties.Resources.partida_disabled;
+                    break;
+                case "btnAvancar":
+                    if (enabled)
+                        pictureBox.Image = Properties.Resources.avancar;
+                    else
+                        pictureBox.Image = Properties.Resources.avancar_disabled;
+                    break;
+                case "btnVoltar":
+                    if (enabled)
+                        pictureBox.Image = Properties.Resources.voltar;
+                    else
+                        pictureBox.Image = Properties.Resources.voltar_disabled;
+                    break;
             }
         }
 

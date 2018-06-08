@@ -311,8 +311,8 @@ namespace SecEsportes.Views {
             int numTimesRestantes = competicao.numTimes % competicao.numGrupos;
 
             // Verifica se o grupo já tem o número suficiente de times
-            if ( (numTimesRestantes == 0 && competicao.grupos[idGrupo].Count >= numTimesPorGrupo) || 
-                (competicao.grupos[idGrupo].Count >= (numTimesRestantes / competicao.numGrupos) + numTimesPorGrupo) ) {
+            if ((numTimesRestantes == 0 && competicao.grupos[idGrupo].Count >= numTimesPorGrupo) ||
+                (competicao.grupos[idGrupo].Count >= (numTimesRestantes / competicao.numGrupos) + numTimesPorGrupo)) {
                 insereEmGrupo = false;
             }
 
@@ -739,6 +739,18 @@ namespace SecEsportes.Views {
 
         private void load(object sender, EventArgs e) {
             btnAtualizar_Click(null, null);
+
+            toolTip1.SetToolTip(btnAtualizar, btnAtualizar.Tag.ToString());
+            toolTip1.SetToolTip(btnCancelar, btnCancelar.Tag.ToString());
+            toolTip1.SetToolTip(btnSalvar, btnSalvar.Tag.ToString());
+            toolTip1.SetToolTip(btnIncluirEquipes, btnIncluirEquipes.Tag.ToString());
+            toolTip1.SetToolTip(btnExcluirEquipe, btnExcluirEquipe.Tag.ToString());
+            toolTip1.SetToolTip(btnArbitros, btnArbitros.Tag.ToString());
+            toolTip1.SetToolTip(btnVisaoGeral, btnVisaoGeral.Tag.ToString());
+            toolTip1.SetToolTip(btnGerarGrupos, btnGerarGrupos.Tag.ToString());
+            toolTip1.SetToolTip(btnGerarPartidas, btnGerarPartidas.Tag.ToString());
+            toolTip1.SetToolTip(btnAvancar, btnAvancar.Tag.ToString());
+            toolTip1.SetToolTip(btnVoltar, btnVoltar.Tag.ToString());
         }
 
         private void btnGerarGrupos_Click(object sender, EventArgs e) {
@@ -794,6 +806,11 @@ namespace SecEsportes.Views {
 
                     CompeticaoViewUtilidades.refreshDataGridViewGrupos(competicao, dataGridView, competicao.grupos[numGrupo], timesProximaFase[numGrupo]);
                 }
+
+                MessageBox.Show(
+                    "Grupos gerados.",
+                    competicao.nome, MessageBoxButtons.OK, MessageBoxIcon.Information);
+
             }
         }
 
@@ -1015,6 +1032,11 @@ namespace SecEsportes.Views {
                     CompeticaoRepositorio.Instance.insertPartida(ref competicao, partidaDeVolta);
                 }
             }
+
+            MessageBox.Show(
+                "Partidas geradas.",
+                competicao.nome, MessageBoxButtons.OK, MessageBoxIcon.Information);
+
         }
 
         private bool equipeJaSobrouNoutraRodada(EquipeCompeticao equipeASobrar, List<EquipeCompeticao> equipeQueSobra) {
@@ -1066,5 +1088,11 @@ namespace SecEsportes.Views {
         private void btnArbitros_Click(object sender, EventArgs e) {
             new EditArbitros(usuarioLogado, competicao).ShowDialog();
         }
+
+        private void btn_EnableChanged(object sender, EventArgs e) {
+            PictureBox pictureBox = (PictureBox)sender;
+            Utilidades.enabled_Change(pictureBox.Enabled, pictureBox);
+        }
+
     }
 }
