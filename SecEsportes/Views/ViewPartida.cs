@@ -54,6 +54,8 @@ namespace SecEsportes.Views {
             if (!(partida.equipe2.urlLogo is null) && partida.equipe2.urlLogo.Length > 0 && File.Exists(partida.equipe2.urlLogo))
                 logoEquipe2.ImageLocation = partida.equipe2.urlLogo;
 
+            toolTip1.SetToolTip(btnDisputaPenaltis, btnDisputaPenaltis.Tag.ToString());
+
             fillFields();
         }
 
@@ -338,6 +340,12 @@ namespace SecEsportes.Views {
             
             penalidades = true;
             btnEncerrarPartida.Enabled = true;
-        }   
+        }
+
+        private void btn_EnableChanged(object sender, EventArgs e) {
+            PictureBox pictureBox = (PictureBox)sender;
+            Utilidades.enabled_Change(pictureBox.Enabled, pictureBox);
+        }
+
     }
 }

@@ -355,6 +355,12 @@ namespace SecEsportes.Infraestrutura
                     else
                         pictureBox.Image = Properties.Resources.excluir_atleta_disabled;
                     break;
+                case "btnDisputaPenaltis":
+                    if (enabled)
+                        pictureBox.Image = Properties.Resources.penaltis;
+                    else
+                        pictureBox.Image = Properties.Resources.penaltis_disabled;
+                    break;
             }
         }
 

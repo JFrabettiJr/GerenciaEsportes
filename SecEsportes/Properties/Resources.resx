@@ -274,4 +274,10 @@
   <data name="marcar_tudo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\marcar_tudo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="penaltis" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\penaltis.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="penaltis_disabled" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\penaltis_disabled.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

@@ -473,6 +473,8 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\penaltis_disabled.png" />
+    <None Include="Resources\penaltis.png" />
     <None Include="Resources\desmarcar_tudo.png" />
     <None Include="Resources\marcar_tudo.png" />
     <None Include="Resources\excluir_atleta.png" />
