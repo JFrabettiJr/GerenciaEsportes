@@ -620,102 +620,110 @@ namespace SecEsportes.Infraestrutura
             dgvRodada.Refresh();
         }
 
-        public static void refreshDataGridViewGrupos(Competicao competicao, DataGridView dgvGrupo, List<EquipeCompeticao> dataSource, List<EquipeCompeticao> timesProximaFase) {
+        public static void refreshDataGridViewGrupos(Competicao competicao, DataGridView dgvGrupo, List<EquipeCompeticao> equipes, List<EquipeCompeticao> timesProximaFase) {
             dgvGrupo.DataSource = null;
             dgvGrupo.Refresh();
 
             dgvGrupo.Columns.Clear();
 
-            if (!(dataSource is null)) {
-                dataSource = (from customDS in dataSource
+            if (!(equipes is null)) {
+                equipes = (from customDS in equipes
                               orderby customDS.pontos descending, customDS.vitorias descending, customDS.golsPro - customDS.golsContra descending
                               select customDS).ToList<EquipeCompeticao>();
             }
 
-            dgvGrupo.DataSource = dataSource;
+            dgvGrupo.DataSource = equipes;
 
-            if (!(dataSource is null)) {
+            if (!(equipes is null)) {
+                dgvGrupo.Columns.Add(new DataGridViewImageColumn(true) { DataPropertyName = "LogoEquipe" });
                 dgvGrupo.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(EquipeCompeticao.codigo) });
                 dgvGrupo.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(EquipeCompeticao.nome) });
                 dgvGrupo.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(EquipeCompeticao.pontos) });
+                dgvGrupo.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "NumJogos" });
                 dgvGrupo.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(EquipeCompeticao.vitorias) });
                 dgvGrupo.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(EquipeCompeticao.empates) });
                 dgvGrupo.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(EquipeCompeticao.derrotas) });
                 dgvGrupo.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(EquipeCompeticao.golsPro) });
                 dgvGrupo.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(EquipeCompeticao.golsContra) });
-
                 dgvGrupo.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "SaldoGols" });
-                dgvGrupo.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "NumJogos" });
                 dgvGrupo.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = "Aproveitamento" });
             }
 
             for (int iCount = 0; iCount < dgvGrupo.Columns.Count; iCount++) {
                 switch (dgvGrupo.Columns[iCount].DataPropertyName) {
+                    case "LogoEquipe":
+                        dgvGrupo.Columns[iCount].HeaderText = "";
+                        dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
+                        dgvGrupo.Columns[iCount].DisplayIndex = iCount;
+                        dgvGrupo.Columns[iCount].ReadOnly = true;
+                        dgvGrupo.Columns[iCount].Width = 30;
+                        ((DataGridViewImageColumn)dgvGrupo.Columns[iCount]).ImageLayout = DataGridViewImageCellLayout.Zoom;
+                        break;
                     case nameof(EquipeCompeticao.codigo):
                         dgvGrupo.Columns[iCount].HeaderText = "Código";
                         dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
                         dgvGrupo.Columns[iCount].Width = 50;
-                        dgvGrupo.Columns[iCount].DisplayIndex = 0;
+                        dgvGrupo.Columns[iCount].DisplayIndex = iCount;
                         break;
                     case nameof(EquipeCompeticao.nome):
                         dgvGrupo.Columns[iCount].HeaderText = "Nome da equipe";
                         dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
                         dgvGrupo.Columns[iCount].Width = 150;
-                        dgvGrupo.Columns[iCount].DisplayIndex = 1;
+                        dgvGrupo.Columns[iCount].DisplayIndex = iCount;
                         break;
                     case nameof(EquipeCompeticao.pontos):
                         dgvGrupo.Columns[iCount].HeaderText = "Pts.";
                         dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
                         dgvGrupo.Columns[iCount].Width = 50;
-                        dgvGrupo.Columns[iCount].DisplayIndex = 2;
+                        dgvGrupo.Columns[iCount].DisplayIndex = iCount;
                         break;
                     case "NumJogos":
                         dgvGrupo.Columns[iCount].HeaderText = "J";
                         dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
                         dgvGrupo.Columns[iCount].Width = 40;
-                        dgvGrupo.Columns[iCount].DisplayIndex = 3;
+                        dgvGrupo.Columns[iCount].DisplayIndex = iCount;
                         break;
                     case nameof(EquipeCompeticao.vitorias):
                         dgvGrupo.Columns[iCount].HeaderText = "V";
                         dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
                         dgvGrupo.Columns[iCount].Width = 40;
-                        dgvGrupo.Columns[iCount].DisplayIndex = 4;
+                        dgvGrupo.Columns[iCount].DisplayIndex = iCount;
                         break;
                     case nameof(EquipeCompeticao.empates):
                         dgvGrupo.Columns[iCount].HeaderText = "E";
                         dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
                         dgvGrupo.Columns[iCount].Width = 40;
-                        dgvGrupo.Columns[iCount].DisplayIndex = 5;
+                        dgvGrupo.Columns[iCount].DisplayIndex = iCount;
                         break;
                     case nameof(EquipeCompeticao.derrotas):
                         dgvGrupo.Columns[iCount].HeaderText = "D";
                         dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
                         dgvGrupo.Columns[iCount].Width = 40;
-                        dgvGrupo.Columns[iCount].DisplayIndex = 6;
+                        dgvGrupo.Columns[iCount].DisplayIndex = iCount;
                         break;
                     case nameof(EquipeCompeticao.golsPro):
                         dgvGrupo.Columns[iCount].HeaderText = "GP";
                         dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
                         dgvGrupo.Columns[iCount].Width = 40;
-                        dgvGrupo.Columns[iCount].DisplayIndex = 7;
+                        dgvGrupo.Columns[iCount].DisplayIndex = iCount;
                         break;
                     case nameof(EquipeCompeticao.golsContra):
                         dgvGrupo.Columns[iCount].HeaderText = "GC";
                         dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
                         dgvGrupo.Columns[iCount].Width = 40;
-                        dgvGrupo.Columns[iCount].DisplayIndex = 8;
+                        dgvGrupo.Columns[iCount].DisplayIndex = iCount;
                         break;
                     case "SaldoGols":
                         dgvGrupo.Columns[iCount].HeaderText = "SG";
                         dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
                         dgvGrupo.Columns[iCount].Width = 40;
-                        dgvGrupo.Columns[iCount].DisplayIndex = 9;
+                        dgvGrupo.Columns[iCount].DisplayIndex = iCount;
                         break;
                     case "Aproveitamento":
                         dgvGrupo.Columns[iCount].HeaderText = " %";
                         dgvGrupo.Columns[iCount].Name = dgvGrupo.Columns[iCount].DataPropertyName;
                         dgvGrupo.Columns[iCount].Width = 50;
-                        dgvGrupo.Columns[iCount].DisplayIndex = 10;
+                        dgvGrupo.Columns[iCount].DisplayIndex = iCount;
                         break;
                     default:
                         dgvGrupo.Columns[iCount].Visible = false;
@@ -729,21 +737,30 @@ namespace SecEsportes.Infraestrutura
 
             //Preenche os campos que vieram sem preenchimento do data set
             for (int iCount = 0; iCount < dgvGrupo.Rows.Count; iCount++) {
-                dgvGrupo.Rows[iCount].Cells["NumJogos"].Value = dataSource[iCount].vitorias + dataSource[iCount].derrotas + dataSource[iCount].empates;
+                EquipeCompeticao equipe = equipes[iCount];
 
-                dgvGrupo.Rows[iCount].Cells["SaldoGols"].Value = dataSource[iCount].golsPro - dataSource[iCount].golsContra;
+                dgvGrupo.Rows[iCount].Cells["NumJogos"].Value = equipe.vitorias + equipe.derrotas + equipe.empates;
 
-                if (dataSource[iCount].vitorias + dataSource[iCount].derrotas + dataSource[iCount].empates > 0)
-                    dgvGrupo.Rows[iCount].Cells["Aproveitamento"].Value = dataSource[iCount].pontos * 100 / ((dataSource[iCount].vitorias + dataSource[iCount].derrotas + dataSource[iCount].empates) * 3);
+                dgvGrupo.Rows[iCount].Cells["SaldoGols"].Value = equipe.golsPro - equipe.golsContra;
+
+                if (equipe.vitorias + equipe.derrotas + equipe.empates > 0)
+                    dgvGrupo.Rows[iCount].Cells["Aproveitamento"].Value = equipe.pontos * 100 / ((equipe.vitorias + equipe.derrotas + equipe.empates) * 3);
                 else
                     dgvGrupo.Rows[iCount].Cells["Aproveitamento"].Value = 0;
 
                 // Pinta as equipes que irão se classificar
                 if (!(timesProximaFase is null)) {
-                    if (timesProximaFase.Contains(dataSource[iCount])) {
+                    if (timesProximaFase.Contains(equipe)) {
                         dgvGrupo.Rows[iCount].DefaultCellStyle = dataGridViewCellStyle;
                     }
                 }
+
+                // Logo da equipe
+                if (!(equipe.urlLogo is null) && equipe.urlLogo.Length > 0 && File.Exists(equipe.urlLogo))
+                    dgvGrupo.Rows[iCount].Cells["LogoEquipe"].Value = Icon.FromHandle(new Bitmap(Image.FromFile(equipe.urlLogo), new Size(20, 20)).GetHicon());
+                else
+                    dgvGrupo.Rows[iCount].Cells["LogoEquipe"].Value = Properties.Resources.nothing_ico;
+
             }
 
             dgvGrupo.Refresh();
