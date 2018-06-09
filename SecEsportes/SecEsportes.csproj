@@ -473,6 +473,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\partida_iniciar.png" />
+    <None Include="Resources\partida_encerrar_disabled.png" />
+    <None Include="Resources\partida_encerrar.png" />
+    <None Include="Resources\partida_iniciar_disabled.png" />
     <None Include="Resources\penaltis_disabled.png" />
     <None Include="Resources\penaltis.png" />
     <None Include="Resources\desmarcar_tudo.png" />

@@ -274,6 +274,18 @@
   <data name="marcar_tudo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\marcar_tudo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="partida_encerrar" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\partida_encerrar.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="partida_encerrar_disabled" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\partida_encerrar_disabled.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="partida_iniciar" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\partida_iniciar.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="partida_iniciar_disabled" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\partida_iniciar_disabled.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="penaltis" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\penaltis.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

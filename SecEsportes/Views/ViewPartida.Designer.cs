@@ -45,18 +45,20 @@
             this.lblTime2 = new System.Windows.Forms.Label();
             this.dgvEquipe1 = new System.Windows.Forms.DataGridView();
             this.dgvEquipe2 = new System.Windows.Forms.DataGridView();
-            this.btnEncerrarPartida = new System.Windows.Forms.Button();
-            this.btnIniciarPartida = new System.Windows.Forms.Button();
             this.logoEquipe1 = new System.Windows.Forms.PictureBox();
             this.logoEquipe2 = new System.Windows.Forms.PictureBox();
             this.btnDisputaPenaltis = new System.Windows.Forms.PictureBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.btnEncerrarPartida = new System.Windows.Forms.PictureBox();
+            this.btnIniciarPartida = new System.Windows.Forms.PictureBox();
             this.tlpPartida.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvEquipe1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvEquipe2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.logoEquipe1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.logoEquipe2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnDisputaPenaltis)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnEncerrarPartida)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnIniciarPartida)).BeginInit();
             this.SuspendLayout();
             // 
             // lblTime1
@@ -73,9 +75,9 @@
             // lblCompeticao
             // 
             this.lblCompeticao.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCompeticao.Location = new System.Drawing.Point(7, 4);
+            this.lblCompeticao.Location = new System.Drawing.Point(137, 4);
             this.lblCompeticao.Name = "lblCompeticao";
-            this.lblCompeticao.Size = new System.Drawing.Size(689, 34);
+            this.lblCompeticao.Size = new System.Drawing.Size(443, 34);
             this.lblCompeticao.TabIndex = 1;
             this.lblCompeticao.Text = "Competição";
             this.lblCompeticao.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -265,26 +267,6 @@
             this.dgvEquipe2.Tag = "2";
             this.dgvEquipe2.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvEquipe_CellMouseClick);
             // 
-            // btnEncerrarPartida
-            // 
-            this.btnEncerrarPartida.Location = new System.Drawing.Point(603, 41);
-            this.btnEncerrarPartida.Name = "btnEncerrarPartida";
-            this.btnEncerrarPartida.Size = new System.Drawing.Size(87, 23);
-            this.btnEncerrarPartida.TabIndex = 16;
-            this.btnEncerrarPartida.Text = "Encerrar partida";
-            this.btnEncerrarPartida.UseVisualStyleBackColor = true;
-            this.btnEncerrarPartida.Click += new System.EventHandler(this.btnEncerrarPartida_Click);
-            // 
-            // btnIniciarPartida
-            // 
-            this.btnIniciarPartida.Location = new System.Drawing.Point(510, 41);
-            this.btnIniciarPartida.Name = "btnIniciarPartida";
-            this.btnIniciarPartida.Size = new System.Drawing.Size(87, 23);
-            this.btnIniciarPartida.TabIndex = 17;
-            this.btnIniciarPartida.Text = "Iniciar partida";
-            this.btnIniciarPartida.UseVisualStyleBackColor = true;
-            this.btnIniciarPartida.Click += new System.EventHandler(this.btnIniciarPartida_Click);
-            // 
             // logoEquipe1
             // 
             this.logoEquipe1.Location = new System.Drawing.Point(12, 48);
@@ -307,7 +289,7 @@
             // 
             // btnDisputaPenaltis
             // 
-            this.btnDisputaPenaltis.Image = global::SecEsportes.Properties.Resources.penaltis;
+            this.btnDisputaPenaltis.Image = ((System.Drawing.Image)(resources.GetObject("btnDisputaPenaltis.Image")));
             this.btnDisputaPenaltis.Location = new System.Drawing.Point(330, 50);
             this.btnDisputaPenaltis.Name = "btnDisputaPenaltis";
             this.btnDisputaPenaltis.Size = new System.Drawing.Size(50, 50);
@@ -318,16 +300,42 @@
             this.btnDisputaPenaltis.EnabledChanged += new System.EventHandler(this.btn_EnableChanged);
             this.btnDisputaPenaltis.Click += new System.EventHandler(this.btnDisputaPenaltis_Click);
             // 
+            // btnEncerrarPartida
+            // 
+            this.btnEncerrarPartida.Image = global::SecEsportes.Properties.Resources.partida_encerrar;
+            this.btnEncerrarPartida.Location = new System.Drawing.Point(664, 4);
+            this.btnEncerrarPartida.Name = "btnEncerrarPartida";
+            this.btnEncerrarPartida.Size = new System.Drawing.Size(35, 35);
+            this.btnEncerrarPartida.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.btnEncerrarPartida.TabIndex = 23;
+            this.btnEncerrarPartida.TabStop = false;
+            this.btnEncerrarPartida.Tag = "Encerrar partida";
+            this.btnEncerrarPartida.EnabledChanged += new System.EventHandler(this.btn_EnableChanged);
+            this.btnEncerrarPartida.Click += new System.EventHandler(this.btnEncerrarPartida_Click);
+            // 
+            // btnIniciarPartida
+            // 
+            this.btnIniciarPartida.Image = global::SecEsportes.Properties.Resources.partida_iniciar;
+            this.btnIniciarPartida.Location = new System.Drawing.Point(623, 4);
+            this.btnIniciarPartida.Name = "btnIniciarPartida";
+            this.btnIniciarPartida.Size = new System.Drawing.Size(35, 35);
+            this.btnIniciarPartida.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.btnIniciarPartida.TabIndex = 22;
+            this.btnIniciarPartida.TabStop = false;
+            this.btnIniciarPartida.Tag = "Iniciar partida";
+            this.btnIniciarPartida.EnabledChanged += new System.EventHandler(this.btn_EnableChanged);
+            this.btnIniciarPartida.Click += new System.EventHandler(this.btnIniciarPartida_Click);
+            // 
             // ViewPartida
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(704, 513);
+            this.Controls.Add(this.btnEncerrarPartida);
+            this.Controls.Add(this.btnIniciarPartida);
             this.Controls.Add(this.btnDisputaPenaltis);
             this.Controls.Add(this.logoEquipe2);
             this.Controls.Add(this.logoEquipe1);
-            this.Controls.Add(this.btnIniciarPartida);
-            this.Controls.Add(this.btnEncerrarPartida);
             this.Controls.Add(this.dgvEquipe2);
             this.Controls.Add(this.dgvEquipe1);
             this.Controls.Add(this.tlpPartida);
@@ -346,6 +354,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.logoEquipe1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.logoEquipe2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnDisputaPenaltis)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnEncerrarPartida)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnIniciarPartida)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -363,8 +373,6 @@
         private System.Windows.Forms.Label lblTecnico2;
         private System.Windows.Forms.DataGridView dgvEquipe1;
         private System.Windows.Forms.DataGridView dgvEquipe2;
-        private System.Windows.Forms.Button btnEncerrarPartida;
-        private System.Windows.Forms.Button btnIniciarPartida;
         private System.Windows.Forms.Label lblPlacarTime2;
         private System.Windows.Forms.Label lblPlacarTime1_Penalti;
         private System.Windows.Forms.Label lblPlacarTime2_Penalti;
@@ -374,5 +382,7 @@
         private System.Windows.Forms.PictureBox logoEquipe2;
         private System.Windows.Forms.PictureBox btnDisputaPenaltis;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.PictureBox btnEncerrarPartida;
+        private System.Windows.Forms.PictureBox btnIniciarPartida;
     }
 }

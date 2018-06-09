@@ -361,6 +361,18 @@ namespace SecEsportes.Infraestrutura
                     else
                         pictureBox.Image = Properties.Resources.penaltis_disabled;
                     break;
+                case "btnIniciarPartida":
+                    if (enabled)
+                        pictureBox.Image = Properties.Resources.partida_iniciar;
+                    else
+                        pictureBox.Image = Properties.Resources.partida_iniciar_disabled;
+                    break;
+                case "btnEncerrarPartida":
+                    if (enabled)
+                        pictureBox.Image = Properties.Resources.partida_encerrar;
+                    else
+                        pictureBox.Image = Properties.Resources.partida_encerrar_disabled;
+                    break;
             }
         }
 

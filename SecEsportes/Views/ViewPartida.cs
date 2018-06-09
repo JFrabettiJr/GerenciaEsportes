@@ -55,6 +55,8 @@ namespace SecEsportes.Views {
                 logoEquipe2.ImageLocation = partida.equipe2.urlLogo;
 
             toolTip1.SetToolTip(btnDisputaPenaltis, btnDisputaPenaltis.Tag.ToString());
+            toolTip1.SetToolTip(btnIniciarPartida, btnIniciarPartida.Tag.ToString());
+            toolTip1.SetToolTip(btnEncerrarPartida, btnEncerrarPartida.Tag.ToString());
 
             fillFields();
         }

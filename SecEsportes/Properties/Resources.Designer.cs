@@ -491,6 +491,26 @@ namespace SecEsportes.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap partida_encerrar {
+            get {
+                object obj = ResourceManager.GetObject("partida_encerrar", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap partida_encerrar_disabled {
+            get {
+                object obj = ResourceManager.GetObject("partida_encerrar_disabled", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon partida_gol_ico {
@@ -506,6 +526,26 @@ namespace SecEsportes.Properties {
         internal static System.Drawing.Bitmap partida_gol_png {
             get {
                 object obj = ResourceManager.GetObject("partida_gol_png", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap partida_iniciar {
+            get {
+                object obj = ResourceManager.GetObject("partida_iniciar", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap partida_iniciar_disabled {
+            get {
+                object obj = ResourceManager.GetObject("partida_iniciar_disabled", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
