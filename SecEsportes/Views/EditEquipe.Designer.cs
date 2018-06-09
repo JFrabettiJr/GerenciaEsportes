@@ -28,6 +28,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditEquipe));
             this.tlpCadFuncao = new System.Windows.Forms.TableLayoutPanel();
             this.txtNome = new System.Windows.Forms.TextBox();
@@ -73,6 +74,7 @@
             this.tlpCadFuncao.Controls.Add(this.lblNome, 1, 0);
             this.tlpCadFuncao.Controls.Add(this.label1, 0, 0);
             this.tlpCadFuncao.Controls.Add(this.txtCodigo, 0, 1);
+            this.tlpCadFuncao.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tlpCadFuncao.Location = new System.Drawing.Point(10, 53);
             this.tlpCadFuncao.Name = "tlpCadFuncao";
             this.tlpCadFuncao.RowCount = 2;
@@ -89,34 +91,37 @@
             this.txtNome.Location = new System.Drawing.Point(115, 17);
             this.txtNome.Name = "txtNome";
             this.txtNome.ReadOnly = true;
-            this.txtNome.Size = new System.Drawing.Size(442, 20);
+            this.txtNome.Size = new System.Drawing.Size(442, 21);
             this.txtNome.TabIndex = 3;
             // 
             // lblNome
             // 
             this.lblNome.AutoSize = true;
+            this.lblNome.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblNome.Location = new System.Drawing.Point(115, 0);
             this.lblNome.Name = "lblNome";
-            this.lblNome.Size = new System.Drawing.Size(35, 13);
+            this.lblNome.Size = new System.Drawing.Size(41, 14);
             this.lblNome.TabIndex = 1;
             this.lblNome.Text = "Nome";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(3, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(40, 13);
+            this.label1.Size = new System.Drawing.Size(46, 14);
             this.label1.TabIndex = 0;
             this.label1.Text = "Código";
             // 
             // txtCodigo
             // 
             this.txtCodigo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtCodigo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtCodigo.Location = new System.Drawing.Point(3, 17);
             this.txtCodigo.Name = "txtCodigo";
             this.txtCodigo.ReadOnly = true;
-            this.txtCodigo.Size = new System.Drawing.Size(106, 20);
+            this.txtCodigo.Size = new System.Drawing.Size(106, 21);
             this.txtCodigo.TabIndex = 2;
             // 
             // tableLayoutPanel1
@@ -141,10 +146,11 @@
             this.cboRepresentante.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboRepresentante.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboRepresentante.FormattingEnabled = true;
             this.cboRepresentante.Location = new System.Drawing.Point(3, 17);
             this.cboRepresentante.Name = "cboRepresentante";
-            this.cboRepresentante.Size = new System.Drawing.Size(274, 21);
+            this.cboRepresentante.Size = new System.Drawing.Size(274, 23);
             this.cboRepresentante.TabIndex = 13;
             this.cboRepresentante.SelectedIndexChanged += new System.EventHandler(this.selectedIndexChanged);
             // 
@@ -153,28 +159,31 @@
             this.cboTreinador.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboTreinador.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboTreinador.FormattingEnabled = true;
             this.cboTreinador.Location = new System.Drawing.Point(283, 17);
             this.cboTreinador.Name = "cboTreinador";
-            this.cboTreinador.Size = new System.Drawing.Size(274, 21);
+            this.cboTreinador.Size = new System.Drawing.Size(274, 23);
             this.cboTreinador.TabIndex = 12;
             this.cboTreinador.SelectedIndexChanged += new System.EventHandler(this.selectedIndexChanged);
             // 
             // lblTécnico
             // 
             this.lblTécnico.AutoSize = true;
+            this.lblTécnico.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTécnico.Location = new System.Drawing.Point(283, 0);
             this.lblTécnico.Name = "lblTécnico";
-            this.lblTécnico.Size = new System.Drawing.Size(46, 13);
+            this.lblTécnico.Size = new System.Drawing.Size(50, 14);
             this.lblTécnico.TabIndex = 1;
             this.lblTécnico.Text = "Técnico";
             // 
             // lblRepresentante
             // 
             this.lblRepresentante.AutoSize = true;
+            this.lblRepresentante.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblRepresentante.Location = new System.Drawing.Point(3, 0);
             this.lblRepresentante.Name = "lblRepresentante";
-            this.lblRepresentante.Size = new System.Drawing.Size(77, 13);
+            this.lblRepresentante.Size = new System.Drawing.Size(88, 14);
             this.lblRepresentante.TabIndex = 0;
             this.lblRepresentante.Text = "Representante";
             // 
@@ -182,6 +191,7 @@
             // 
             this.tcEquipe.Controls.Add(this.tpAtletas);
             this.tcEquipe.Controls.Add(this.tpAtletasSuspensos);
+            this.tcEquipe.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tcEquipe.Location = new System.Drawing.Point(10, 145);
             this.tcEquipe.Name = "tcEquipe";
             this.tcEquipe.SelectedIndex = 0;
@@ -216,10 +226,10 @@
             // tpAtletasSuspensos
             // 
             this.tpAtletasSuspensos.Controls.Add(this.dgvAtletasSuspensos);
-            this.tpAtletasSuspensos.Location = new System.Drawing.Point(4, 22);
+            this.tpAtletasSuspensos.Location = new System.Drawing.Point(4, 24);
             this.tpAtletasSuspensos.Name = "tpAtletasSuspensos";
             this.tpAtletasSuspensos.Padding = new System.Windows.Forms.Padding(3);
-            this.tpAtletasSuspensos.Size = new System.Drawing.Size(552, 237);
+            this.tpAtletasSuspensos.Size = new System.Drawing.Size(552, 235);
             this.tpAtletasSuspensos.TabIndex = 1;
             this.tpAtletasSuspensos.Text = "Atletas suspensos";
             this.tpAtletasSuspensos.UseVisualStyleBackColor = true;
@@ -231,11 +241,19 @@
             this.dgvAtletasSuspensos.AllowUserToOrderColumns = true;
             this.dgvAtletasSuspensos.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.dgvAtletasSuspensos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvAtletasSuspensos.DefaultCellStyle = dataGridViewCellStyle1;
             this.dgvAtletasSuspensos.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvAtletasSuspensos.Location = new System.Drawing.Point(3, 3);
             this.dgvAtletasSuspensos.MultiSelect = false;
             this.dgvAtletasSuspensos.Name = "dgvAtletasSuspensos";
-            this.dgvAtletasSuspensos.Size = new System.Drawing.Size(546, 231);
+            this.dgvAtletasSuspensos.Size = new System.Drawing.Size(546, 229);
             this.dgvAtletasSuspensos.TabIndex = 7;
             // 
             // btnAtualizar

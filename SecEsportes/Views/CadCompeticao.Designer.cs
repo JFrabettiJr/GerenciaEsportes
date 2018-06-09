@@ -28,6 +28,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CadCompeticao));
             this.tlpCadFuncao = new System.Windows.Forms.TableLayoutPanel();
             this.cboModalidades = new System.Windows.Forms.ComboBox();
@@ -64,8 +66,8 @@
             // 
             this.tlpCadFuncao.ColumnCount = 3;
             this.tlpCadFuncao.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpCadFuncao.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15F));
-            this.tlpCadFuncao.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
+            this.tlpCadFuncao.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tlpCadFuncao.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
             this.tlpCadFuncao.Controls.Add(this.cboModalidades, 0, 1);
             this.tlpCadFuncao.Controls.Add(this.txtDtInicio, 0, 1);
             this.tlpCadFuncao.Controls.Add(this.lblModalidade, 2, 0);
@@ -85,10 +87,11 @@
             this.cboModalidades.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboModalidades.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboModalidades.FormattingEnabled = true;
-            this.cboModalidades.Location = new System.Drawing.Point(367, 17);
+            this.cboModalidades.Location = new System.Drawing.Point(395, 17);
             this.cboModalidades.Name = "cboModalidades";
-            this.cboModalidades.Size = new System.Drawing.Size(190, 21);
+            this.cboModalidades.Size = new System.Drawing.Size(162, 23);
             this.cboModalidades.TabIndex = 10;
             this.cboModalidades.SelectedIndexChanged += new System.EventHandler(this.cboModalidades_SelectedIndexChanged);
             // 
@@ -97,45 +100,50 @@
             this.txtDtInicio.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtDtInicio.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtDtInicio.Location = new System.Drawing.Point(283, 17);
             this.txtDtInicio.Mask = "00/00/0000";
             this.txtDtInicio.Name = "txtDtInicio";
-            this.txtDtInicio.Size = new System.Drawing.Size(78, 20);
+            this.txtDtInicio.Size = new System.Drawing.Size(106, 21);
             this.txtDtInicio.TabIndex = 6;
             // 
             // lblModalidade
             // 
             this.lblModalidade.AutoSize = true;
-            this.lblModalidade.Location = new System.Drawing.Point(367, 0);
+            this.lblModalidade.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblModalidade.Location = new System.Drawing.Point(395, 0);
             this.lblModalidade.Name = "lblModalidade";
-            this.lblModalidade.Size = new System.Drawing.Size(62, 13);
+            this.lblModalidade.Size = new System.Drawing.Size(73, 14);
             this.lblModalidade.TabIndex = 4;
             this.lblModalidade.Text = "Modalidade";
             // 
             // lblDataInicio
             // 
             this.lblDataInicio.AutoSize = true;
+            this.lblDataInicio.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblDataInicio.Location = new System.Drawing.Point(283, 0);
             this.lblDataInicio.Name = "lblDataInicio";
-            this.lblDataInicio.Size = new System.Drawing.Size(74, 13);
+            this.lblDataInicio.Size = new System.Drawing.Size(82, 14);
             this.lblDataInicio.TabIndex = 1;
             this.lblDataInicio.Text = "Data de início";
             // 
             // lblNome
             // 
             this.lblNome.AutoSize = true;
+            this.lblNome.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblNome.Location = new System.Drawing.Point(3, 0);
             this.lblNome.Name = "lblNome";
-            this.lblNome.Size = new System.Drawing.Size(35, 13);
+            this.lblNome.Size = new System.Drawing.Size(41, 14);
             this.lblNome.TabIndex = 0;
             this.lblNome.Text = "Nome";
             // 
             // txtNome
             // 
             this.txtNome.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtNome.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtNome.Location = new System.Drawing.Point(3, 17);
             this.txtNome.Name = "txtNome";
-            this.txtNome.Size = new System.Drawing.Size(274, 20);
+            this.txtNome.Size = new System.Drawing.Size(274, 21);
             this.txtNome.TabIndex = 2;
             this.txtNome.KeyDown += new System.Windows.Forms.KeyEventHandler(this.fields_KeyDown);
             // 
@@ -146,7 +154,23 @@
             this.dgvCompeticoes.AllowUserToOrderColumns = true;
             this.dgvCompeticoes.AutoGenerateColumns = false;
             this.dgvCompeticoes.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvCompeticoes.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvCompeticoes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvCompeticoes.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgvCompeticoes.Location = new System.Drawing.Point(10, 106);
             this.dgvCompeticoes.MultiSelect = false;
             this.dgvCompeticoes.Name = "dgvCompeticoes";
@@ -180,36 +204,40 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboCamposBusca.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboCamposBusca.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboCamposBusca.FormattingEnabled = true;
             this.cboCamposBusca.Location = new System.Drawing.Point(393, 17);
             this.cboCamposBusca.Name = "cboCamposBusca";
-            this.cboCamposBusca.Size = new System.Drawing.Size(124, 21);
+            this.cboCamposBusca.Size = new System.Drawing.Size(124, 23);
             this.cboCamposBusca.TabIndex = 10;
             // 
             // lblBuscarPor
             // 
             this.lblBuscarPor.AutoSize = true;
+            this.lblBuscarPor.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblBuscarPor.Location = new System.Drawing.Point(393, 0);
             this.lblBuscarPor.Name = "lblBuscarPor";
-            this.lblBuscarPor.Size = new System.Drawing.Size(58, 13);
+            this.lblBuscarPor.Size = new System.Drawing.Size(66, 14);
             this.lblBuscarPor.TabIndex = 4;
             this.lblBuscarPor.Text = "Buscar por";
             // 
             // lblBusca
             // 
             this.lblBusca.AutoSize = true;
+            this.lblBusca.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblBusca.Location = new System.Drawing.Point(3, 0);
             this.lblBusca.Name = "lblBusca";
-            this.lblBusca.Size = new System.Drawing.Size(40, 13);
+            this.lblBusca.Size = new System.Drawing.Size(45, 14);
             this.lblBusca.TabIndex = 0;
             this.lblBusca.Text = "Buscar";
             // 
             // txtBusca
             // 
             this.txtBusca.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtBusca.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtBusca.Location = new System.Drawing.Point(3, 17);
             this.txtBusca.Name = "txtBusca";
-            this.txtBusca.Size = new System.Drawing.Size(384, 20);
+            this.txtBusca.Size = new System.Drawing.Size(384, 21);
             this.txtBusca.TabIndex = 2;
             this.txtBusca.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtBusca_KeyDown);
             // 

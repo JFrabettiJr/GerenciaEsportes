@@ -122,6 +122,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblNumJogadores.AutoSize = true;
+            this.lblNumJogadores.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblNumJogadores.Location = new System.Drawing.Point(587, 0);
             this.lblNumJogadores.Name = "lblNumJogadores";
             this.lblNumJogadores.Size = new System.Drawing.Size(120, 14);
@@ -133,11 +134,12 @@
             this.txtNumMinJogadores.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtNumMinJogadores.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtNumMinJogadores.Location = new System.Drawing.Point(587, 17);
             this.txtNumMinJogadores.Mask = "00";
             this.txtNumMinJogadores.Name = "txtNumMinJogadores";
             this.txtNumMinJogadores.PromptChar = ' ';
-            this.txtNumMinJogadores.Size = new System.Drawing.Size(120, 20);
+            this.txtNumMinJogadores.Size = new System.Drawing.Size(120, 21);
             this.txtNumMinJogadores.TabIndex = 19;
             this.txtNumMinJogadores.KeyDown += new System.Windows.Forms.KeyEventHandler(this.fields_KeyDown);
             // 
@@ -147,6 +149,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(445, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(136, 14);
@@ -158,10 +161,11 @@
             this.txtDtFim.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtDtFim.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtDtFim.Location = new System.Drawing.Point(357, 17);
             this.txtDtFim.Mask = "00/00/0000";
             this.txtDtFim.Name = "txtDtFim";
-            this.txtDtFim.Size = new System.Drawing.Size(82, 20);
+            this.txtDtFim.Size = new System.Drawing.Size(82, 21);
             this.txtDtFim.TabIndex = 7;
             this.txtDtFim.KeyDown += new System.Windows.Forms.KeyEventHandler(this.fields_KeyDown);
             // 
@@ -171,6 +175,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblFim.AutoSize = true;
+            this.lblFim.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblFim.Location = new System.Drawing.Point(357, 0);
             this.lblFim.Name = "lblFim";
             this.lblFim.Size = new System.Drawing.Size(82, 14);
@@ -183,6 +188,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblInicio.AutoSize = true;
+            this.lblInicio.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblInicio.Location = new System.Drawing.Point(269, 0);
             this.lblInicio.Name = "lblInicio";
             this.lblInicio.Size = new System.Drawing.Size(82, 14);
@@ -194,9 +200,10 @@
             this.txtNome.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtNome.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtNome.Location = new System.Drawing.Point(3, 17);
             this.txtNome.Name = "txtNome";
-            this.txtNome.Size = new System.Drawing.Size(260, 20);
+            this.txtNome.Size = new System.Drawing.Size(260, 21);
             this.txtNome.TabIndex = 3;
             this.txtNome.KeyDown += new System.Windows.Forms.KeyEventHandler(this.fields_KeyDown);
             // 
@@ -206,6 +213,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblNome.AutoSize = true;
+            this.lblNome.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblNome.Location = new System.Drawing.Point(3, 0);
             this.lblNome.Name = "lblNome";
             this.lblNome.Size = new System.Drawing.Size(260, 14);
@@ -217,10 +225,11 @@
             this.txtDtInicio.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtDtInicio.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtDtInicio.Location = new System.Drawing.Point(269, 17);
             this.txtDtInicio.Mask = "00/00/0000";
             this.txtDtInicio.Name = "txtDtInicio";
-            this.txtDtInicio.Size = new System.Drawing.Size(82, 20);
+            this.txtDtInicio.Size = new System.Drawing.Size(82, 21);
             this.txtDtInicio.TabIndex = 5;
             this.txtDtInicio.KeyDown += new System.Windows.Forms.KeyEventHandler(this.fields_KeyDown);
             // 
@@ -230,10 +239,11 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboModalidades.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboModalidades.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboModalidades.FormattingEnabled = true;
             this.cboModalidades.Location = new System.Drawing.Point(445, 17);
             this.cboModalidades.Name = "cboModalidades";
-            this.cboModalidades.Size = new System.Drawing.Size(136, 21);
+            this.cboModalidades.Size = new System.Drawing.Size(136, 23);
             this.cboModalidades.TabIndex = 9;
             this.cboModalidades.SelectedIndexChanged += new System.EventHandler(this.comboBox_SelectedIndexChanged);
             // 
@@ -245,7 +255,7 @@
             this.dgvEquipes.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
@@ -254,7 +264,7 @@
             this.dgvEquipes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F);
             dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
@@ -302,11 +312,12 @@
             this.txtNumTimes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtNumTimes.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtNumTimes.Location = new System.Drawing.Point(3, 17);
             this.txtNumTimes.Mask = "00";
             this.txtNumTimes.Name = "txtNumTimes";
             this.txtNumTimes.PromptChar = ' ';
-            this.txtNumTimes.Size = new System.Drawing.Size(47, 20);
+            this.txtNumTimes.Size = new System.Drawing.Size(47, 21);
             this.txtNumTimes.TabIndex = 18;
             this.txtNumTimes.KeyDown += new System.Windows.Forms.KeyEventHandler(this.fields_KeyDown);
             // 
@@ -315,11 +326,12 @@
             this.txtNumGrupos.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtNumGrupos.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtNumGrupos.Location = new System.Drawing.Point(56, 17);
             this.txtNumGrupos.Mask = "00";
             this.txtNumGrupos.Name = "txtNumGrupos";
             this.txtNumGrupos.PromptChar = ' ';
-            this.txtNumGrupos.Size = new System.Drawing.Size(47, 20);
+            this.txtNumGrupos.Size = new System.Drawing.Size(47, 21);
             this.txtNumGrupos.TabIndex = 17;
             this.txtNumGrupos.KeyDown += new System.Windows.Forms.KeyEventHandler(this.fields_KeyDown);
             // 
@@ -329,6 +341,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblGruposNomeados.AutoSize = true;
+            this.lblGruposNomeados.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblGruposNomeados.Location = new System.Drawing.Point(588, 0);
             this.lblGruposNomeados.Name = "lblGruposNomeados";
             this.lblGruposNomeados.Size = new System.Drawing.Size(119, 14);
@@ -341,10 +354,11 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboNomeacaoGrupos.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboNomeacaoGrupos.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboNomeacaoGrupos.FormattingEnabled = true;
             this.cboNomeacaoGrupos.Location = new System.Drawing.Point(588, 17);
             this.cboNomeacaoGrupos.Name = "cboNomeacaoGrupos";
-            this.cboNomeacaoGrupos.Size = new System.Drawing.Size(119, 21);
+            this.cboNomeacaoGrupos.Size = new System.Drawing.Size(119, 23);
             this.cboNomeacaoGrupos.TabIndex = 15;
             this.cboNomeacaoGrupos.SelectedIndexChanged += new System.EventHandler(this.comboBox_SelectedIndexChanged);
             // 
@@ -354,6 +368,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblFaseFinal.AutoSize = true;
+            this.lblFaseFinal.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblFaseFinal.Location = new System.Drawing.Point(109, 0);
             this.lblFaseFinal.Name = "lblFaseFinal";
             this.lblFaseFinal.Size = new System.Drawing.Size(136, 14);
@@ -366,10 +381,11 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboFaseFinal.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboFaseFinal.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboFaseFinal.FormattingEnabled = true;
             this.cboFaseFinal.Location = new System.Drawing.Point(109, 17);
             this.cboFaseFinal.Name = "cboFaseFinal";
-            this.cboFaseFinal.Size = new System.Drawing.Size(136, 21);
+            this.cboFaseFinal.Size = new System.Drawing.Size(136, 23);
             this.cboFaseFinal.TabIndex = 11;
             this.cboFaseFinal.SelectedIndexChanged += new System.EventHandler(this.comboBox_SelectedIndexChanged);
             // 
@@ -379,6 +395,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblNumGrupos.AutoSize = true;
+            this.lblNumGrupos.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblNumGrupos.Location = new System.Drawing.Point(56, 0);
             this.lblNumGrupos.Name = "lblNumGrupos";
             this.lblNumGrupos.Size = new System.Drawing.Size(47, 14);
@@ -391,6 +408,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblNumTimes.AutoSize = true;
+            this.lblNumTimes.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblNumTimes.Location = new System.Drawing.Point(3, 0);
             this.lblNumTimes.Name = "lblNumTimes";
             this.lblNumTimes.Size = new System.Drawing.Size(47, 14);
@@ -400,9 +418,10 @@
             // chkIdaEVolta
             // 
             this.chkIdaEVolta.AutoSize = true;
+            this.chkIdaEVolta.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkIdaEVolta.Location = new System.Drawing.Point(251, 17);
             this.chkIdaEVolta.Name = "chkIdaEVolta";
-            this.chkIdaEVolta.Size = new System.Drawing.Size(121, 17);
+            this.chkIdaEVolta.Size = new System.Drawing.Size(134, 19);
             this.chkIdaEVolta.TabIndex = 13;
             this.chkIdaEVolta.Text = "Jogos de ida e volta";
             this.chkIdaEVolta.UseVisualStyleBackColor = true;
@@ -411,9 +430,10 @@
             // chkIdaEVoltaFaseFinal
             // 
             this.chkIdaEVoltaFaseFinal.AutoSize = true;
+            this.chkIdaEVoltaFaseFinal.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkIdaEVoltaFaseFinal.Location = new System.Drawing.Point(393, 17);
             this.chkIdaEVoltaFaseFinal.Name = "chkIdaEVoltaFaseFinal";
-            this.chkIdaEVoltaFaseFinal.Size = new System.Drawing.Size(178, 17);
+            this.chkIdaEVoltaFaseFinal.Size = new System.Drawing.Size(189, 19);
             this.chkIdaEVoltaFaseFinal.TabIndex = 14;
             this.chkIdaEVoltaFaseFinal.Text = "Jogos de ida e volta (Fase Final)";
             this.chkIdaEVoltaFaseFinal.UseVisualStyleBackColor = true;
@@ -469,6 +489,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSuspensao.AutoSize = true;
+            this.lblSuspensao.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblSuspensao.Location = new System.Drawing.Point(3, 0);
             this.lblSuspensao.Name = "lblSuspensao";
             this.lblSuspensao.Size = new System.Drawing.Size(224, 14);
@@ -481,19 +502,21 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboSuspensao.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSuspensao.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboSuspensao.FormattingEnabled = true;
             this.cboSuspensao.Location = new System.Drawing.Point(3, 17);
             this.cboSuspensao.Name = "cboSuspensao";
-            this.cboSuspensao.Size = new System.Drawing.Size(224, 21);
+            this.cboSuspensao.Size = new System.Drawing.Size(224, 23);
             this.cboSuspensao.TabIndex = 16;
             this.cboSuspensao.SelectedIndexChanged += new System.EventHandler(this.comboBox_SelectedIndexChanged);
             // 
             // chkZerarCartoesFaseFinal
             // 
             this.chkZerarCartoesFaseFinal.AutoSize = true;
+            this.chkZerarCartoesFaseFinal.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkZerarCartoesFaseFinal.Location = new System.Drawing.Point(233, 17);
             this.chkZerarCartoesFaseFinal.Name = "chkZerarCartoesFaseFinal";
-            this.chkZerarCartoesFaseFinal.Size = new System.Drawing.Size(155, 17);
+            this.chkZerarCartoesFaseFinal.Size = new System.Drawing.Size(171, 19);
             this.chkZerarCartoesFaseFinal.TabIndex = 15;
             this.chkZerarCartoesFaseFinal.Text = "Zerar cartões na Fase Final";
             this.chkZerarCartoesFaseFinal.UseVisualStyleBackColor = true;
