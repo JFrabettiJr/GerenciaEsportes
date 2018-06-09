@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using SecEsportes.Infraestrutura;
@@ -42,12 +43,16 @@ namespace SecEsportes.Views {
             lblRepresentante1.Text = "Representante: " + partida.equipe1.representante.pessoa.nome;
             partida.equipe1.atletas = PessoaRepositorio.Instance.getAtletasByEquipeCompeticao(competicao.id, partida.equipe1.id);
             atletas_Suspensos_Equipe1 = CompeticaoRepositorio.Instance.getSuspensoesPorEquipe(competicao.id, partida.equipe1.id);
+            if (!(partida.equipe1.urlLogo is null) && partida.equipe1.urlLogo.Length > 0 && File.Exists(partida.equipe1.urlLogo))
+                logoEquipe1.ImageLocation = partida.equipe1.urlLogo;
 
             lblTime2.Text = partida.equipe2.nome;
             lblTecnico2.Text = "Técnico: " + partida.equipe2.treinador.pessoa.nome;
             lblRepresentante2.Text = "Representante: " + partida.equipe2.representante.pessoa.nome;
             partida.equipe2.atletas = PessoaRepositorio.Instance.getAtletasByEquipeCompeticao(competicao.id, partida.equipe2.id);
             atletas_Suspensos_Equipe2 = CompeticaoRepositorio.Instance.getSuspensoesPorEquipe(competicao.id, partida.equipe2.id);
+            if (!(partida.equipe2.urlLogo is null) && partida.equipe2.urlLogo.Length > 0 && File.Exists(partida.equipe2.urlLogo))
+                logoEquipe2.ImageLocation = partida.equipe2.urlLogo;
 
             fillFields();
         }
