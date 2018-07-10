@@ -77,63 +77,10 @@ namespace SecEsportes.Views
 
             // Define o nome da aba e o número da rodada (fase final)
             for (int numAbaAdicional = 0; numAbaAdicional < numAbasAdicionais; numAbaAdicional++) {
-                string nomeAba = "";
                 int numRodada = 0;
-                switch (numAbasAdicionais) {
-                    case 1:
-                        nomeAba = "Final";
-                        numRodada = -1;
-                        break;
-                    case 2:
-                        switch (numAbaAdicional) {
-                            case 0:
-                                nomeAba = "Semi-Final";
-                                numRodada = -2;
-                                break;
-                            case 1:
-                                nomeAba = "Final";
-                                numRodada = -1;
-                                break;
-                        }
-                        break;
-                    case 3:
-                        switch (numAbaAdicional) {
-                            case 0:
-                                nomeAba = "Quartas de Final";
-                                numRodada = -3;
-                                break;
-                            case 1:
-                                nomeAba = "Semi-Final";
-                                numRodada = -2;
-                                break;
-                            case 2:
-                                nomeAba = "Final";
-                                numRodada = -1;
-                                break;
-                        }
-                        break;
-                    case 4:
-                        switch (numAbaAdicional) {
-                            case 0:
-                                nomeAba = "Oitavas de Final";
-                                numRodada = -4;
-                                break;
-                            case 1:
-                                nomeAba = "Quartas de Final";
-                                numRodada = -3;
-                                break;
-                            case 2:
-                                nomeAba = "Semi-Final";
-                                numRodada = -2;
-                                break;
-                            case 3:
-                                nomeAba = "Final";
-                                numRodada = -1;
-                                break;
-                        }
-                        break;
-                }
-                DataGridView dgvRodada = CompeticaoViewUtilidades.criaAba(nomeAba, numRodada, tcPartidas);
+                string nomeAba = CompeticaoViewUtilidades.getNomeAba(numAbasAdicionais, numAbaAdicional, ref numRodada);
+
+                DataGridView dgvRodada = CompeticaoViewUtilidades.criaAba(nomeAba, numRodada, tcPartidas, dgvPartidas_CellMouseClick);
                 dgvRodada.Tag = numRodada;
                 dgvRodada.CellMouseDoubleClick += dgvRodadas_CellMouseDoubleClick;
                 dgvRodada.ReadOnly = false;
@@ -295,6 +242,15 @@ namespace SecEsportes.Views
                     };
                     toolStripMenuItem.Tag = new List<Object>() { competicao, partida, dataGridView, partidas };
                     toolStripMenuItem.Enabled = !partida.encerrada;
+                    contextMenuStrip.Items.Add(toolStripMenuItem);
+
+                    toolStripMenuItem = new ToolStripMenuItem("Exportar jogos da rodada para HTML");
+                    toolStripMenuItem.Click += (_sender, _e) => {
+                        RelatorioHTML.relatorioPartidas(competicao, partidas, Convert.ToInt32(dataGridView.Tag), tcPartidas.SelectedTab.Text,
+                            MessageBox.Show("Gostaria de exibir o logo das equipes no relatório de partidas?", String.Format("{0} - Relatório de partidas", competicao.nome), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
+                    };
+                    toolStripMenuItem.Tag = new List<Object>() { partidas };
+                    toolStripMenuItem.Image = Properties.Resources.export_report;
                     contextMenuStrip.Items.Add(toolStripMenuItem);
 
                     // Define onde será aberto o menu de contexto

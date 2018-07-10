@@ -473,6 +473,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\export_report.png" />
     <None Include="Resources\partida_iniciar.png" />
     <None Include="Resources\partida_encerrar_disabled.png" />
     <None Include="Resources\partida_encerrar.png" />

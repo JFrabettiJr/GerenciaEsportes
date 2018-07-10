@@ -379,9 +379,11 @@ namespace SecEsportes.Infraestrutura
     }
 
     public static class CompeticaoViewUtilidades {
+
         public static DataGridView criaAba(string tituloAba, int indice, TabControl tcTabs) {
             return criaAba(tituloAba, indice, tcTabs, null);
         }
+
         public static DataGridView criaAba(string tituloAba, int indice, TabControl tcTabs, DataGridViewCellMouseEventHandler dataGridViewCellMouseEventHandler) {
             // Cria o TabPage
             TabPage tabPage = new TabPage(tituloAba);
@@ -463,6 +465,67 @@ namespace SecEsportes.Infraestrutura
 
             return nomeGrupo;
 
+        }
+
+        public static string getNomeAba(int numAbasAdicionais, int numAbaAdicional, ref int numRodada) {
+            string nomeAba = "";
+
+            switch (numAbasAdicionais) {
+                case 1:
+                    nomeAba = "Final";
+                    numRodada = -1;
+                    break;
+                case 2:
+                    switch (numAbaAdicional) {
+                        case 0:
+                            nomeAba = "Semi-Final";
+                            numRodada = -2;
+                            break;
+                        case 1:
+                            nomeAba = "Final";
+                            numRodada = -1;
+                            break;
+                    }
+                    break;
+                case 3:
+                    switch (numAbaAdicional) {
+                        case 0:
+                            nomeAba = "Quartas de Final";
+                            numRodada = -3;
+                            break;
+                        case 1:
+                            nomeAba = "Semi-Final";
+                            numRodada = -2;
+                            break;
+                        case 2:
+                            nomeAba = "Final";
+                            numRodada = -1;
+                            break;
+                    }
+                    break;
+                case 4:
+                    switch (numAbaAdicional) {
+                        case 0:
+                            nomeAba = "Oitavas de Final";
+                            numRodada = -4;
+                            break;
+                        case 1:
+                            nomeAba = "Quartas de Final";
+                            numRodada = -3;
+                            break;
+                        case 2:
+                            nomeAba = "Semi-Final";
+                            numRodada = -2;
+                            break;
+                        case 3:
+                            nomeAba = "Final";
+                            numRodada = -1;
+                            break;
+                    }
+                    break;
+            }
+
+            return nomeAba;
         }
 
         public static void refreshDataGridViewRodadas(DataGridView dgvRodada, List<Competicao_Partida> partidas, Competicao competicao, int numRodada) {
