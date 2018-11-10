@@ -32,6 +32,7 @@
             this.tlp2 = new System.Windows.Forms.TableLayoutPanel();
             this.btnEquipe = new System.Windows.Forms.Button();
             this.tlp5 = new System.Windows.Forms.TableLayoutPanel();
+            this.btnCadUsuario = new System.Windows.Forms.Button();
             this.btnCadFuncao = new System.Windows.Forms.Button();
             this.tlp3 = new System.Windows.Forms.TableLayoutPanel();
             this.btnPessoas = new System.Windows.Forms.Button();
@@ -42,7 +43,6 @@
             this.lblSecEsportes = new System.Windows.Forms.Label();
             this.tlp4 = new System.Windows.Forms.TableLayoutPanel();
             this.button1 = new System.Windows.Forms.Button();
-            this.btnCadUsuario = new System.Windows.Forms.Button();
             this.tlp2.SuspendLayout();
             this.tlp5.SuspendLayout();
             this.tlp3.SuspendLayout();
@@ -88,6 +88,18 @@
             this.tlp5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 56F));
             this.tlp5.Size = new System.Drawing.Size(206, 56);
             this.tlp5.TabIndex = 1;
+            // 
+            // btnCadUsuario
+            // 
+            this.btnCadUsuario.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnCadUsuario.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
+            this.btnCadUsuario.Location = new System.Drawing.Point(3, 3);
+            this.btnCadUsuario.Name = "btnCadUsuario";
+            this.btnCadUsuario.Size = new System.Drawing.Size(200, 50);
+            this.btnCadUsuario.TabIndex = 2;
+            this.btnCadUsuario.Text = "Cadastro de Usuários";
+            this.btnCadUsuario.UseVisualStyleBackColor = true;
+            this.btnCadUsuario.Click += new System.EventHandler(this.btnCadUsuario_Click);
             // 
             // btnCadFuncao
             // 
@@ -174,10 +186,10 @@
             // lblSecEsportes
             // 
             this.lblSecEsportes.AutoSize = true;
-            this.lblSecEsportes.Font = new System.Drawing.Font("Minion Pro", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSecEsportes.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblSecEsportes.Location = new System.Drawing.Point(111, 12);
             this.lblSecEsportes.Name = "lblSecEsportes";
-            this.lblSecEsportes.Size = new System.Drawing.Size(361, 40);
+            this.lblSecEsportes.Size = new System.Drawing.Size(415, 33);
             this.lblSecEsportes.TabIndex = 6;
             this.lblSecEsportes.Text = "Gerenciador de competições";
             // 
@@ -204,24 +216,13 @@
             this.button1.TabIndex = 1;
             this.button1.Text = "Cadastro de Funções";
             this.button1.UseVisualStyleBackColor = true;
-            // 
-            // btnCadUsuario
-            // 
-            this.btnCadUsuario.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnCadUsuario.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
-            this.btnCadUsuario.Location = new System.Drawing.Point(3, 3);
-            this.btnCadUsuario.Name = "btnCadUsuario";
-            this.btnCadUsuario.Size = new System.Drawing.Size(200, 50);
-            this.btnCadUsuario.TabIndex = 2;
-            this.btnCadUsuario.Text = "Cadastro de Usuários";
-            this.btnCadUsuario.UseVisualStyleBackColor = true;
-            this.btnCadUsuario.Click += new System.EventHandler(this.btnCadUsuario_Click);
+            this.button1.Click += new System.EventHandler(this.btnCadFuncao_Click);
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(477, 433);
+            this.ClientSize = new System.Drawing.Size(564, 433);
             this.Controls.Add(this.tlp4);
             this.Controls.Add(this.lblSecEsportes);
             this.Controls.Add(this.pictureBox1);
@@ -234,6 +235,7 @@
             this.MaximizeBox = false;
             this.Name = "Main";
             this.Text = "Menu Principal";
+            this.Load += new System.EventHandler(this.Main_Load);
             this.tlp2.ResumeLayout(false);
             this.tlp5.ResumeLayout(false);
             this.tlp3.ResumeLayout(false);

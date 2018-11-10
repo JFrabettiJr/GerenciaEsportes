@@ -39,11 +39,11 @@ namespace SecEsportes.Views {
             dgvEquipes.DataSource = null;
             dgvEquipes.Refresh();
 
-            dgvEquipes.Columns.Clear();
+            //dgvEquipes.Columns.Clear();
             dgvEquipes.DataSource = equipes_view;
 
-            dgvEquipes.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Equipe.codigo) });
-            dgvEquipes.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Equipe.nome) });
+            //dgvEquipes.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Equipe.codigo) });
+            //dgvEquipes.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Equipe.nome) });
 
             for (int iCount = 0; iCount < dgvEquipes.Columns.Count; iCount++) {
                 switch (dgvEquipes.Columns[iCount].DataPropertyName) {

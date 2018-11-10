@@ -32,6 +32,8 @@ namespace SecEsportes.Repositorio {
 
         public void CreateTable(SQLiteConnection connection) {
             //Criação da tabela Usuario
+
+            
             if (connection.GetSchema("Tables", new[] { null, null, "Usuario", null }).Rows.Count == 0) {
                 SQLiteCommand command = connection.CreateCommand();
 

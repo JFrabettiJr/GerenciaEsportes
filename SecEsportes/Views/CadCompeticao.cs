@@ -92,6 +92,12 @@ namespace SecEsportes.Views
 
             //Preenche os campos que vieram sem preenchimento do data set
             for (int iCount = 0; iCount < dgvCompeticoes.Rows.Count; iCount++) {
+
+                if (string.IsNullOrEmpty( competicoes[iCount].dataInicial.ToString()))
+                {
+                    dgvCompeticoes.Rows[iCount].Cells[nameof(Competicao.dataInicial)].Value = "";
+                }
+
                 switch (competicoes[iCount].status) {
                     case StatusEnum._0_Encerrada:
                         dgvCompeticoes.Rows[iCount].Cells["StatusCompeticao"].Value = "Encerrada";

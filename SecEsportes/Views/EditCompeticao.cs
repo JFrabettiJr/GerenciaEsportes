@@ -157,6 +157,7 @@ namespace SecEsportes.Views {
 
         private void btnAtualizar_Click(object sender, EventArgs e) {
             clearFields();
+
             fillFields();
 
             competicao.arbitros = CompeticaoRepositorio.Instance.getArbitroPorCompeticao(competicao.id);
