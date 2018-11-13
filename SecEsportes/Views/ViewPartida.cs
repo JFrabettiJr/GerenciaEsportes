@@ -119,21 +119,21 @@ namespace SecEsportes.Views {
                         dgvAtletas.Columns[iCount].Name = dgvAtletas.Columns[iCount].DataPropertyName;
                         dgvAtletas.Columns[iCount].DisplayIndex = iCount;
                         dgvAtletas.Columns[iCount].Width = 25;
-                        ((DataGridViewImageColumn)dgvAtletas.Columns[iCount]).ImageLayout = DataGridViewImageCellLayout.Stretch;
+                        ((DataGridViewImageColumn)dgvAtletas.Columns[iCount]).ImageLayout = DataGridViewImageCellLayout.Normal;
                         break;
                     case "CartaoAmarelo":
                         dgvAtletas.Columns[iCount].HeaderText = "CA";
                         dgvAtletas.Columns[iCount].Name = dgvAtletas.Columns[iCount].DataPropertyName;
                         dgvAtletas.Columns[iCount].DisplayIndex = iCount;
                         dgvAtletas.Columns[iCount].Width = 25;
-                        ((DataGridViewImageColumn)dgvAtletas.Columns[iCount]).ImageLayout = DataGridViewImageCellLayout.Stretch;
+                        ((DataGridViewImageColumn)dgvAtletas.Columns[iCount]).ImageLayout = DataGridViewImageCellLayout.Normal;
                         break;
                     case "CartaoVermelho":
                         dgvAtletas.Columns[iCount].HeaderText = "CV";
                         dgvAtletas.Columns[iCount].Name = dgvAtletas.Columns[iCount].DataPropertyName;
                         dgvAtletas.Columns[iCount].DisplayIndex = iCount;
                         dgvAtletas.Columns[iCount].Width = 25;
-                        ((DataGridViewImageColumn)dgvAtletas.Columns[iCount]).ImageLayout = DataGridViewImageCellLayout.Stretch;
+                        ((DataGridViewImageColumn)dgvAtletas.Columns[iCount]).ImageLayout = DataGridViewImageCellLayout.Normal;
                         break;
                     default:
                         dgvAtletas.Columns[iCount].Name = dgvAtletas.Columns[iCount].DataPropertyName;
