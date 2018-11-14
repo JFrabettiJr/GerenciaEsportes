@@ -188,7 +188,8 @@ namespace SecEsportes.Repositorio {
                             "   (id_Equipe, id_Competicao, id_Funcao, id_Atleta, numero, numCartoesAcumulados) " +
                             "VALUES " +
                             "   (@id_Equipe, @id_Competicao, @id_Funcao, @id_Atleta, @numero, @numCartoesAcumulados) ";
-
+                
+                
                 SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(strSQL,
                     new {
                         id_Equipe = idEquipe,

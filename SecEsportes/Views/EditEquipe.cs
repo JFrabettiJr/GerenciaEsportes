@@ -14,7 +14,7 @@ namespace SecEsportes.Views {
         private Competicao competicao;
         private List<Cargo> representantes;
         private List<Cargo> treinadores;
-
+        private int numanterior = 0;
         private Usuario usuarioLogado;
 
         #region Inicialização da classe
@@ -159,7 +159,7 @@ namespace SecEsportes.Views {
 
         private void insertEquipeForm_FormClosing(object sender, FormClosingEventArgs e) {
             foreach (Atleta_Insert atleta in insertAtletaForm.atletasAInserir) {
-                equipe.atletas.Add(new Atleta(atleta.id, atleta.funcao, atleta.pessoa, null));
+                equipe.atletas.Add(new Atleta(atleta.id, atleta.funcao, atleta.pessoa, 0));
                 EquipeRepositorio.Instance.insertAtletaEmEquipe(competicao.id, equipe.id, atleta);
             }
             refreshDataGridView(dgvAtletas, equipe.atletas);
@@ -192,12 +192,21 @@ namespace SecEsportes.Views {
             newEquipe.id = equipe.id;
             newEquipe.atletas = equipe.atletas;
             
+            
             for (int iCount = 0; iCount < dgvAtletas.Rows.Count; iCount++) {
                 int numAtleta = -1;
                 bool isNumber;
-                isNumber = int.TryParse(dgvAtletas[nameof(Atleta.numero), iCount].Value.ToString(), out numAtleta);
-                if (isNumber && numAtleta > 0) {
+                isNumber = int.TryParse(dgvAtletas[nameof(Atleta.numero), iCount].Value?.ToString(), out numAtleta);
+                if (isNumber && numAtleta > 0)
+                {
                     newEquipe.atletas[iCount].numero = numAtleta;
+                }
+                else {
+                    Random randNum = new Random(numanterior+1);
+             
+                    numAtleta = randNum.Next(1, 99);
+                    numanterior = numAtleta;
+             
                     newEquipe.atletas[iCount].numero = numAtleta;
                 }
             }

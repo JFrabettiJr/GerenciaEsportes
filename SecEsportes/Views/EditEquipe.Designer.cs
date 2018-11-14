@@ -28,7 +28,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditEquipe));
             this.tlpCadFuncao = new System.Windows.Forms.TableLayoutPanel();
             this.txtNome = new System.Windows.Forms.TextBox();
@@ -201,10 +200,10 @@
             // tpAtletas
             // 
             this.tpAtletas.Controls.Add(this.dgvAtletas);
-            this.tpAtletas.Location = new System.Drawing.Point(4, 22);
+            this.tpAtletas.Location = new System.Drawing.Point(4, 24);
             this.tpAtletas.Name = "tpAtletas";
             this.tpAtletas.Padding = new System.Windows.Forms.Padding(3);
-            this.tpAtletas.Size = new System.Drawing.Size(552, 237);
+            this.tpAtletas.Size = new System.Drawing.Size(552, 235);
             this.tpAtletas.TabIndex = 0;
             this.tpAtletas.Text = "Atletas";
             this.tpAtletas.UseVisualStyleBackColor = true;
@@ -220,8 +219,10 @@
             this.dgvAtletas.Location = new System.Drawing.Point(3, 3);
             this.dgvAtletas.MultiSelect = false;
             this.dgvAtletas.Name = "dgvAtletas";
-            this.dgvAtletas.Size = new System.Drawing.Size(546, 231);
+            this.dgvAtletas.Size = new System.Drawing.Size(546, 229);
             this.dgvAtletas.TabIndex = 6;
+            this.dgvAtletas.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvAtletas_CellEndEdit);
+            this.dgvAtletas.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvEquipes_RowEnter);
             // 
             // tpAtletasSuspensos
             // 
@@ -241,14 +242,6 @@
             this.dgvAtletasSuspensos.AllowUserToOrderColumns = true;
             this.dgvAtletasSuspensos.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
             this.dgvAtletasSuspensos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvAtletasSuspensos.DefaultCellStyle = dataGridViewCellStyle1;
             this.dgvAtletasSuspensos.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvAtletasSuspensos.Location = new System.Drawing.Point(3, 3);
             this.dgvAtletasSuspensos.MultiSelect = false;

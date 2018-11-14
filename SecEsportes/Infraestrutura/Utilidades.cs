@@ -25,6 +25,10 @@ namespace SecEsportes.Infraestrutura
         }
 
         public static List<List<EquipeCompeticao>> listaEquipesClassificadas(Competicao competicao, int numPartidasASeremGeradas, int numProximaFase, ref int numTimesRestantes, ref int numTimesPorGrupo) {
+
+            if (competicao.numGrupos <= 0)
+                competicao.numGrupos = 1;
+            
             numTimesPorGrupo = (numPartidasASeremGeradas * 2) / competicao.numGrupos;
             numTimesRestantes = (numPartidasASeremGeradas * 2) % numTimesPorGrupo;
 

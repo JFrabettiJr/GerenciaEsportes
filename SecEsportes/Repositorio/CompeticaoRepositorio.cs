@@ -566,14 +566,14 @@ namespace SecEsportes.Repositorio {
                     id_Arbitro = 0;
                 else
                     id_Arbitro = partida.arbitro.pessoa.id;
-
+                
                 idPartida = SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query<int>(strSQL,
                     new {
                         id_Competicao = competicao.id,
                         id_Equipe1 = partida.equipe1.id,
                         id_Equipe2 = partida.equipe2.id,
                         id_Arbitro,
-                        Data = partida.data,
+                        Data = string.IsNullOrEmpty(partida.data.ToString())? DateTime.Now : partida.data,
                         Rodada = partida.rodada,
                         partida.numGrupo,
                         partida.encerrada
@@ -1075,6 +1075,14 @@ namespace SecEsportes.Repositorio {
         }
         public bool deleteEquipeDaCompeticao(EquipeCompeticao equipe, int idCompeticao, ref string messageError) {
             try {
+                SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(
+                    "DELETE FROM Equipe_Atletas WHERE id_Equipe = @idEquipe AND id_Competicao = @idCompeticao",
+                    new
+                    {
+                        idEquipe = equipe.id,
+                        idCompeticao
+                    });
+
                 SQLiteDatabase.Instance.SQLiteDatabaseConnection().Query(
                     "DELETE FROM Equipe_Competicao WHERE id_Equipe = @idEquipe AND id_Competicao = @idCompeticao",
                     new {
