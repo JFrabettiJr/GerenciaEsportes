@@ -33,7 +33,7 @@ namespace SecEsportes.Infraestrutura
             if (!(System.IO.Directory.Exists(Environment.CurrentDirectory + "\\" + folderConfig)))
                 System.IO.Directory.CreateDirectory(Environment.CurrentDirectory + "\\" + folderConfig);
             
-            fileNameDB = "TESTE_Database.sqlite";
+            fileNameDB = "SecEsportesDatabase.sqlite";
             fileNameConfig = "SecEsportesConfig.txt";
         }
     }

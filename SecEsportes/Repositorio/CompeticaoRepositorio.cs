@@ -334,22 +334,25 @@ namespace SecEsportes.Repositorio {
                     connection.Open();
 
                     string strSQL;
-                    strSQL =    "SELECT	id_Atleta, " +
+                    strSQL =    "SELECT Competicao_Partida_Evento.id_Atleta, " +
                                 "       Equipe.nome AS nome_Equipe, " +
-                                "       (SELECT COUNT(1) FROM Competicao_Partida WHERE encerrada = 1 AND (id_Equipe1 = Equipe.id OR id_Equipe2 = Equipe.id)) AS num_Partidas, " +
+                                "		(SELECT COUNT(1) FROM Competicao_Partida WHERE encerrada = 1 AND(id_Equipe1 = Equipe.id OR id_Equipe2 = Equipe.id)) AS num_Partidas, " +
                                 "       COUNT(1) AS num_Gols " +
-                                "FROM 	Competicao_Partida_Evento " +
-                                "		INNER JOIN Competicao_Partida ON Competicao_Partida_Evento.id_Partida = Competicao_Partida.id " +
-                                "		INNER JOIN Equipe_Competicao ON Competicao_Partida_Evento.id_Equipe = Equipe_Competicao.id_Equipe " +
-                                "		INNER JOIN Equipe ON Equipe_Competicao.id_Equipe = Equipe.id " +
-                                "WHERE 	tpEvento = @tpEvento " +
-                                "		AND Competicao_Partida.id_Competicao = @id_Competicao " +
-                                "GROUP BY Competicao_Partida_Evento.id_Atleta, Competicao_Partida_Evento.id_Equipe, Equipe.nome " +
-                                "ORDER BY num_Gols DESC, num_Partidas ASC; ";
+                                "FROM   Competicao_Partida_Evento " +
+                                "       INNER JOIN Competicao_Partida ON Competicao_Partida_Evento.id_Partida = Competicao_Partida.id " +
+                                "       INNER JOIN Competicao ON Competicao_Partida.id_Competicao = Competicao.id " +
+                                "       INNER JOIN Equipe ON Competicao_Partida_Evento.id_Equipe = Equipe.id " +
+                                "WHERE  Competicao.id = @id_Competicao " +
+                                "       AND Competicao_Partida_Evento.tpEvento = @tpEvento " +
+                                "GROUP " +
+                                "BY     Competicao_Partida_Evento.id_Atleta, " +
+                                "       Equipe.nome " +
+                                "ORDER " +
+                                "BY     num_Gols DESC, num_Partidas ASC; ";
 
                     List<Atleta_List_Artilheiro> artilheiros = connection.Query<Atleta_List_Artilheiro>(strSQL,
-                        new {   tpEvento = tpEventoEnum.Gol,
-                                id_Competicao
+                        new {   id_Competicao,
+                                tpEvento = tpEventoEnum.Gol
                         }).ToList();
 
                     foreach(Atleta_List_Artilheiro artilheiro in artilheiros){

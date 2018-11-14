@@ -38,8 +38,8 @@ namespace SecEsportes.Infraestrutura {
             cabecalhoRelatorio.AppendLine("                            <th style=\"width: 30%\">Atleta</th>");
             cabecalhoRelatorio.AppendLine("                            <th style=\"width: 19%\">Equipe</th>");
             cabecalhoRelatorio.AppendLine("                            <th style=\"width: 15%\">Gols</th>");
-            cabecalhoRelatorio.AppendLine("                            <th style=\"width: 10%\">Partidas</th>");
             cabecalhoRelatorio.AppendLine("                            <th style=\"width: 10%\">Média</th>");
+            cabecalhoRelatorio.AppendLine("                            <th style=\"width: 10%\">Partidas</th>");
             cabecalhoRelatorio.AppendLine("                        </tr>");
             cabecalhoRelatorio.AppendLine("                    </thead>");
             cabecalhoRelatorio.AppendLine("                    <tbody>");
@@ -58,8 +58,8 @@ namespace SecEsportes.Infraestrutura {
                 artilheirosRelatorio.AppendFormat("							<td>{0}</td> ", artilheiro.nome_Atleta).AppendLine();
                 artilheirosRelatorio.AppendFormat("							<td>{0}</td> ", artilheiro.nome_Equipe).AppendLine();
                 artilheirosRelatorio.AppendFormat("							<td>{0}</td> ", artilheiro.num_Gols).AppendLine();
+                artilheirosRelatorio.AppendFormat("							<td>{0}</td>  ", Convert.ToDouble(artilheiro.num_Gols) / Convert.ToDouble(artilheiro.num_Partidas)).AppendLine();
                 artilheirosRelatorio.AppendFormat("							<td>{0}</td> ", artilheiro.num_Partidas).AppendLine();
-                artilheirosRelatorio.AppendFormat("							<td>{0}</td>  ", artilheiro.num_Partidas).AppendLine();
                 artilheirosRelatorio.AppendLine("						</tr> ");
             }
 

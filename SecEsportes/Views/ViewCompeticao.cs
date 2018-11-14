@@ -356,13 +356,13 @@ namespace SecEsportes.Views
 
             dgvArtilheiros.DataSource = artilheiros;
 
-            if (!(artilheiros is null)) {
+            /*if (!(artilheiros is null)) {
                 dgvArtilheiros.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Atleta_List_Artilheiro.nome_Atleta) });
                 dgvArtilheiros.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Atleta_List_Artilheiro.nome_Equipe) });
                 dgvArtilheiros.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Atleta_List_Artilheiro.num_Gols) });
                 dgvArtilheiros.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Atleta_List_Artilheiro.num_Partidas) });
                 dgvArtilheiros.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()) { DataPropertyName = nameof(Atleta_List_Artilheiro.media) });
-            }
+            }*/
 
             for (int iCount = 0; iCount < dgvArtilheiros.Columns.Count; iCount++) {
                 switch (dgvArtilheiros.Columns[iCount].DataPropertyName) {
@@ -370,31 +370,31 @@ namespace SecEsportes.Views
                         dgvArtilheiros.Columns[iCount].HeaderText = "Atleta";
                         dgvArtilheiros.Columns[iCount].Name = dgvArtilheiros.Columns[iCount].DataPropertyName;
                         dgvArtilheiros.Columns[iCount].DisplayIndex = 0;
-                        dgvArtilheiros.Columns[iCount].Width = 150;
+                        dgvArtilheiros.Columns[iCount].Width = 200;
                         break;
                     case nameof(Atleta_List_Artilheiro.nome_Equipe):
                         dgvArtilheiros.Columns[iCount].HeaderText = "Equipe";
                         dgvArtilheiros.Columns[iCount].Name = dgvArtilheiros.Columns[iCount].DataPropertyName;
                         dgvArtilheiros.Columns[iCount].DisplayIndex = 1;
-                        dgvArtilheiros.Columns[iCount].Width = 100;
+                        dgvArtilheiros.Columns[iCount].Width = 150;
                         break;
                     case nameof(Atleta_List_Artilheiro.num_Gols):
                         dgvArtilheiros.Columns[iCount].HeaderText = "Gols";
                         dgvArtilheiros.Columns[iCount].Name = dgvArtilheiros.Columns[iCount].DataPropertyName;
                         dgvArtilheiros.Columns[iCount].DisplayIndex = 2;
-                        dgvArtilheiros.Columns[iCount].Width = 50;
+                        dgvArtilheiros.Columns[iCount].Width = 100;
                         break;
                     case nameof(Atleta_List_Artilheiro.num_Partidas):
                         dgvArtilheiros.Columns[iCount].HeaderText = "Jogos";
                         dgvArtilheiros.Columns[iCount].Name = dgvArtilheiros.Columns[iCount].DataPropertyName;
                         dgvArtilheiros.Columns[iCount].DisplayIndex = 3;
-                        dgvArtilheiros.Columns[iCount].Width = 40;
+                        dgvArtilheiros.Columns[iCount].Width = 60;
                         break;
                     case nameof(Atleta_List_Artilheiro.media):
                         dgvArtilheiros.Columns[iCount].HeaderText = "Média";
                         dgvArtilheiros.Columns[iCount].Name = dgvArtilheiros.Columns[iCount].DataPropertyName;
                         dgvArtilheiros.Columns[iCount].DisplayIndex = 4;
-                        dgvArtilheiros.Columns[iCount].Width = 50;
+                        dgvArtilheiros.Columns[iCount].Width = 60;
                         break;
                     default:
                         dgvArtilheiros.Columns[iCount].Visible = false;
