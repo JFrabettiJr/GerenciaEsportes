@@ -28,8 +28,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditCompeticao));
             this.tlp1 = new System.Windows.Forms.TableLayoutPanel();
             this.lblNumJogadores = new System.Windows.Forms.Label();
@@ -127,7 +127,7 @@
             this.lblNumJogadores.Name = "lblNumJogadores";
             this.lblNumJogadores.Size = new System.Drawing.Size(120, 14);
             this.lblNumJogadores.TabIndex = 20;
-            this.lblNumJogadores.Text = "Mínimo de jogadores";
+            this.lblNumJogadores.Text = "Mín. de jogadores";
             // 
             // txtNumMinJogadores
             // 
@@ -253,23 +253,23 @@
             this.dgvEquipes.AllowUserToDeleteRows = false;
             this.dgvEquipes.AllowUserToOrderColumns = true;
             this.dgvEquipes.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(238)))), ((int)(((byte)(238)))));
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvEquipes.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvEquipes.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.dgvEquipes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvEquipes.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F);
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvEquipes.DefaultCellStyle = dataGridViewCellStyle4;
             this.dgvEquipes.Location = new System.Drawing.Point(10, 224);
             this.dgvEquipes.Name = "dgvEquipes";
             this.dgvEquipes.ReadOnly = true;
@@ -421,9 +421,9 @@
             this.chkIdaEVolta.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkIdaEVolta.Location = new System.Drawing.Point(251, 17);
             this.chkIdaEVolta.Name = "chkIdaEVolta";
-            this.chkIdaEVolta.Size = new System.Drawing.Size(134, 19);
+            this.chkIdaEVolta.Size = new System.Drawing.Size(107, 19);
             this.chkIdaEVolta.TabIndex = 13;
-            this.chkIdaEVolta.Text = "Jogos de ida e volta";
+            this.chkIdaEVolta.Text = "Jogos ida/volta";
             this.chkIdaEVolta.UseVisualStyleBackColor = true;
             this.chkIdaEVolta.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChange);
             // 
@@ -433,9 +433,9 @@
             this.chkIdaEVoltaFaseFinal.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkIdaEVoltaFaseFinal.Location = new System.Drawing.Point(393, 17);
             this.chkIdaEVoltaFaseFinal.Name = "chkIdaEVoltaFaseFinal";
-            this.chkIdaEVoltaFaseFinal.Size = new System.Drawing.Size(189, 19);
+            this.chkIdaEVoltaFaseFinal.Size = new System.Drawing.Size(175, 19);
             this.chkIdaEVoltaFaseFinal.TabIndex = 14;
-            this.chkIdaEVoltaFaseFinal.Text = "Jogos de ida e volta (Fase Final)";
+            this.chkIdaEVoltaFaseFinal.Text = "Jogos ida/volta (Fase Final)";
             this.chkIdaEVoltaFaseFinal.UseVisualStyleBackColor = true;
             this.chkIdaEVoltaFaseFinal.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChange);
             // 
