@@ -39,7 +39,7 @@
             // txtUsuario
             // 
             this.txtUsuario.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtUsuario.Location = new System.Drawing.Point(76, 112);
+            this.txtUsuario.Location = new System.Drawing.Point(16, 36);
             this.txtUsuario.Name = "txtUsuario";
             this.txtUsuario.Size = new System.Drawing.Size(208, 29);
             this.txtUsuario.TabIndex = 0;
@@ -48,7 +48,7 @@
             // txtSenha
             // 
             this.txtSenha.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSenha.Location = new System.Drawing.Point(76, 180);
+            this.txtSenha.Location = new System.Drawing.Point(16, 104);
             this.txtSenha.Name = "txtSenha";
             this.txtSenha.PasswordChar = '*';
             this.txtSenha.Size = new System.Drawing.Size(208, 29);
@@ -59,7 +59,7 @@
             // 
             this.lblUsuario.AutoSize = true;
             this.lblUsuario.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
-            this.lblUsuario.Location = new System.Drawing.Point(72, 85);
+            this.lblUsuario.Location = new System.Drawing.Point(12, 9);
             this.lblUsuario.Name = "lblUsuario";
             this.lblUsuario.Size = new System.Drawing.Size(156, 24);
             this.lblUsuario.TabIndex = 2;
@@ -69,7 +69,7 @@
             // 
             this.lblSenha.AutoSize = true;
             this.lblSenha.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
-            this.lblSenha.Location = new System.Drawing.Point(72, 153);
+            this.lblSenha.Location = new System.Drawing.Point(12, 77);
             this.lblSenha.Name = "lblSenha";
             this.lblSenha.Size = new System.Drawing.Size(65, 24);
             this.lblSenha.TabIndex = 3;
@@ -79,9 +79,9 @@
             // 
             this.btnEntrar.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnEntrar.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.btnEntrar.Location = new System.Drawing.Point(165, 218);
+            this.btnEntrar.Location = new System.Drawing.Point(16, 148);
             this.btnEntrar.Name = "btnEntrar";
-            this.btnEntrar.Size = new System.Drawing.Size(119, 31);
+            this.btnEntrar.Size = new System.Drawing.Size(208, 31);
             this.btnEntrar.TabIndex = 4;
             this.btnEntrar.Text = "Entrar";
             this.btnEntrar.UseVisualStyleBackColor = true;
@@ -91,7 +91,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(384, 261);
+            this.ClientSize = new System.Drawing.Size(234, 192);
             this.Controls.Add(this.btnEntrar);
             this.Controls.Add(this.lblSenha);
             this.Controls.Add(this.lblUsuario);
@@ -100,7 +100,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Login";
-            this.Text = "Menu Principal";
+            this.Text = "Login";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keyDown);
             this.ResumeLayout(false);
             this.PerformLayout();
